@@ -1,0 +1,203 @@
+{% extends "dashboard/base.html" %} {% block content_dashboard %}
+<h3 class="mx-5 pt-3">Add product</h3>
+<div class="container-fluid pt-3">
+  <form id="form_add_product" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input class="form-control mb-4" name="name" placeholder="Name" multiple />
+    <select
+      name="category"
+      class="form-select mb-4"
+      aria-label="Default select example"
+    >
+      <option selected>select category</option>
+      {% for cat in category %}
+      <option>{{cat.name}}</option>
+      {% endfor %}
+    </select>
+    <input
+      class="form-control mb-4"
+      type="number"
+      name="price1"
+      placeholder="Price 1"
+    />
+    <input
+      class="form-control mb-4"
+      type="number"
+      name="price2"
+      placeholder="Price 2"
+    />
+    <input
+      class="form-control mb-4"
+      type="number"
+      name="quantity"
+      placeholder="quantity"
+    />
+    <input
+      class="form-control mb-4"
+      name="description"
+      placeholder="description"
+    />
+    <div class="upload__box">
+      <div class="upload__btn-box">
+        <label class="upload__btn">
+          <i class="fa fa-upload fs-5" aria-hidden="true"></i>
+          <input
+            type="file"
+            id="product_file"
+            name="image"
+            multiple
+            data-max_length="5"
+            class="upload__inputfile"
+          />
+        </label>
+      </div>
+      <div class="upload__img-wrap"></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="wrapper mb-4">
+          <div class="title">
+            <h2>Size</h2>
+          </div>
+          <div class="content">
+            <p>Press enter or add a comma after each tag</p>
+            <ul class="ul_tags">
+              <input type="text" spellcheck="false" />
+            </ul>
+          </div>
+          <div class="details">
+            <p><span>10</span> tags are remaining</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="wrapper mb-4">
+          <div class="title">
+            <h2>Color</h2>
+          </div>
+          <div class="content">
+            <p>Press enter or add a comma after each tag</p>
+            <ul class="ul_tags">
+              <input type="text" spellcheck="false" />
+            </ul>
+          </div>
+          <div class="details">
+            <p><span>10</span> tags are remaining</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <input
+      class="btn btn-outline-success btn-sm w-25"
+      type="submit"
+      placeholder="add"
+    />
+  </form>
+</div>
+<script>
+  function getToken(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      var cookies = document.cookie.split(";");
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  // and we assign to variable csrftoken for post secure data
+  var csrftoken = getToken("csrftoken");
+  const ul = document.querySelector(".ul_tags"),
+    input = document.querySelector(".ul_tags input "),
+    tagNumb = document.querySelector(".details span");
+
+  let maxTags = 10;
+  var tags = ["X", "L"]; // array of item tags
+
+  countTags();
+  createTag();
+
+  function countTags() {
+    input.focus();
+    tagNumb.innerText = maxTags - tags.length;
+  }
+
+  function createTag() {
+    ul.querySelectorAll("li").forEach((li) => li.remove());
+    tags
+      .slice()
+      .reverse()
+      .forEach((tag) => {
+        let liTag = `<li>${tag} <i class="fa fa-remove" onclick="remove(this, '${tag}')"></i></li>`;
+        ul.insertAdjacentHTML("afterbegin", liTag);
+      });
+    countTags();
+  }
+
+  function remove(element, tag) {
+    let index = tags.indexOf(tag);
+    tags = [...tags.slice(0, index), ...tags.slice(index + 1)];
+    element.parentElement.remove();
+    countTags();
+  }
+
+  function addTag(e) {
+    if (e.which == 32) {
+      let tag = e.target.value.replace(/\s+/g, " ");
+      if (tag.length > 0 && !tags.includes(tag)) {
+        tag.split(",").forEach((tag) => {
+          tags.push(tag);
+          console.log(tags);
+
+          createTag();
+        });
+      }
+      e.target.value = "";
+    }
+  }
+
+  // ---- SEND REQUEST ---- ADD PRODUCT
+  const form = document.getElementById("form_add_product");
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    addFormData();
+  });
+  function addFormData() {
+    const product_file = document.getElementById("product_file");
+    const formImageProduct = new FormData();
+    for (const file of product_file.files)
+      formImageProduct.append("image[]", file);
+
+    data = {
+      name: form.name.value,
+      category: form.category.value,
+      price1: form.price1.value,
+      price2: form.price2.value,
+      quantity: form.quantity.value,
+      description: form.description.value,
+      size: tags,
+      // product_images:formImageProduct
+    };
+    fetch("/api/add_product/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify(data),
+    }).then((res) => {
+      location.reload();
+      console.log("Request complete! response:", res);
+    });
+  }
+
+  input.addEventListener("keyup", addTag);
+  // send post request to add product
+</script>
+{% endblock content_dashboard %}

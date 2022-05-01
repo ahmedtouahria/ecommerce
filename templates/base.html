@@ -1,0 +1,1008 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Mobile Specific Meta -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="{% static 'img/fav.png' %}" />
+    <!-- Author Meta -->
+    <meta name="author" content="CodePixar" />
+    <!-- Meta Description -->
+    <meta name="description" content="" />
+    <!-- Meta Keyword -->
+    <meta name="keywords" content="" />
+
+    <!-- meta character set -->
+    <meta charset="UTF-8" />
+    <!-- Site Title -->
+    <title>Ahmed Shop</title>
+    <!--===============================CSS============================================= -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swiper/swiper-bundle.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'css/linearicons.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/themify-icons.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/nice-select.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/nouislider.min.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/ion.rangeSlider.css'%}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'css/ion.rangeSlider.skinFlat.css'%}"
+    />
+    <link rel="stylesheet" href="{% static 'css/main.css'%}" />
+  </head>
+  <body>
+    {% include 'partes/navbar.html' %} {% block content %} {% endblock %} 
+	{% include 'partes/footer.html' %}
+    <script src="{% static 'js/vendor/jquery-2.2.4.min.js'%}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="{% static 'js/vendor/bootstrap.min.js'%}"></script>
+    <script src="{% static 'js/jquery.ajaxchimp.min.js'%}"></script>
+    <script src="{% static 'js/jquery.nice-select.min.js'%}"></script>
+    <script src="{% static 'js/jquery.sticky.js'%}"></script>
+    <script src="{% static 'js/nouislider.min.js'%}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js'%}"></script>
+    <script src="{% static 'js/owl.carousel.min.js'%}"></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+	<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <!--===================gmaps Js==============================-->
+    <script src="{% static 'js/gmaps.min.js'%}"></script>
+    <script src="{% static 'js/main.js'%}"></script>
+    <script src="{% static 'js/cart.js'%}"></script>
+
+    <script type="text/javascript">
+      var code_url =
+        "http://127.0.0.1:8000/products/{{product.id}}/{{request.user.code}}";
+      var total = "{{order.get_cart_total}}";
+      var user = "{{request.user}}";
+      var user_id = "{{request.user.id}}";
+
+      // Function to get TOKENT
+      function getToken(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          var cookies = document.cookie.split(";");
+          for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      // and we assign to variable csrftoken for post secure data
+      var csrftoken = getToken("csrftoken");
+      // function to get cookie
+      function getCookie(name) {
+        // Split cookie string and get all individual name=value pairs in an array
+        var cookieArr = document.cookie.split(";");
+
+        // Loop through the array elements
+        for (var i = 0; i < cookieArr.length; i++) {
+          var cookiePair = cookieArr[i].split("=");
+
+          /* Removing whitespace at the beginning of the cookie name
+		        and compare it with the given string */
+          if (name == cookiePair[0].trim()) {
+            // Decode the cookie value and return
+            return decodeURIComponent(cookiePair[1]);
+          }
+        }
+
+        // Return null if not found
+        return null;
+      }
+      // object cart (container shopping bug user GUEST)
+      var cart = JSON.parse(getCookie("cart"));
+      if (cart == undefined) {
+        cart = {};
+        console.log("Cart Created!", cart);
+        document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
+      }
+      function getCartItem() {
+        $.ajax({
+          url: "/api/cartitemApi/",
+          type: "GET",
+          success: function (res) {
+            console.log(res.cartItem);
+            $(".cartItem").html(res.cartItem);
+          },
+        });
+      }
+
+      console.log("Cart:", cart);
+      // simple code to hundler update cart whene user chose a product
+      var updateBtns = document.getElementsByClassName("update-cart");
+      for (i = 0; i < updateBtns.length; i++) {
+        updateBtns[i].addEventListener("click", function () {
+          var productId = this.dataset.product;
+          var action = this.dataset.action;
+          console.log("productId:", productId, "Action:", action);
+          console.log("USER:", user);
+          if (user == "AnonymousUser") {
+            addCookieItem(productId, action);
+            console.log("user is not login");
+          } else {
+            // for avoid duplicate request in ajax we need disable button
+            _this.attr("disabled", "disabled");
+            updateUserOrder(productId, action);
+            _this.removeAttr("disabled");
+
+            console.log("user is logged in");
+          }
+        });
+      }
+      // update order whene user is authenticated
+      function updateUserOrder(productId, action) {
+        $.ajax({
+          async: false,
+          type: "POST",
+          beforeSend: function (request) {
+            request.setRequestHeader("Content-Type", "application/json");
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+          },
+          url: "/update_item/",
+          data: JSON.stringify({ productId: productId, action: action }),
+          processData: true,
+          success: function (msg) {
+            console.log("success" + msg);
+          },
+        });
+        // for display async in cart items without reload page
+        getCartItem();
+      }
+      // update order whene user is not authenticated
+      function addCookieItem(productId, action) {
+        console.log("User is not authenticated");
+        if (action == "add") {
+          if (cart[productId] == undefined) {
+            cart[productId] = { quantity: 1 };
+          } else {
+            cart[productId]["quantity"] += 1;
+          }
+        }
+
+        if (action == "remove") {
+          cart[productId]["quantity"] -= 1;
+
+          if (cart[productId]["quantity"] <= 0) {
+            console.log("Item should be deleted");
+            delete cart[productId];
+          }
+        }
+        console.log("CART:", cart);
+        document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
+        getCartItem();
+      }
+      // hundel checkout and order
+      var form = document.getElementById("form");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        submitFormData();
+      });
+      function submitFormData() {
+        console.log("submite button clicked");
+        var userFormData = {
+          name: null,
+          phone: null,
+          total: total,
+        };
+        var shippingInfo = {
+          address: null,
+          city: null,
+          state: null,
+          zipcode: null,
+        };
+        shippingInfo.address = form.address.value;
+        shippingInfo.city = form.commun.value;
+        shippingInfo.state = form.wilaya.value;
+        shippingInfo.zipcode = form.zipcode.value;
+        name = "{{request.user.name}}";
+        phone = "{{request.user.phone}}";
+        if (user == "AnonymousUser") {
+          userFormData.name = form.name.value;
+          userFormData.phone = form.phone.value;
+        } else {
+          userFormData.name = name;
+          userFormData.phone = phone;
+        }
+
+        console.log("Shipping Info:", shippingInfo);
+        console.log("User Info:", userFormData);
+
+        var url = "/process_order/";
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "applicaiton/json",
+            "X-CSRFToken": csrftoken,
+          },
+          body: JSON.stringify({ form: userFormData, shipping: shippingInfo }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Success:", data);
+            fireSweetAlert();
+            cart = {};
+            document.cookie =
+              "cart=" + JSON.stringify(cart) + ";domain=;path=/";
+            window.location.href = "{% url 'products' %}";
+          })
+          .catch((error) => {
+            fireSweetAlertError();
+            console.error("Error:", error);
+          });
+      }
+      // function swite alert to hundel beutifule alert
+      // success alert
+      function fireSweetAlert() {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+
+        Toast.fire({
+          icon: "success",
+          title: "order sent successfully !",
+        });
+      }
+      // error alert
+      function fireSweetAlertError() {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: "order has a problem !",
+        });
+      }
+    </script>
+    <script>
+      //ADD THIS PIECE OF CODE IN YOUR JS OR HTML PAGE UNDER SCRIPT
+
+      var swiper = new Swiper(".mySwiper", {
+        spaceBetween: 30,
+        centeredSlides: true,
+        autoplay: {
+          delay: 2500,
+          disableOnInteraction: false,
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      });
+      $(document).ready(function () {
+		const tabs = document.querySelectorAll("[data-target]"),
+		tabContents = document.querySelectorAll("[data-content]");
+	  tabs.forEach((tab) => {
+		tab.addEventListener("click", () => {
+		  const target = document.querySelector(tab.dataset.target);
+		  tabContents.forEach((tc) => {
+			tc.classList.remove("is-active");
+		  });
+		  target.classList.add("is-active");
+
+		  tabs.forEach((t) => {
+			t.classList.remove("is-active");
+		  });
+		  tab.classList.add("is-active");
+		});
+	  });
+
+		
+        $(".custom-select").niceSelect("destroy");
+
+        //--------- script to hundel sidebar for mini devices---------//
+        $("#sidebarCollapse").on("click", function () {
+          $("#sidebar").addClass("active");
+        });
+        $("#sidebarCollapseX").on("click", function () {
+          $("#sidebar").removeClass("active");
+        });
+        $("#sidebarCollapse").on("click", function () {
+          if ($("#sidebar").hasClass("active")) {
+            $(".overlay").addClass("visible");
+            // console.log("it's working!");
+          }
+        });
+        $("#sidebarCollapseX").on("click", function () {
+          $(".overlay").removeClass("visible");
+        });
+        setTimeout(() => {
+          if ($("#alert").length > 0) {
+            $("#alert").fadeOut();
+          }
+        }, 4000);
+        //--------end script to hundel sidebar for mini devices--------//
+        /* -----script to meal rating-------*/
+        $(".rating label").on("click", function () {
+          //console.log(user_id);
+          //console.log(this.dataset.rate);
+          var content = $("#content").val();
+          var stars = this.dataset.rate;
+          var product_id = this.dataset.product;
+          //console.log(content)
+          //console.log(product_id);
+          let data = {
+            user_id: user_id,
+            product_id: product_id,
+            stars: stars,
+            content: content,
+          };
+          if (user == "AnonymousUser") {
+            window.location.href = "/login";
+          } else {
+            if (content.trim() == "") {
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Please don't leave the comment field blank",
+                confirmButtonColor: "#ffba00",
+              });
+            } else {
+              fetch("/api/product_rating/", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": csrftoken,
+                },
+                body: JSON.stringify(data),
+              }).then((res) => {
+                location.reload();
+                console.log("Request complete! response:", res);
+              });
+            }
+          }
+        });
+
+        /* ----- end script to meal rating-------*/
+
+        //---------------script to copy in clipboard with web Api---------------//
+	const shareBtn=document.getElementById('copy');
+	const title="title";
+	const url=code_url;
+	//const ogBtnContent = shareBtn.textContent;
+	shareBtn.addEventListener('click', () => {
+			if (navigator.share) {
+			  navigator.share({
+				title,
+				url
+			  }).then(() => {
+				
+			  })
+			  .catch(err => {
+				showMessage(shareBtn, `Couldn't share 🙁`);
+			  });
+			} else {
+			  showMessage(shareBtn, 'Not supported 🙅‍');
+			}
+		  });
+		  
+		  function showMessage(element, msg) {
+			element.textContent = msg;
+			setTimeout(() => {
+			  element.textContent = '';
+			}, 2000);
+		  }
+        ///////////////////////--Scripts to hundel requests (search product , filter data ) --///////////////////////////////////////////
+ 
+        //--- script realtime filter ----//
+     
+        //--- END--script realtime filter ----//
+      });
+	//})
+    </script>
+	<script>
+		       // script realtime test username existed or no
+			   $("#username").keyup(function () {
+				let username = $(this).val().trim();
+				$.ajax({
+				  url: "/api/validate_username/",
+				  data: { username: username },
+				  dataType: "json",
+				  success: function (data) {
+					if (data.is_exists) {
+					  console.log("existe");
+					  $("#username").addClass("is-invalid");
+					} else {
+					  console.log("success");
+					  $("#username").removeClass("is-invalid").addClass("is-valid");
+					}
+				  },
+				});
+			  });
+			  //------ script realtime to test phone---//
+			  $("#phone").keyup(function () {
+				let phone = $(this).val().trim();
+				$.ajax({
+				  url: "/api/validate_username/",
+				  data: { phone: phone },
+				  dataType: "json",
+				  success: function (data) {
+					if (data.is_number_exists) {
+					  console.log("existe");
+					  $("#phone").addClass("is-invalid");
+					} else {
+					  if (phone.length == 10) {
+						console.log("success");
+						$("#phone").removeClass("is-invalid").addClass("is-valid");
+					  } else {
+						$("#phone").addClass("is-invalid");
+					  }
+					}
+				  },
+				});
+			  });
+			  /////////////// script realtime search ///////////////////
+			  $("#search").keyup(function () {
+				let search_data = $(this).val();
+			//	let lower_value = $("#lower-value").html();
+			//	let upper_value = $("#upper-value").html();
+				if (search_data.trim().length > 0) {
+				  $.ajax({
+					url: "/api/search_products/",
+					data: {
+					  search_data: search_data,
+					 // lower_value: lower_value,
+					//  upper_value: upper_value,
+					},
+					dataType: "json",
+					success: function (data) {
+					  $("#list_product").html("");
+					  console.log(data);
+					  if (data.length == 0) {
+						$("#list_product").html(
+						  ' <div class="my-5" style="width: 100%;text-align: center;"> <img src="{% static "img/no_data.svg" %}" width="200" height="200" ><h1>No data found</h1></div>'
+						);
+					  } else {
+						data.forEach((element) => {
+						  document.getElementById("list_product").innerHTML += `
+				  
+						  <div class="showcase">
+        
+							<div class="showcase-banner">
+					  
+							  <img src="/media/${element.image}" alt="Mens Winter Leathers Jackets" width="300" class="product-img default">
+							  <img src="/media/${element.image}" alt="Mens Winter Leathers Jackets" width="300" class="product-img hover">
+					  
+							  <p class="showcase-badge">15%</p>
+					  
+							  <div class="showcase-actions">
+					  
+								<button class="btn-action">
+								  <ion-icon name="heart-outline"></ion-icon>
+								</button>
+					  
+								<button class="btn-action">
+								  <ion-icon name="eye-outline"></ion-icon>
+								</button>
+					  
+								<button class="btn-action">
+								  <ion-icon name="repeat-outline"></ion-icon>
+								</button>
+					  
+								<button class="btn-action update-cart"  data-action="add"
+								data-product="${element.id}">
+								  <ion-icon name="bag-add-outline"></ion-icon>
+								</button>
+					  
+							  </div>
+					  
+							</div>
+					  
+							<div class="showcase-content">
+					  
+							  <a href="#" class="showcase-category">${element.category_id}</a>
+					  
+							  <a href="">
+								<h3 class="showcase-title">${element.name}</h3>
+							  </a>
+					  
+							  <div class="showcase-rating">
+								{% if product.avg_rating == 5 %}
+								<i class="fa fa-star text-warning"></i>
+								<i class="fa fa-star text-warning"></i>
+								<i class="fa fa-star text-warning"></i>
+								<i class="fa fa-star text-warning"></i>
+								<i class="fa fa-star text-warning"></i>
+								{% elif product.avg_rating == 4 %}
+								<i class="fa fa-star text-warning"></i>
+								<i class="fa fa-star text-warning"></i>
+								<i class="fa fa-star text-warning"></i>
+								<i class="fa fa-star text-warning"></i>
+								<i class="fa fa-star"></i>
+					  
+								{% elif product.avg_rating == 3 %}
+								<i class="fa fa-star text-warning"></i>
+								<i class="fa fa-star text-warning"></i>
+								<i class="fa fa-star text-warning"></i>
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+					  
+								{% elif product.avg_rating == 2 %}
+								<i class="fa fa-star text-warning"></i>
+								<i class="fa fa-star text-warning"></i>
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+					  
+								{% elif product.avg_rating == 1 %}
+								<i class="fa fa-star text-warning"></i>
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+								{% else %}
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+								{% endif %}
+							  </div>
+					  
+							  <div class="price-box">
+								<p class="price">${element.price}</p>
+								<del>${element.price}</del>
+							  </div>
+					  
+							</div>
+					  
+						  </div>
+				  
+				  `;
+						});
+					  }
+					},
+				  });
+				}
+			  });
+	  
+	   $(".category").click(function () {
+          let val = $(this).val();
+          let lower_value = $("#lower-value").html();
+          let upper_value = $("#upper-value").html();
+          console.log(val);
+          $.ajax({
+            url: "/api/search_products/",
+            data: {
+              search_data: val,
+              lower_value: lower_value,
+              upper_value: upper_value,
+            },
+            dataType: "json",
+            success: function (data) {
+              $("#list_product").html("");
+              console.log(data);
+              if (data.length == 0) {
+                $("#list_product").html(
+                  ' <div class="my-5" style="width: 100%;text-align: center;"> <img src="{% static "img/no_data.svg" %}" width="200" height="200" ><h1>No data found</h1></div>'
+                );
+              } else {
+                data.forEach((element) => {
+                  document.getElementById("list_product").innerHTML += `
+			
+			<div class="col-lg-4 col-md-6">
+				<div class="single-product" style="margin-bottom: 0;">
+					<img  width="200" height="250" src="/media/${element.image}" alt="">
+					<div class="product-details">
+						<h6>${element.name}</h6>
+						<div class="price">
+							<h6>${element.price}$</h6>
+							<h6 class="l-through">${element.price}$</h6>
+						</div>
+						<div class="prd-bottom">
+							<a data-action="add" data-product=${element.id} class="social-info update-cart" onclick=" if (user!='AnonymousUser'){updateUserOrder(${element.id}, 'add')}else {addCookieItem(${element.id}, 'add')};">
+								<span class="ti-bag"></span>
+								<p class="hover-text ">add to bag</p>
+							</a>
+							<a href="" class="social-info">
+								<span class="lnr lnr-heart"></span>
+								<p class="hover-text">Wishlist</p>
+							</a>
+							<a href="/products/${element.id}" class="social-info">
+								<span class="lnr lnr-select"></span>
+								<p class="hover-text">Show more</p>
+							</a>
+			  
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			`;
+                });
+              }
+            },
+          });
+        });
+	</script>
+    <script>
+		$(".category").click(function () {
+			let val = $(this).val();
+			let lower_value = $("#lower-value").html();
+			let upper_value = $("#upper-value").html();
+			console.log(val);
+			$.ajax({
+			  url: "/search_products/",
+			  data: {
+				search_data: val,
+				lower_value: lower_value,
+				upper_value: upper_value,
+			  },
+			  dataType: "json",
+			  success: function (data) {
+				$("#list_product").html("");
+				console.log(data);
+				if (data.length == 0) {
+				  $("#list_product").html(
+					' <div class="my-5" style="width: 100%;text-align: center;"> <img src="{% static "img/no_data.svg" %}" width="200" height="200" ><h1>No data found</h1></div>'
+				  );
+				} else {
+				  data.forEach((element) => {
+					document.getElementById("list_product").innerHTML += `
+			  
+			  <div class="col-lg-4 col-md-6">
+				  <div class="single-product" style="margin-bottom: 0;">
+					  <img  width="200" height="250" src="/media/${element.image}" alt="">
+					  <div class="product-details">
+						  <h6>${element.name}</h6>
+						  <div class="price">
+							  <h6>${element.price}$</h6>
+							  <h6 class="l-through">${element.price}$</h6>
+						  </div>
+						  <div class="prd-bottom">
+							  <a data-action="add" data-product=${element.id} class="social-info update-cart" onclick=" if (user!='AnonymousUser'){updateUserOrder(${element.id}, 'add')}else {addCookieItem(${element.id}, 'add')};">
+								  <span class="ti-bag"></span>
+								  <p class="hover-text ">add to bag</p>
+							  </a>
+							  <a href="" class="social-info">
+								  <span class="lnr lnr-heart"></span>
+								  <p class="hover-text">Wishlist</p>
+							  </a>
+							  <a href="/products/${element.id}" class="social-info">
+								  <span class="lnr lnr-select"></span>
+								  <p class="hover-text">Show more</p>
+							  </a>
+				
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+			  
+			  `;
+				  });
+				}
+			  },
+			});
+		  });
+    </script>
+	<script type="text/javascript">
+	var wilaya_select=document.getElementsByClassName("wilaya");
+	var commun_select=document.getElementById("commun");
+	
+			//wilaya_select[i].innerHTML='';
+	            $.ajax({
+					url: "/getwilaya",
+					type: 'GET',
+					dataType: 'json', // added data type
+					success: function(data) {
+						arr=[];
+						data.forEach(element=>{
+						//console.log(element.name);
+						for(var i=0;i<wilaya_select.length;i++){
+						wilaya_select[i].innerHTML+=`<option name="state" value="${element.name}">${element.id} ${element.name}</option>`;
+					}
+						})
+	
+					}
+				});
+	wilaya_select[0].onchange=function(e){
+					console.log(e.target.value);
+					commun_select.innerHTML='';
+					var current_wilaya=e.target.value;
+					//display related communs 
+		  		$.ajax({
+					url: "/api/getcommunstrus/",
+					type: 'GET',
+					dataType: 'json', // added data type
+					success: function(data) {
+						data['communs'].forEach(element=>{
+						if(element.wilaya_name==current_wilaya){
+							commun_select.innerHTML+=
+						  `<option name="commun" value="${element.name}">${element.name}</option>`;}
+						})
+	
+					},
+				});
+				var shipping = document.getElementById('shipping')
+				// and display deliveryfees
+				$.ajax({
+					url: "/api/getcommunstrus/",
+					type: 'GET',
+					dataType: 'json', // added data type
+					success: function(data) {
+						data['deliveryfees'].forEach(element=>{
+						if(element.wilaya_name==current_wilaya){
+							shipping.innerHTML=`${element.desk_fee}`;
+						}
+						})
+	
+					},
+				});
+			};
+		
+	
+	</script>
+	<script>
+	 var dropdown_panel = document.getElementById("dropdown_panel");
+  //   var category_name = document.querySelector(".main-categories .main-nav-list .category_name");
+ // dropdown_panel=$('#dropdown_panel');
+  //category_name=$('.main-categories .main-nav-list .category_name');
+	 $(document).ready(function(){
+		    //dropdown_panel=$('#dropdown_panel');
+		    // Script to get Category and sub_cat and display in navbar 
+			$.ajax({
+			  	url: "/api/category/",
+			  	type: "GET",
+			  	dataType: "json", // added data type
+			  	success: function (data) {
+				dropdown_panel.innerHTML = '';
+				var i=0;
+				data.forEach((element) => {
+				  var sub_cat=element.sub_cat;
+				  dropdown_panel.innerHTML += ` <ul class="dropdown-panel-list">
+							<li class="menu-title">
+							  <a href="#">${element.name}</a>
+							</li>
+							<li class="panel-list-item panel_list_item" id="panel_list_item">
+							</li>
+							<li class="panel-list-item">
+							  <a href="#">
+								<img src="${element.image}" alt="headphone collection" width="250"
+								  height="119">
+							  </a>
+							</li>
+			  
+						  </ul>`;
+				  var panel_list_item = document.getElementsByClassName("panel_list_item");
+				  var arr_panel_list_item=[];
+					console.log(i);
+					//panel_list_item[i].innerHTML='';
+					sub_cat.forEach(cat=>{
+					panel_list_item[i].innerHTML+=`<a href="#">${cat.name}</a>`;
+					})
+					console.log(arr_panel_list_item)
+					i++;
+				}); // data.forEach end
+			
+				}, //end success
+			}); //ajax end
+		})
+	</script>
+	<script>
+
+
+// mobile menu variables
+const mobileMenuOpenBtn = document.querySelectorAll('[data-mobile-menu-open-btn]');
+const mobileMenu = document.querySelectorAll('[data-mobile-menu]');
+const mobileMenuCloseBtn = document.querySelectorAll('[data-mobile-menu-close-btn]');
+const overlay = document.querySelector('[data-overlay]');
+
+for (let i = 0; i < mobileMenuOpenBtn.length; i++) {
+
+  // mobile menu function
+  const mobileMenuCloseFunc = function () {
+    mobileMenu[i].classList.remove('active');
+    overlay.classList.remove('active');
+  }
+
+  mobileMenuOpenBtn[i].addEventListener('click', function () {
+    mobileMenu[i].classList.add('active');
+    overlay.classList.add('active');
+  });
+
+  mobileMenuCloseBtn[i].addEventListener('click', mobileMenuCloseFunc);
+  overlay.addEventListener('click', mobileMenuCloseFunc);
+
+}
+
+
+
+
+
+// accordion variables
+const accordionBtn = document.querySelectorAll('[data-accordion-btn]');
+const accordion = document.querySelectorAll('[data-accordion]');
+
+for (let i = 0; i < accordionBtn.length; i++) {
+
+  accordionBtn[i].addEventListener('click', function () {
+
+    const clickedBtn = this.nextElementSibling.classList.contains('active');
+
+    for (let i = 0; i < accordion.length; i++) {
+
+      if (clickedBtn) break;
+
+      if (accordion[i].classList.contains('active')) {
+
+        accordion[i].classList.remove('active');
+        accordionBtn[i].classList.remove('active');
+
+      }
+
+    }
+
+    this.nextElementSibling.classList.toggle('active');
+    this.classList.toggle('active');
+
+  });
+
+}
+	</script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      .rating {
+        display: flex;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .rating-0 {
+        filter: grayscale(100%);
+      }
+
+      .rating > input {
+        display: none;
+      }
+
+      .rating > label {
+        cursor: pointer;
+        width: 35px;
+        height: 35px;
+        margin-top: auto;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23e3e3e3' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 76%;
+        transition: 0.3s;
+      }
+
+      .rating > input ~ label,
+      .rating > input ~ label ~ label {
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23fcd93a' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
+      }
+
+      .rating > input:not(:checked) ~ label:hover,
+      .rating > input:not(:checked) ~ label:hover ~ label {
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23d8b11e' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
+      }
+      .swiper {
+        width: 100%;
+        height: 100%;
+      }
+
+      .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #fff;
+
+        /* Center slide text vertically */
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+      }
+
+      .swiper-slide img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .country_select ul.list {
+        max-height: 350px;
+        overflow-y: scroll !important;
+      }
+      .country_select ul.list::-webkit-scrollbar {
+        width: 15px;
+      }
+
+      .country_select ul.list::-webkit-scrollbar-track {
+        background: var(--white);
+        border-left: 1px solid var(--cultured);
+      }
+
+      .country_select ul.list::-webkit-scrollbar-thumb {
+        background: hsl(0, 0%, 80%);
+        border: 3px solid var(--white);
+        border-radius: 10px;
+      }
+
+      .country_select ul.list::-webkit-scrollbar-thumb:hover {
+        background: hsl(0, 0%, 70%);
+      }
+
+      .filters {
+        font-family: sans-serif;
+      }
+      .filters-content {
+        margin: 2rem 0 2.5rem;
+        background-color: #eee;
+        padding: 0.375rem;
+        border-radius: 0.75rem;
+        display: flex;
+        justify-content: space-between;
+        column-gap: 0.5rem;
+      }
+      .filters__button {
+        width: 100%;
+        border: none;
+        outline: none;
+        padding: 1rem;
+        transition: 0.3s;
+        border-radius: 0.5rem;
+      }
+      .filters__button:hover {
+        background-color: #fff;
+      }
+      /* Hide*/
+      .filters [data-content] {
+        display: none;
+      }
+      [data-content].is-active[data-content] {
+        display: grid;
+      }
+      [data-target].is-active {
+        background-color: #4042f6;
+        color: #fff;
+      }
+    </style>
+  </body>
+</html>

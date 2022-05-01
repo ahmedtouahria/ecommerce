@@ -1,0 +1,31 @@
+{% extends "pages/profile_base.html" %}
+{% load static %}
+{% block profile %}
+<div class="card">
+<h3 class="p-2">My orders</h3>
+
+    <table class="table ">
+        <thead class="thead-dark mx-2">
+          <tr>
+            <th scope="col">Order 
+            </th>
+            <th scope="col">Transition_id</th>
+            <th scope="col">Date <i class="fa fa-calendar mx-2" aria-hidden="true"></i>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+          <tr>
+            <th scope="row"><a href="{% url 'myorders' order.id %}"><i class="fa fa-external-link mx-2" aria-hidden="true"></i></a>
+            </th>
+            <td>{{order.transaction_id}}</td>
+            <td>{{order.date_ordered}}</td>
+          </tr>
+    {% endfor %}
+        </tbody>
+      </table>
+      
+    </div>
+{% endblock profile %}
+

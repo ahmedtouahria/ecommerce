@@ -1,0 +1,431 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="product_image_area mb-5">
+    <div class="container">
+        <div class="row s_product_inner">
+            <div class="col-lg-6">
+                <div class="s_Product_carousel">
+                    <div class="single-prd-item">
+                        <img class="img-fluid" src="{{product.image.url}}" alt="">
+                    </div>
+                    <div class="single-prd-item">
+                        <img class="img-fluid" src="{{product.image.url}}" alt="">
+                    </div>
+                    <div class="single-prd-item">
+                        <img class="img-fluid" src="{{product.image.url}}" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 offset-lg-1">
+                <div class="s_product_text">
+                    <h3>{{product.name}}</h3>
+                    <h2>{{product.price}}$</h2>
+                   
+                    <ul class="list">
+                        <li><a class="active" href="#"><span>Category</span> : {{product.category | capfirst}}</a></li>
+                        <li><a href="#"><span>Availibility</span> : In Stock</a></li>
+                        <div class="media-body">
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                        </div>
+                    </ul>
+                    <p>{{product.description}}</p>
+
+                    {% if product.variation_set.all %}
+                    {% if product.variation_set.sizes %}
+                    <div class="row my-3 mx-2">
+                        <div class='col-3'>
+                        <label class="pt-2" for="qty">Size:</label>
+                        </div>
+                        <div class='col-9'>
+                            <select class=" mx-2">
+                                {% for item in product.variation_set.sizes  %}
+                                <option value="1">{{item.item}}</option>
+                                {% endfor %}
+                              </select>  
+                            </div>
+                      </div>
+                      <div class="row my-3 mx-2">
+                        <div class='col-3'>
+                        <label class="pt-2" for="qty">Colors:</label>
+                        </div>
+                        <div class='col-9'>
+                                {% for item in product.variation_set.colors  %}
+                                <input value="{{item.item}}" class='red' name='color' type='radio' style="background:{{item.item}}" />
+                                {% endfor %}
+                         
+                            </div>
+                        
+                      </div>
+                
+                      {% endif %}
+                      {% endif %}
+                    <div class="product_count">
+                        <label for="qty">Quantity:</label>
+                        <input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
+                        <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                         class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
+                        <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) &amp;&amp; sst > 0 ) result.value--;return false;"
+                         class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
+                    </div>
+                    <div class="card_area d-flex align-items-center">
+                        <a class="primary-btn update-cart" data-action="add" data-product="{{product.id}}" href="#">Add to Cart</a>
+                        <a class="icon_btn" id="copy"><i class="fa fa-share"></i></a>
+                        <a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
+                    </div>
+
+                </div>
+            </div>
+          
+        </div>
+    </div>
+</div>
+<section class="product_description_area">
+    <div class="container">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+  
+
+            <li class="nav-item">
+                <a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
+                 aria-selected="false">Reviews</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <p>Beryl Cook is one of Britain’s most talented and amusing artists .Beryl’s pictures feature women of all shapes
+                    and sizes enjoying themselves .Born between the two world wars, Beryl Cook eventually left Kendrick School in
+                    Reading at the age of 15, where she went to secretarial school and then into an insurance office. After moving to
+                    London and then Hampton, she eventually married her next door neighbour from Reading, John Cook. He was an
+                    officer in the Merchant Navy and after he left the sea in 1956, they bought a pub for a year before John took a
+                    job in Southern Rhodesia with a motor company. Beryl bought their young son a box of watercolours, and when
+                    showing him how to use it, she decided that she herself quite enjoyed painting. John subsequently bought her a
+                    child’s painting set for her birthday and it was with this that she produced her first significant work, a
+                    half-length portrait of a dark-skinned lady with a vacant expression and large drooping breasts. It was aptly
+                    named ‘Hangover’ by Beryl’s husband and</p>
+                <p>It is often frustrating to attempt to plan meals that are designed for one. Despite this fact, we are seeing
+                    more and more recipe books and Internet websites that are dedicated to the act of cooking for one. Divorce and
+                    the death of spouses or grown children leaving for college are all reasons that someone accustomed to cooking for
+                    more than one would suddenly need to learn how to adjust all the cooking practices utilized before into a
+                    streamlined plan of cooking that is more efficient for one person creating less</p>
+            </div>
+       
+
+            <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="row total_rate">
+                            <div class="col-6">
+                                <div class="box_total">
+                                    <h5>Overall</h5>
+                                    <h4>{{product.avg_rating}}</h4>
+                                    <h6>({{product.no_of_ratings}} Reviews)</h6>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="rating_list">
+                                    <h3>Based on 3 Reviews</h3>
+                                    <ul class="list">
+                                        <li><a href="#">5 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                                 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
+                                        <li><a href="#">4 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                                                 class="fa fa-star"></i> 01</a></li>
+                                        <li><a href="#">3 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>01</a></li>
+                                        <li><a href="#">2 Star <i class="fa fa-star"></i><i class="fa fa-star"></i>01</a></li>
+                                        <li><a href="#">1 Star <i class="fa fa-star"></i> 01</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review_list">
+                            {% for rate in ratings %}
+                            <div class="review_item">
+                                <div class="media">
+                                    <div class="d-flex">
+                                        <img
+                                        src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"
+                                        class="rounded-circle"
+                                        height="35"
+                                        alt="Avatar"
+                                        loading="lazy"
+                                      />
+                                    </div>
+                                    <div class="media-body">
+                                        <h4>{{rate.get_user_name}}</h4>
+                                        {% if rate.stars == 5 %}
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        {% elif rate.stars == 4 %}
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        {% elif rate.stars == 3 %}
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        {% elif rate.stars == 2 %}
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        {% elif rate.stars == 1 %}
+                                        <i class="fa fa-star"></i>
+                                        {% else %}
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+
+                                        {% endif %}
+                                      
+                                    </div>
+                                </div>
+                                <p>{{rate.content}}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="review_box">
+                            <h4>Add a Review</h4>
+                            <div class="rating" >
+                                <input type="radio" name="rating" id="rating-5">
+                                <label data-rate="5" data-product="{{product.id}}" for="rating-5"></label>
+                                <input type="radio" name="rating" id="rating-4">
+                                <label data-rate="4" data-product="{{product.id}}" for="rating-4"></label>
+                                <input type="radio" name="rating" id="rating-3">
+                                <label data-rate="3" data-product="{{product.id}}" for="rating-3"></label>
+                                <input type="radio" name="rating" id="rating-2">
+                                <label data-rate="2" data-product="{{product.id}}" for="rating-2"></label>
+                                <input type="radio" name="rating" id="rating-1">
+                                <label data-rate="1" data-product="{{product.id}}" for="rating-1"></label>
+                                  </div>
+                            <p>Your Rating:</p>
+              
+                            <p>Outstanding</p>
+                            <form class="row contact_form" method="post" >
+                                {% csrf_token %}
+                                {% if not user.is_authenticated %}
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="name" name="name" placeholder="Your Full name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Full name'">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address'">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="number" name="number" placeholder="Phone Number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Phone Number'">
+                                    </div>
+                                </div>
+
+                                {% endif %}
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <textarea class="form-control" name="content" id="content" rows="1" placeholder="Review" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Review'"></textarea></textarea>
+                                    </div>
+                                </div>
+                 
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="product-main container py-5">
+
+    <h2 class="title">New Products</h2>
+  
+    <div class="product-grid">
+  {% for product in products  %}
+      <div class="showcase">
+  
+        <div class="showcase-banner">
+  
+          <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img default">
+          <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img hover">
+  
+          <p class="showcase-badge">15%</p>
+  
+          <div class="showcase-actions">
+  
+            <button class="btn-action">
+              <ion-icon name="heart-outline"></ion-icon>
+            </button>
+  
+            <button class="btn-action">
+              <ion-icon name="eye-outline"></ion-icon>
+            </button>
+  
+            <button class="btn-action">
+              <ion-icon name="repeat-outline"></ion-icon>
+            </button>
+  
+            <button class="btn-action update-cart"  data-action="add"
+            data-product="{{product.id}}">
+              <ion-icon name="bag-add-outline"></ion-icon>
+            </button>
+  
+          </div>
+  
+        </div>
+  
+        <div class="showcase-content">
+  
+          <a href="#" class="showcase-category">{{product.category}}</a>
+  
+          <a href="{% url 'single-product' product.id %}">
+            <h3 class="showcase-title">{{product.name}}</h3>
+          </a>
+  
+          <div class="showcase-rating">
+            {% if product.avg_rating == 5 %}
+            <i class="fa fa-star text-warning"></i>
+            <i class="fa fa-star text-warning"></i>
+            <i class="fa fa-star text-warning"></i>
+            <i class="fa fa-star text-warning"></i>
+            <i class="fa fa-star text-warning"></i>
+            {% elif product.avg_rating == 4 %}
+            <i class="fa fa-star text-warning"></i>
+            <i class="fa fa-star text-warning"></i>
+            <i class="fa fa-star text-warning"></i>
+            <i class="fa fa-star text-warning"></i>
+            <i class="fa fa-star"></i>
+  
+            {% elif product.avg_rating == 3 %}
+            <i class="fa fa-star text-warning"></i>
+            <i class="fa fa-star text-warning"></i>
+            <i class="fa fa-star text-warning"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+  
+            {% elif product.avg_rating == 2 %}
+            <i class="fa fa-star text-warning"></i>
+            <i class="fa fa-star text-warning"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+  
+            {% elif product.avg_rating == 1 %}
+            <i class="fa fa-star text-warning"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            {% else %}
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            {% endif %}
+          </div>
+  
+          <div class="price-box">
+            <p class="price">${{product.price}}</p>
+            <del>${{product.price}}</del>
+          </div>
+  
+        </div>
+  
+      </div>
+      {% endfor %}
+    </div>
+  
+  </div>
+<script type="text/javascript">
+    var code_url="http://127.0.0.1:8000/products/{{product.id}}/{{request.user.code}}";
+    var total = '{{order.get_cart_total}}';
+    var user ="{{request.user}}";
+    var copy=document.getElementById('copy');
+
+    </script>
+
+    <style>
+        * { box-sizing: border-box; }
+
+
+
+.rating {
+  display: flex;
+  width: 35%;
+  justify-content: center;
+  overflow: hidden;
+  flex-direction: row-reverse;
+  position: relative;
+}
+
+.rating-0 {
+  filter: grayscale(100%);
+}
+
+.rating > input {
+  display: none;
+}
+
+.rating > label {
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  margin-top: auto;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23e3e3e3' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 76%;
+  transition: .3s;
+}
+
+.rating > input:checked ~ label,
+.rating > input:checked ~ label ~ label {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23fcd93a' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
+}
+
+
+.rating > input:not(:checked) ~ label:hover,
+.rating > input:not(:checked) ~ label:hover ~ label {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23d8b11e' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
+}
+
+
+  
+  .red {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 25px;
+    height: 25px;
+    margin: 5px 0 5px 5px;
+    background-size: 225px 70px;
+    position: relative;
+    float: left;
+    display: inline;
+    top: 0;
+    border-radius: 3px;
+    z-index: 1;
+    cursor: pointer;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+  }
+  
+ .red:hover{
+    -webkit-filter: opacity(.7);
+    filter: opacity(.7);    
+  }
+
+
+
+    </style>
+{% endblock content %}
+

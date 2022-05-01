@@ -1,0 +1,102 @@
+{% extends 'base.html' %} {% block content %}
+
+<section class="cart_area ">
+  <div class="container">
+    <hr>
+
+    <h2 class="pb-4">Your Order</h2>
+    <div class="cart_inner">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col">Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+
+            <tr>
+              <td>
+                <div class="media">
+                  <div class="media-body">
+                    <p>{{item.product.name}}</p>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <h5>${{item.product.price}}</h5>
+              </td>
+              <td>
+                <div class="product_count">
+                  <input
+                    readonly
+                    type="text"
+                    name="qty"
+                    id="sst-{{item.product.id}}"
+                    maxlength="2"
+                    value="{{item.quantity}}"
+                    title="Quantity:"
+                    class="input-text qty"
+                  />
+                  <button
+                    onclick=" if (user!='AnonymousUser'){updateUserOrder({{item.product.id}}, 'add')}else {addCookieItem({{item.product.id}}, 'add')};var result = document.getElementById('sst-{{item.product.id}}'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                    class="increase items-count"
+                    type="button"
+                  >
+                    <i class="lnr lnr-chevron-up"></i>
+                  </button>
+                  <button
+                    onclick="if (user!='AnonymousUser'){updateUserOrder({{item.product.id}}, 'remove')}else {addCookieItem({{item.product.id}}, 'remove')};var result = document.getElementById('sst-{{item.product.id}}'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+                    class="reduced items-count"
+                    type="button"
+                  >
+                    <i class="lnr lnr-chevron-down" type="button"></i>
+                  </button>
+                </div>
+              </td>
+              <td>
+                <h5>${{item.get_total}}</h5>
+              </td>
+            </tr>
+            {% endfor %}
+            <tr class="bottom_button">
+              <td>
+                <a class="gray_btn" href="{% url 'card' %}">Update</a>
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td>
+                <h5>Subtotal</h5>
+              </td>
+              <td>
+                <h5>${{order.get_cart_total}}</h5>
+              </td>
+            </tr>
+           
+            <tr class="out_button_area">
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>
+                <div class="checkout_btn_inner d-flex align-items-center">
+                  <a class="gray_btn" href="{% url 'products' %}"> Shopping</a>
+                  <a class="primary-btn" href="{% url 'checkout' %}">Proceed to checkout</a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}
