@@ -20,7 +20,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    #'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -122,18 +122,9 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 STATIC_ROOT=os.path.join(BASE_DIR,'static')
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 STATICFILES_DIRS = [os.path.join(BASE_DIR,'ecommerce/static')]
 MEDIA_ROOT = os.path.join(BASE_DIR, '') # 'data' is my media folder
 MEDIA_URL = '/media/'
-from django.contrib.messages import constants as messages
-MESSAGE_TAGS = {
-    messages.DEBUG: 'alert-info',
-    messages.INFO: 'alert-info',
-    messages.WARNING: 'alert-info',
-    messages.SUCCESS: 'alert-success',
-    messages.ERROR: 'alert-danger',
-    
-    
-    50: 'critical',
-}
