@@ -1,4 +1,5 @@
 #from django.shortcuts import render
+from django.shortcuts import redirect
 from rest_framework import viewsets
 from django.db.models import Q
 import requests
@@ -167,32 +168,24 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['POST'])
+
 def add_product(request):
+    product_ref= request.session.get("product_ref") 
     if request.method == 'POST':
-        name = request.data.get('name')
-        price1 = float(request.data['price1'])
-        price2 = float(request.data['price2'])
-        category = request.data['category']
-        quantity = int(request.data['quantity'])
-        description = request.data['description']
-        size = request.data.get('size')
+        sizes = request.data.get('sizes')
+        colors = request.data.get('colors')
         print(request.data)
-        images = request.FILES.get('image')
-        category_id = CategorySub.objects.get(name=category)
-        if request.user.admin:
-            try:
-                product = Product(name=name,
-                                  category=category_id,
-                                  price_achat=price1,
-                                  price=price2,
-                                  quantity=quantity,
-                                  description=description,)
-                product.save()
-                for s in size:
-                    variation = Variation(product=product, category="size", item=s)
-                    variation.save()
-            except:
-                print("error")
+        if product_ref is not None :
+            product=Product.objects.get(id=product_ref)
+            for size in sizes:
+                s=Variation(product=product,category="size",item=size)
+                s.save()
+            for color in colors:
+                s=Variation(product=product,category="color",item=color)
+                s.save()
+            return redirect("index")        
+        else:
+            print("product_ref is NONE")
 
   #  print(request.data)
     return Response({"success": "true"})

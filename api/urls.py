@@ -14,6 +14,7 @@ urlpatterns = [
     path("add_product/", add_product),
     
     
+    
     path('', include(router.urls)),
    # path("machine/", MachineScheduleListAPIView.as_view(), name="MachineScheduleListAPIView")
 ]

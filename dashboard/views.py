@@ -1,9 +1,6 @@
 from django.shortcuts import render
 import json
-
-from pytest import Item
-
-from shopping.models import CategorySub, Customer, Order, OrderItem, Product, Variation
+from shopping.models import CategorySub, Customer, Order, OrderItem, Product, ProductImage, Variation
 from django.db.models import Avg, Count, Min, Sum
 from datetime import date, timedelta
 from django.core.serializers.json import DjangoJSONEncoder
@@ -26,7 +23,7 @@ def dashboard(request):
     num_promotors = Customer.objects.filter(is_receveur=True)
     # dashboard chart graphic
     chart_data = (
-        Order.objects.annotate(date=TruncDay("date_ordered"))
+        Order.objects.annotate(date=TruncMonth("date_ordered"))
         .values("date")
         .annotate(y=Count("id"))
         .order_by("-date")
@@ -63,6 +60,36 @@ def order_detail(request, pk):
 
 
 def add_product(request):
-    
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        price1 = float(request.POST['price1'])
+        price2 = float(request.POST['price2'])
+        category = request.POST['category']
+        quantity = int(request.POST['quantity'])
+        description = request.POST['description']
+        images=request.FILES.getlist("images")
+        image=request.FILES.get("image")
+        
+        #size = request.POST.get('size')
+        print(images)
+        category_id = CategorySub.objects.get(name=category)
+        
+        try:
+            product = Product(   name=name,
+                                  category=category_id,
+                                  price_achat=price1,
+                                  price=price2,
+                                  quantity=quantity,
+                                  description=description,
+                                  image=image)
+            product.save()
+            print("product_ref",product.id)  
+            request.session['product_ref'] = product.id
+            for i in images: 
+                p = ProductImage(product=product,image=i) 
+                p.save()
+                print("success")
+        except:
+            print("error")
     context = {"category": CategorySub.objects.all, "titel": "add product"}
     return render(request, 'dashboard/pages/add_product.html', context)

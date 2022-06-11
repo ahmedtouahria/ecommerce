@@ -309,7 +309,7 @@
   </div>
 </div>
 
-<div class="product-main container pt-5">
+<div class="product-main container py-5">
 
   <h2 class="title">New Products</h2>
 
@@ -318,15 +318,9 @@
     <div class="showcase">
 
       <div class="showcase-banner">
-        {% if product.image %}
+
         <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img default">
-        <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img default">
-       {% else %}
-        <img src="https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/a0a300da-2e16-4483-ba64-9815cf0598ac/chaussure-air-force-1-07-pour-lKPQ6q.png" alt="baby fabric shoes" width="75" height="75"
-                    class="showcase-img">
-        <img src="https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/a0a300da-2e16-4483-ba64-9815cf0598ac/chaussure-air-force-1-07-pour-lKPQ6q.png" alt="baby fabric shoes" width="75" height="75"
-                    class="showcase-img">
-                  {% endif %}
+        <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img hover">
 
         <p class="showcase-badge">15%</p>
 

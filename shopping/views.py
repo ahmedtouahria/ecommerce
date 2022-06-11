@@ -272,14 +272,20 @@ Profits page Logic
 
 @login_required(login_url='login')
 def profile(request):
-
-    return render(request, "pages/myprofile.html")
+    user=request.user
+    try:
+        money=Conversion.objects.get(receveur=user)
+    except Conversion.DoesNotExist:
+        money=0 
+    return render(request, "pages/myprofile.html",{"money":money,})
 @login_required(login_url='login')
 def profile_orders(request):
     user=request.user
     orders = Order.objects.filter(customer=user,complete=True).order_by('-date_ordered')
+  
     context={
         "orders":orders,
+        
     }
     return render(request,'pages/profile_orders.html',context)
 def myorders(request,pk):

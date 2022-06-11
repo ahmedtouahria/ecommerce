@@ -377,3 +377,8 @@ class Favorite(models.Model):
         # to insure the user favore product one time
         unique_together = (('customer', 'product'),)
         index_together = (('customer', 'product'),)
+class Conversion(models.Model):
+    receveur=models.ForeignKey(Customer,on_delete=models.CASCADE,related_name='converte')
+    money=models.FloatField()
+    
+    

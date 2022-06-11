@@ -149,7 +149,6 @@
       // update order whene user is authenticated
       function updateUserOrder(productId, action) {
         $.ajax({
-          async: false,
           type: "POST",
           beforeSend: function (request) {
             request.setRequestHeader("Content-Type", "application/json");

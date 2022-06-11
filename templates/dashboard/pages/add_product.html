@@ -1,8 +1,11 @@
-{% extends "dashboard/base.html" %} {% block content_dashboard %}
+{% extends "dashboard/base.html" %}
+ {% block content_dashboard %}
 <h3 class="mx-5 pt-3">Add product</h3>
 <div class="container-fluid pt-3">
-  <form id="form_add_product" method="post" enctype="multipart/form-data">
+  <form  method="post" enctype="multipart/form-data" id="form_add_product" >
     {% csrf_token %}
+    <div class="previews"></div>
+
     <input class="form-control mb-4" name="name" placeholder="Name" multiple />
     <select
       name="category"
@@ -45,6 +48,20 @@
             type="file"
             id="product_file"
             name="image"
+            class="upload__inputfile"
+          />
+        </label>
+      </div>
+      <div class="upload__img-wrap"></div>
+    </div>
+    <div class="upload__box">
+      <div class="upload__btn-box">
+        <label class="upload__btn">
+          <i class="fa fa-upload fs-5" aria-hidden="true"></i>
+          <input
+            type="file"
+            id="product_file"
+            name="images"
             multiple
             data-max_length="5"
             class="upload__inputfile"
@@ -53,47 +70,47 @@
       </div>
       <div class="upload__img-wrap"></div>
     </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="wrapper mb-4">
-          <div class="title">
-            <h2>Size</h2>
-          </div>
-          <div class="content">
-            <p>Press enter or add a comma after each tag</p>
-            <ul class="ul_tags">
-              <input type="text" spellcheck="false" />
-            </ul>
-          </div>
-          <div class="details">
-            <p><span>10</span> tags are remaining</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="wrapper mb-4">
-          <div class="title">
-            <h2>Color</h2>
-          </div>
-          <div class="content">
-            <p>Press enter or add a comma after each tag</p>
-            <ul class="ul_tags">
-              <input type="text" spellcheck="false" />
-            </ul>
-          </div>
-          <div class="details">
-            <p><span>10</span> tags are remaining</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    
+   
     <input
       class="btn btn-outline-success btn-sm w-25"
       type="submit"
       placeholder="add"
     />
   </form>
+  <div class="row">
+    <div class="col-12 col-md-6">
+      <div class="wrapper mb-4">
+        <div class="title">
+          <h2>Size & Color</h2>
+        </div>
+        <div class="content">
+          <p>Press enter or add a comma after each tag</p>
+          <label>sizes</label>
+
+          <ul class="ul_tags">
+            <input type="text" spellcheck="false" />
+          </ul>
+          <label>colors</label>
+
+          <ul class="ul_tags2">
+
+            <input type="text" spellcheck="false" />
+          </ul>
+        <div class="details">
+          <p><span>10</span> tags are remaining</p>
+        </div>
+        <div class="details2">
+          <p><span>10</span> tags are remaining</p>
+        </div>
+      </div>
+    </div>
+    <input
+    class="btn btn-outline-info btn-sm w-25"
+    placeholder="add"
+    id="color_send"
+  />
+  </div>
 </div>
 <script>
   function getToken(name) {
@@ -113,21 +130,31 @@
   }
   // and we assign to variable csrftoken for post secure data
   var csrftoken = getToken("csrftoken");
-  const ul = document.querySelector(".ul_tags"),
-    input = document.querySelector(".ul_tags input "),
-    tagNumb = document.querySelector(".details span");
+  /*
 
-  let maxTags = 10;
+ <------- SCRIPT TO ADD SIZE AND COLORS IN THE TAGS AND SEND THIS INTO SERVER --------->
+  
+  */
+  let ul = document.querySelector(".ul_tags"),
+        ul2 = document.querySelector(".ul_tags2"),
+        input = document.querySelector(".ul_tags input "),
+        tagNumb = document.querySelector(".details span");
+         input2 = document.querySelector(".ul_tags2 input "),
+         tagNumb2 = document.querySelector(".details2 span");
+
+  let maxTags = 5;
   var tags = ["X", "L"]; // array of item tags
+  var tags2 = ["black"]; // array of item tags
+
 
   countTags();
   createTag();
-
+  countTags2();
+  createTag2();
   function countTags() {
     input.focus();
     tagNumb.innerText = maxTags - tags.length;
   }
-
   function createTag() {
     ul.querySelectorAll("li").forEach((li) => li.remove());
     tags
@@ -145,6 +172,16 @@
     tags = [...tags.slice(0, index), ...tags.slice(index + 1)];
     element.parentElement.remove();
     countTags();
+    countTags2();
+
+  }
+  function remove2(element, tag) {
+    let index = tags2.indexOf(tag);
+    tags2 = [...tags2.slice(0, index), ...tags2.slice(index + 1)];
+    element.parentElement.remove();
+
+    countTags2();
+
   }
 
   function addTag(e) {
@@ -153,7 +190,7 @@
       if (tag.length > 0 && !tags.includes(tag)) {
         tag.split(",").forEach((tag) => {
           tags.push(tag);
-          console.log(tags);
+          console.log("sizes",tags);
 
           createTag();
         });
@@ -162,28 +199,65 @@
     }
   }
 
-  // ---- SEND REQUEST ---- ADD PRODUCT
-  const form = document.getElementById("form_add_product");
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
+
+
+  function countTags2() {
+    input2.focus();
+    tagNumb2.innerText = maxTags - tags2.length;
+  }
+  function createTag2() {
+    ul2.querySelectorAll("li").forEach((li) => li.remove());
+    tags2
+      .slice()
+      .reverse()
+      .forEach((tag) => {
+        let liTag = `<li>${tag} <i class="fa fa-remove" onclick="remove2(this, '${tag}')"></i></li>`;
+        ul2.insertAdjacentHTML("afterbegin", liTag);
+      });
+    countTags2();
+  }
+
+
+
+  function addTag2(e) {
+    if (e.which == 32) {
+      let tag = e.target.value.replace(/\s+/g, " ");
+      if (tag.length > 0 && !tags2.includes(tag)) {
+        tag.split(",").forEach((tag) => {
+          tags2.push(tag);
+          console.log("colors :",tags2);
+
+          createTag2();
+        });
+      }
+      e.target.value = "";
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // ---- SEND REQUEST ---- ADD VARIATION
+  const send = document.getElementById("color_send");
+  send.addEventListener("click", function (e) {
     addFormData();
   });
   function addFormData() {
-    const product_file = document.getElementById("product_file");
-    const formImageProduct = new FormData();
-    for (const file of product_file.files)
-      formImageProduct.append("image[]", file);
-
     data = {
-      name: form.name.value,
-      category: form.category.value,
-      price1: form.price1.value,
-      price2: form.price2.value,
-      quantity: form.quantity.value,
-      description: form.description.value,
-      size: tags,
-      // product_images:formImageProduct
+      sizes: tags,
+      colors:tags2,
     };
+ 
     fetch("/api/add_product/", {
       method: "POST",
       headers: {
@@ -192,12 +266,14 @@
       },
       body: JSON.stringify(data),
     }).then((res) => {
-      location.reload();
       console.log("Request complete! response:", res);
     });
   }
 
   input.addEventListener("keyup", addTag);
+  input2.addEventListener("keyup", addTag2);
+
+
   // send post request to add product
 </script>
 {% endblock content_dashboard %}
