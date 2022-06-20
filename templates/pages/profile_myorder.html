@@ -82,25 +82,64 @@
 </div>
 <div class="card mb-5 mt-0">
   <h4 class="p-2 text-info">Your order status</h4>
-
+{% if order.status == "Ordered" %}
   <div class="row ">
     <div class="col-12 col-md-12 ">
       <div class="row justify-content-between">
         <div class="order-tracking completed">
           <span class="is-complete"></span>
-          <p>Ordered<br><span>Mon, June 24</span></p>
+          <p>Ordered<br><span>{{order.date_ordered}}</span></p>
         </div>
-        <div class="order-tracking completed">
+        <div class="order-tracking ">
           <span class="is-complete"></span>
-          <p>Shipped<br><span>Tue, June 25</span></p>
+          <p>Shipped<br><span></span></p>
         </div>
         <div class="order-tracking">
           <span class="is-complete"></span>
-          <p>Delivered<br><span>Fri, June 28</span></p>
+          <p>Delivered<br><span></span></p>
         </div>
       </div>
     </div>
   </div>
+  {% elif order.status == "Shipped" %}
+  <div class="row ">
+    <div class="col-12 col-md-12 ">
+      <div class="row justify-content-between">
+        <div class="order-tracking completed">
+          <span class="is-complete"></span>
+          <p>Ordered<br><span>{{order.date_ordered}}</span></p>
+        </div>
+        <div class="order-tracking completed">
+          <span class="is-complete "></span>
+          <p>Shipped<br><span>{{order.date_ordered}}</span></p>
+        </div>
+        <div class="order-tracking">
+          <span class="is-complete"></span>
+          <p>Delivered<br><span></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% elif order.status == "Delivered" %}
+  <div class="row ">
+    <div class="col-12 col-md-12 ">
+      <div class="row justify-content-between">
+        <div class="order-tracking completed">
+          <span class="is-complete"></span>
+          <p>Ordered<br><span>{{order.date_ordered}}</span></p>
+        </div>
+        <div class="order-tracking completed">
+          <span class="is-complete "></span>
+          <p>Shipped<br><span>{{order.date_ordered}}</span></p>
+        </div>
+        <div class="order-tracking completed">
+          <span class="is-complete"></span>
+          <p>Delivered<br><span></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
 </div>
 <style>
 

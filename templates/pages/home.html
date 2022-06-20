@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-<section class="banner">
+<section class="banner my-3">
 
     <div class="container">
 
@@ -13,12 +13,12 @@
 
           <div class="banner-content">
 
-            <p class="banner-subtitle">Trending item</p>
+            <p class="banner-subtitle">{{img.category}}</p>
 
-            <h2 class="banner-title">Women's latest fashion sale</h2>
+            <h2 class="banner-title">{{img.titel}}</h2>
 
             <p class="banner-text">
-              starting at &dollar; <b>20</b>.00
+              Commence à partir de  <b>{{img.price}}</b> DA
             </p>
 
             <a href="{% url 'products' %}" class="banner-btn">Shop now</a>

@@ -19,12 +19,14 @@
     <!-- meta character set -->
     <meta charset="UTF-8" />
     <!-- Site Title -->
-    <title>Ahmed Shop</title>
+    <title>Ahmed Shop | {{titel}}</title>
     <!--===============================CSS============================================= -->
     <link
       rel="stylesheet"
       href="https://unpkg.com/swiper/swiper-bundle.min.css"
     />
+    <link rel="stylesheet" href="{% static 'css/new_style.css'%}" />
+
     <link rel="stylesheet" href="{% static 'css/linearicons.css'%}" />
     <link rel="stylesheet" href="{% static 'css/font-awesome.min.css'%}" />
     <link rel="stylesheet" href="{% static 'css/themify-icons.css'%}" />
@@ -57,7 +59,7 @@
     <!--===================gmaps Js==============================-->
     <script src="{% static 'js/gmaps.min.js'%}"></script>
     <script src="{% static 'js/main.js'%}"></script>
-    <script src="{% static 'js/cart.js'%}"></script>
+{% comment %}     <script src="{% static 'js/script.js'%}"></script> {% endcomment %}
 
     <script type="text/javascript">
       var code_url =
@@ -65,7 +67,8 @@
       var total = "{{order.get_cart_total}}";
       var user = "{{request.user}}";
       var user_id = "{{request.user.id}}";
-
+     var name = "{{request.user.name}}";
+    var  phone = "{{request.user.phone}}";
       // Function to get TOKENT
       function getToken(name) {
         var cookieValue = null;
@@ -102,10 +105,26 @@
             return decodeURIComponent(cookiePair[1]);
           }
         }
-
         // Return null if not found
         return null;
       }
+      var cart = JSON.parse(getCookie("cart"));
+if (cart == undefined) {
+  cart = {};
+  console.log("Cart Created!", cart);
+  document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
+}
+function getCartItem() {
+  $.ajax({
+    url: "/api/cartitemApi/",
+    type: "GET",
+    success: function (res) {
+      console.log(res.cartItem);
+      $(".cartItem").html(res.cartItem);
+    },
+  });
+}
+console.log("Cart:", cart);
       // object cart (container shopping bug user GUEST)
       var cart = JSON.parse(getCookie("cart"));
       if (cart == undefined) {
@@ -123,11 +142,10 @@
           },
         });
       }
-
       console.log("Cart:", cart);
       // simple code to hundler update cart whene user chose a product
-      var updateBtns = document.getElementsByClassName("update-cart");
-      for (i = 0; i < updateBtns.length; i++) {
+     // var updateBtns = document.getElementsByClassName("update-cart");
+    /*  for (i = 0; i < updateBtns.length; i++) {
         updateBtns[i].addEventListener("click", function () {
           var productId = this.dataset.product;
           var action = this.dataset.action;
@@ -145,9 +163,9 @@
             console.log("user is logged in");
           }
         });
-      }
+      }*/
       // update order whene user is authenticated
-      function updateUserOrder(productId, action) {
+    /*  function updateUserOrder(productId, action) {
         $.ajax({
           type: "POST",
           beforeSend: function (request) {
@@ -174,7 +192,6 @@
             cart[productId]["quantity"] += 1;
           }
         }
-
         if (action == "remove") {
           cart[productId]["quantity"] -= 1;
 
@@ -186,13 +203,13 @@
         console.log("CART:", cart);
         document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
         getCartItem();
-      }
+      }*/
       // hundel checkout and order
-      var form = document.getElementById("form");
+     /* var form = document.getElementById("form");
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         submitFormData();
-      });
+      });*/
       function submitFormData() {
         console.log("submite button clicked");
         var userFormData = {
@@ -391,7 +408,7 @@
         /* ----- end script to meal rating-------*/
 
         //---------------script to copy in clipboard with web Api---------------//
-	const shareBtn=document.getElementById('copy');
+/*	const shareBtn=document.getElementById('copy');
 	const title="title";
 	const url=code_url;
 	//const ogBtnContent = shareBtn.textContent;
@@ -416,7 +433,7 @@
 			setTimeout(() => {
 			  element.textContent = '';
 			}, 2000);
-		  }
+		  }*/
         ///////////////////////--Scripts to hundel requests (search product , filter data ) --///////////////////////////////////////////
  
         //--- script realtime filter ----//
@@ -710,63 +727,7 @@
 			});
 		  });
     </script>
-	<script type="text/javascript">
-	var wilaya_select=document.getElementsByClassName("wilaya");
-	var commun_select=document.getElementById("commun");
-	
-			//wilaya_select[i].innerHTML='';
-	            $.ajax({
-					url: "/getwilaya",
-					type: 'GET',
-					dataType: 'json', // added data type
-					success: function(data) {
-						arr=[];
-						data.forEach(element=>{
-						//console.log(element.name);
-						for(var i=0;i<wilaya_select.length;i++){
-						wilaya_select[i].innerHTML+=`<option name="state" value="${element.name}">${element.id} ${element.name}</option>`;
-					}
-						})
-	
-					}
-				});
-	wilaya_select[0].onchange=function(e){
-					console.log(e.target.value);
-					commun_select.innerHTML='';
-					var current_wilaya=e.target.value;
-					//display related communs 
-		  		$.ajax({
-					url: "/api/getcommunstrus/",
-					type: 'GET',
-					dataType: 'json', // added data type
-					success: function(data) {
-						data['communs'].forEach(element=>{
-						if(element.wilaya_name==current_wilaya){
-							commun_select.innerHTML+=
-						  `<option name="commun" value="${element.name}">${element.name}</option>`;}
-						})
-	
-					},
-				});
-				var shipping = document.getElementById('shipping')
-				// and display deliveryfees
-				$.ajax({
-					url: "/api/getcommunstrus/",
-					type: 'GET',
-					dataType: 'json', // added data type
-					success: function(data) {
-						data['deliveryfees'].forEach(element=>{
-						if(element.wilaya_name==current_wilaya){
-							shipping.innerHTML=`${element.desk_fee}`;
-						}
-						})
-	
-					},
-				});
-			};
-		
-	
-	</script>
+
 	<script>
 	 var dropdown_panel = document.getElementById("dropdown_panel");
   //   var category_name = document.querySelector(".main-categories .main-nav-list .category_name");

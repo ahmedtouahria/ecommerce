@@ -7,12 +7,15 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from shopping.models import *
 from django.contrib import messages
+from django.core.paginator import  Paginator
 # Create your views here.
 ''' Nous avons deux cas ici
 1/ Lorsque le client est enregistré ==>  if request.user.is_authenticated:...
 2/ Lorsqu'il n'est pas inscrit ===> else:...
 
 '''
+
+
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -22,6 +25,8 @@ def get_client_ip(request):
     return ip
 
 # This function hundel all data about guest user help COOKIES and js
+
+
 def cookieCart(request):
 
     # Create empty cart for now for non-logged in user
@@ -39,50 +44,62 @@ def cookieCart(request):
             product = Product.objects.get(id=i)
             total = (product.price*cart[i]['quantity'])
             order['get_cart_total'] += total
-
-            item = {
-                'id': product.id,
-                'product': {'id': product.id, 'name': product.name, 'price': product.price,
-                            'image': product.image}, 'quantity': cart[i]['quantity'],
-                'get_total': total,
-            }
+            try:
+                item = {
+                    'id': product.id,
+                    'product': {'id': product.id, 'name': product.name, 'price': product.price,
+                                'image': product.image}, 'quantity': cart[i]['quantity'], 'color': cart[i]["color"], 'size': cart[i]["size"],
+                    'get_total': total,
+                }
+            except:
+                item = {
+                    'id': product.id,
+                    'product': {'id': product.id, 'name': product.name, 'price': product.price,
+                                'image': product.image}, 'quantity': cart[i]['quantity'],
+                    'get_total': total,
+                }
             items.append(item)
+
         except Product.DoesNotExist:
             print("Product.DoesNotExist")
-
     return {'cartItem': cartItem, 'order': order, 'items': items}
 
 
 def guestOrder(request, data):
     name = data['form']['name']
     phone = data['form']['phone']
-
     cookieData = cookieCart(request)
     items = cookieData['items']
-
-    customer, created = Customer.objects.get_or_create(
-            phone=phone,
-        )
-    customer.name=name
+    print("items", items)
+    customer, created = Customer.objects.get_or_create(phone=phone, )
+    customer.name = name
     customer.save()
     order = Order.objects.create(
-            customer=customer,
-            complete=False,
-        )
+        customer=customer,
+        complete=False,
+    )
 
     for item in items:
-            product = Product.objects.get(id=item['id'])
-            orderItem = OrderItem.objects.create(
+        print("item", item)
+        product = Product.objects.filter(id=item['id']).first()
+        try:
+            OrderItem.objects.create(
                 product=product,
                 order=order,
-                # negative quantity = freebies
-                quantity=(item['quantity'] if item['quantity']
-                          > 0 else -1*item['quantity']),
+                quantity=item['quantity'],
+                color=item['color'],
+                size=item['size']
             )
-            return customer, order
-
-
-    return None, None
+        except :
+            OrderItem.objects.create(
+                product=product,
+                order=order,
+                quantity=item['quantity'],
+            )
+    try:
+        return customer, order
+    except:
+        return None, None
 
 
 def index(request):
@@ -100,14 +117,16 @@ def index(request):
         order = cookieData['order']
         cartItem = cookieData['cartItem']
     context = {
-        "new_arrival":Product.objects.all(),
-        "category_sub":CategorySub.objects.all(),
-        "category":Category.objects.all(),
-        "imgs_banner":ImageBanner.objects.all()[:3],
+        "new_arrival": Product.objects.all()[:5],
+        "category_sub": CategorySub.objects.all(),
+        "category": Category.objects.all(),
+        "imgs_banner": ImageBanner.objects.all()[:3],
         "products": Product.objects.all()[:12],
         "items": items,
         "order": order,
-        "cartItem": cartItem
+        "cartItem": cartItem,
+        "titel": "Accueil",
+
     }
     return render(request, 'pages/home.html', context)
 # products views
@@ -128,11 +147,21 @@ def products(request):
         items = cookieData['items']
         order = cookieData['order']
         cartItem = cookieData['cartItem']
+    products = Product.objects.all()
+    paginator = Paginator(products,6)
+    page_number=request.GET.get("page",1)
+    page_products_display=paginator.get_page(page_number)
+    print("page number ",page_number)
     context = {
-        "products": Product.objects.all(),
-        "categorys":Category.objects.all(),
+        "products": page_products_display,
+        "categorys": Category.objects.all(),
         "order": order,
-        "cartItem": cartItem
+        "cartItem": cartItem,
+        "paginator":paginator,
+        "page_number":page_number,
+         "titel": "produits",
+
+
     }
     return render(request, 'pages/products.html', context)
 
@@ -141,7 +170,7 @@ def products(request):
 
 def product(request, pk):
     # print("customer_ref",request.session['ref_customer'])
-    
+
     if request.user.is_authenticated:
         customer = request.user
         order, created = Order.objects.get_or_create(
@@ -154,18 +183,21 @@ def product(request, pk):
         items = cookieData['items']
         order = cookieData['order']
         cartItem = cookieData['cartItem']
-    try:    
-        product_id=Product.objects.get(id=pk) 
+    try:
+        product_id = Product.objects.get(id=pk)
     except Product.DoesNotExist:
-        product_id=None
-        return redirect('products')       
+        product_id = None
+        return redirect('products')
     context = {
         "products": Product.objects.filter(category=product_id.category),
-        "ratings":Rating.objects.filter(product=product_id),
-        "stars":product_id.avg_rating,
+        "ratings": Rating.objects.filter(product=product_id),
+        "stars": product_id.avg_rating,
         "product": product_id,
         "order": order,
-        "cartItem": cartItem
+        "cartItem": cartItem,
+        "product_imgs":ProductImage.objects.filter(product=product_id),
+        "titel": str(product_id.name).replace(" ", "-").lower(),
+
     }
     return render(request, 'pages/single-product.html', context)
 # register Customer views
@@ -173,15 +205,15 @@ def product(request, pk):
 
 def productWithCode(request, pk, *args, **kwargs):
     code = str(kwargs.get('ref_code'))
-    print("ip",get_client_ip(request))
-    request.session['client_ip']=[]
+    print("ip", get_client_ip(request))
+    request.session['client_ip'] = []
    # client_ip=get_client_ip(request)
     try:
         customer = Customer.objects.get(code=code)
-        request.session['ref_customer'] = customer.id  
-           
-        #request.session['client_ip'] = get_client_ip(request)  
-        #print("customer_ref", request.session['ref_customer'])
+        request.session['ref_customer'] = customer.id
+
+        # request.session['client_ip'] = get_client_ip(request)
+        # print("customer_ref", request.session['ref_customer'])
     except:
         request.session['ref_customer'] = None
         print("customer_ref", request.session['ref_customer'])
@@ -202,17 +234,20 @@ def productWithCode(request, pk, *args, **kwargs):
     context = {
         "product": Product.objects.get(id=pk),
         "order": order,
-        "cartItem": cartItem
+        "cartItem": cartItem,
     }
     return render(request, 'pages/single-product.html', context)
+
 
 ''' AUTHENTICATION LOGIC
 LogIn / SignUp / Logout
 '''
 # la page d'inscription
+
+
 def register(request):
     if request.user.is_authenticated:
-        return redirect('index')    
+        return redirect('index')
     if request.method == "POST":
         name = request.POST['username']
         phone = request.POST['phone']
@@ -244,12 +279,13 @@ def login_customer(request):
         password = request.POST['password']
         if len(phone) == 10 and len(password) > 8:
             user = authenticate(phone=phone, password=password)
-            
+
             if user is not None:
                 login(request, user)
                 if user.admin:
                     return redirect('/admin/')
-                messages.info(request, f"You are now logged in as {user.name}.")
+                messages.info(
+                    request, f"You are now logged in as {user.name}.")
                 return redirect('index')
             else:
                 messages.error(request, "Invalid username or password.")
@@ -264,38 +300,49 @@ def logout_request(request):
     messages.info(request, "You have successfully logged out.")
     return redirect("index")
 
-''' 
+
+'''
 -------------------
-Profits page Logic  
+Profits page Logic
 -------------------
 '''
 
+
 @login_required(login_url='login')
 def profile(request):
-    user=request.user
+    user = request.user
     try:
-        money=Conversion.objects.get(receveur=user)
+        money = Conversion.objects.get(receveur=user)
     except Conversion.DoesNotExist:
-        money=0 
-    return render(request, "pages/myprofile.html",{"money":money,})
+        money = 0
+    return render(request, "pages/myprofile.html", {"money": money, "titel": "profile"})
+
+
 @login_required(login_url='login')
 def profile_orders(request):
-    user=request.user
-    orders = Order.objects.filter(customer=user,complete=True).order_by('-date_ordered')
-  
-    context={
-        "orders":orders,
-        
+    user = request.user
+    orders = Order.objects.filter(
+        customer=user, complete=True).order_by('-date_ordered')
+
+    context = {
+        "orders": orders,
+        "titel": "Mes commandes"
+
+
     }
-    return render(request,'pages/profile_orders.html',context)
-def myorders(request,pk):
-    order= Order.objects.get(id=pk)
-    order_items=OrderItem.objects.filter(order=order)
-    context={
-        "order":order,
-        "order_items":order_items
+    return render(request, 'pages/profile_orders.html', context)
+
+
+def myorders(request, pk):
+    order = Order.objects.filter(id=pk).first()
+    order_items = OrderItem.objects.filter(order=order)
+    context = {
+        "order": order,
+        "order_items": order_items,
+        "titel": "Mes commandes"
+
     }
-    return render(request,'pages/profile_myorder.html',context)
+    return render(request, 'pages/profile_myorder.html', context)
 
 
 # card product views
@@ -308,7 +355,7 @@ def card(request):
             customer=customer, complete=False)
         items = order.orderitem_set.all()
         cartItem = order.get_cart_items
-        #print(items)
+        # print(items)
     else:
         cookieData = cookieCart(request)
         items = cookieData['items']
@@ -318,7 +365,9 @@ def card(request):
     context = {
         "items": items,
         "order": order,
-        "cartItem": cartItem
+        "cartItem": cartItem,
+        "titel": "panier"
+
     }
     return render(request, 'pages/card.html', context)
 # checkout order views
@@ -343,7 +392,8 @@ def checkout(request):
     context = {
         "items": items,
         "order": order,
-        "cartItem": cartItem
+        "cartItem": cartItem,
+        "titel": "vérifier"
     }
     return render(request, 'pages/checkout.html', context)
 
@@ -357,39 +407,45 @@ def updateItem(request):
         customer=customer, complete=False)
     # load json request from user
     data = json.loads(request.body)
-    # get required data from json  "productId" & "action user (add,remove)"
-    productId = data['productId']
-    action = data['action']
-    print('Action:', action)
-    print('Product:', productId)
-    # remove any duplicate from OrderItem
-    order_items = OrderItem.objects.all().reverse()
-    for row in order_items:
-        # used COMPLEXED QUERYSET Called => Q in django
-        if OrderItem.objects.filter(Q(product=row.product) & Q(order=row.order)).count() > 1:
-            print("remove duplicate orderItem")
-            row.delete()
+    if "productColor" in data:
+        productColor = data['productColor']
+        productSize = data['productSize']
+        productId = data['productId']
+        action = data['action']
+        product = Product.objects.filter(id=productId).first()
+        order, created = Order.objects.get_or_create(
+            customer=customer, complete=False)
+        orderItem, created = OrderItem.objects.get_or_create(
+            order=order, product=product, color=productColor, size=productSize)
+        if action == 'add':
+            orderItem.quantity = (orderItem.quantity + 1)
+        elif action == 'remove':
+            orderItem.quantity = (orderItem.quantity - 1)
 
-    try:
-        product = Product.objects.get(id=productId)
-    except Product.DoesNotExist:
-        product = None
+        orderItem.save()
 
-    order, created = Order.objects.get_or_create(
-        customer=customer, complete=False)
+        if orderItem.quantity <= 0:
+            orderItem.delete()
+    else:
+        # get required data from json  "productId" & "action user (add,remove)"
+        productId = data['productId']
+        action = data['action']
+        print('Action:', action)
+        print('Product:', productId)
+        product = Product.objects.filter(id=productId).first()
+        order, created = Order.objects.get_or_create(
+            customer=customer, complete=False)
+        orderItem, created = OrderItem.objects.get_or_create(
+            order=order, product=product)
+        if action == 'add':
+            orderItem.quantity = (orderItem.quantity + 1)
+        elif action == 'remove':
+            orderItem.quantity = (orderItem.quantity - 1)
 
-    orderItem, created = OrderItem.objects.get_or_create(
-        order=order, product=product)
+        orderItem.save()
 
-    if action == 'add':
-        orderItem.quantity = (orderItem.quantity + 1)
-    elif action == 'remove':
-        orderItem.quantity = (orderItem.quantity - 1)
-
-    orderItem.save()
-
-    if orderItem.quantity <= 0:
-        orderItem.delete()
+        if orderItem.quantity <= 0:
+            orderItem.delete()
 
     return JsonResponse('Item was added', safe=False)
 
@@ -416,12 +472,12 @@ def processOrder(request):
         order.recommended_by = user_recommended
         order.save()
         user_recommended.point += 1
-        user_recommended.number_of_referalls+=1
-        user_recommended.is_receveur=True
+        user_recommended.number_of_referalls += 1
+        user_recommended.is_receveur = True
         user_recommended.save()
     if customer is not None:
         total = float(data['form']['total'])
-        print("total", total,"order.get_cart_total ",order.get_cart_total )
+        print("total", total, "order.get_cart_total ", order.get_cart_total)
         if total > 0:
             order.complete = True
             order.save()
@@ -437,4 +493,3 @@ def processOrder(request):
     else:
         redirect("login")
     return JsonResponse('Payment submitted..', safe=False)
-

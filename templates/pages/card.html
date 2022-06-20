@@ -1,19 +1,19 @@
 {% extends 'base.html' %} {% block content %}
 
-<section class="cart_area ">
+<section class="cart_area">
   <div class="container">
-    <hr>
+    <hr />
 
-    <h2 class="pb-4">Your Order</h2>
+    <h2 class="pb-4">Votre commande</h2>
     <div class="cart_inner">
       <div class="table-responsive">
         <table class="table">
           <thead>
             <tr>
-              <th scope="col">Product</th>
-              <th scope="col">Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Total</th>
+              <th scope="col">Produit</th>
+              <th scope="col">Prix</th>
+              <th scope="col">Quantité</th>
+              <th scope="col">Totale</th>
             </tr>
           </thead>
           <tbody>
@@ -23,12 +23,15 @@
               <td>
                 <div class="media">
                   <div class="media-body">
-                    <p>{{item.product.name}}</p>
+                    <p>
+                      {{item.product.name}} - {% if item.color %} {{item.color}}
+                      - {{item.size}} {% endif %}
+                    </p>
                   </div>
                 </div>
               </td>
               <td>
-                <h5>${{item.product.price}}</h5>
+                <h5>{{item.product.price}}DA</h5>
               </td>
               <td>
                 <div class="product_count">
@@ -59,37 +62,34 @@
                 </div>
               </td>
               <td>
-                <h5>${{item.get_total}}</h5>
+                <strong class="text-info">{{item.get_total}}DA</strong>
               </td>
             </tr>
             {% endfor %}
-            <tr class="bottom_button">
-              <td>
-                <a class="gray_btn" href="{% url 'card' %}">Update</a>
-              </td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
             <tr>
-              <td></td>
+              <td>
+
+                <h5>Total</h5>
+
+              </td>
               <td></td>
               <td>
-                <h5>Subtotal</h5>
               </td>
               <td>
-                <h5>${{order.get_cart_total}}</h5>
+                <strong class="text-info">{{order.get_cart_total}}DA</strong>
               </td>
             </tr>
-           
+
             <tr class="out_button_area">
               <td></td>
               <td></td>
               <td></td>
               <td>
                 <div class="checkout_btn_inner d-flex align-items-center">
-                  <a class="gray_btn" href="{% url 'products' %}"> Shopping</a>
-                  <a class="primary-btn" href="{% url 'checkout' %}">Proceed to checkout</a>
+                  <a class="gray_btn" href="{% url 'products' %}"> Achats</a>
+                  <a class="primary-btn" href="{% url 'checkout' %}"
+                    >Passer à la caisse</a
+                  >
                 </div>
               </td>
             </tr>

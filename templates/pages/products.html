@@ -125,8 +125,8 @@
                   </div>
 
                   <div class="price-box">
-                    <del>${{product.price}}</del>
-                    <p class="price">${{product.price}}</p>
+                    <del>{{product.price}}DA</del>
+                    <p class="price">{{product.price}} DA</p>
                   </div>
 
                 </div>
@@ -266,8 +266,8 @@
                 </div>
         
                 <div class="price-box">
-                  <p class="price">${{product.price}}</p>
-                  <del>${{product.price}}</del>
+                  <p class="price">{{product.price}}DA</p>
+                  <del>{{product.price}}DA</del>
                 </div>
         
               </div>
@@ -292,13 +292,10 @@
           <a href="#" class="prev-arrow"
             ><i class="fa fa-long-arrow-left" aria-hidden="true"></i
           ></a>
-          <a href="#" class="active">1</a>
-          <a href="#">2</a>
-          <a href="#">3</a>
-          <a href="#" class="dot-dot"
-            ><i class="fa fa-ellipsis-h" aria-hidden="true"></i
-          ></a>
-          <a href="#">6</a>
+          {% for i in paginator.page_range  %}
+          
+          <a href="?page={{i}}" class=" {% if i == page_number  %} active {% endif %}  mx-1 ">{{i}}</a>
+          {% endfor %}
           <a href="#" class="next-arrow"
             ><i class="fa fa-long-arrow-right" aria-hidden="true"></i
           ></a>

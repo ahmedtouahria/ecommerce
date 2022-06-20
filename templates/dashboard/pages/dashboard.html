@@ -10,7 +10,7 @@
             <div class="row">
               <div class="col-8">
                 <div class="numbers">
-                  <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Money</p>
+                  <p class="text-sm mb-0 text-capitalize font-weight-bold">L'argent d'aujourd'hui</p>
                   <h5 class="font-weight-bolder mb-0">
                     {{today_mony.total_price}} DA
                     <span class="text-success text-sm font-weight-bolder">+55%</span>
@@ -32,7 +32,7 @@
             <div class="row">
               <div class="col-8">
                 <div class="numbers">
-                  <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Profits</p>
+                  <p class="text-sm mb-0 text-capitalize font-weight-bold">Les bénéfices 24h</p>
                   <h5 class="font-weight-bolder mb-0">
                     {{today_profit.total_price}} DA
                     <span class="text-success text-sm font-weight-bolder">+3%</span>
@@ -54,7 +54,7 @@
             <div class="row">
               <div class="col-8">
                 <div class="numbers">
-                  <p class="text-sm mb-0 text-capitalize font-weight-bold">New Orders</p>
+                  <p class="text-sm mb-0 text-capitalize font-weight-bold">Nouvelles commandes</p>
                   <h5 class="font-weight-bolder mb-0">
                     +{{new_order}}
                     <span class="text-danger text-sm font-weight-bolder">-2%</span>
@@ -76,7 +76,7 @@
             <div class="row">
               <div class="col-8">
                 <div class="numbers">
-                  <p class="text-sm mb-0 text-capitalize font-weight-bold">New Clients</p>
+                  <p class="text-sm mb-0 text-capitalize font-weight-bold">Nouveaux clients</p>
                   <h5 class="font-weight-bolder mb-0">
                     {{new_clients}}
                     <span class="text-success text-sm font-weight-bolder">+5%</span>
@@ -103,7 +103,7 @@
                 <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
               </div>
             </div>
-            <h6 class="ms-2 mt-4 mb-0"> Active Users </h6>
+            <h6 class="ms-2 mt-4 mb-0"> Utilisateurs actifs </h6>
             <p class="text-sm ms-2"> (<span class="font-weight-bolder">+23%</span>) than last week </p>
             <div class="container border-radius-lg">
               <div class="row">
@@ -174,7 +174,7 @@
                         </g>
                       </svg>
                     </div>
-                    <p class="text-xs mt-1 mb-0 font-weight-bold">Orders</p>
+                    <p class="text-xs mt-1 mb-0 font-weight-bold">Ordres</p>
                   </div>
                   <h4 class="font-weight-bolder">{{num_orders}}</h4>
                   <div class="progress w-75">
@@ -199,7 +199,7 @@
                         </g>
                       </svg>
                     </div>
-                    <p class="text-xs mt-1 mb-0 font-weight-bold">Products</p>
+                    <p class="text-xs mt-1 mb-0 font-weight-bold">Des produits</p>
                   </div>
                   <h4 class="font-weight-bolder">{{num_products}}</h4>
                   <div class="progress w-75">
@@ -214,7 +214,7 @@
       <div class="col-lg-7">
         <div class="card z-index-2">
           <div class="card-header pb-0">
-            <h6>Sales overview</h6>
+            <h6>Aperçu des ventes</h6>
             <p class="text-sm">
               <i class="fa fa-arrow-up text-success"></i>
               <span class="font-weight-bold">4% more</span> in 2021
@@ -234,10 +234,10 @@
           <div class="card-header pb-0">
             <div class="row">
               <div class="col-lg-6 col-7">
-                <h6>Partners (المروجين)</h6>
+                <h6>Les partenaires (المروجين)</h6>
                 <p class="text-sm mb-0">
                   <i class="fa fa-check text-info" aria-hidden="true"></i>
-                  <span class="font-weight-bold ms-1">30 done</span> this month
+                  <span class="font-weight-bold ms-1">30 finie</span> ce mois-ci
                 </p>
               </div>
               <div class="col-lg-6 col-5 my-auto text-end">
@@ -391,9 +391,9 @@
       new Chart(ctx, {
         type: "bar",
         data: {
-          labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+          labels: ["Jun", "May", "Avr", "Jul", "Nov", "Oct", "Sep", "Aout", "Jul"],
           datasets: [{
-            label: "Order",
+            label: "commandes",
             tension: 0.4,
             borderWidth: 0,
             borderRadius: 4,

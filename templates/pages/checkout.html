@@ -1,4 +1,7 @@
-{% extends "base.html" %} {% block content %}
+
+{% extends "base.html" %}
+{% load static %}
+ {% block content %}
 <section class="checkout_area section_gap">
   <div class="container">
     {% if messages %}
@@ -9,7 +12,7 @@
 <section class="filters">
   <ul class="filters-content">
     <button class="filters__button is-active" data-target="#desk">
-     Stop desk
+     Stop bureau
     </button>
     <button class="filters__button" data-target="#home">
       a maison
@@ -20,8 +23,8 @@
     <div data-content class="is-active" id="desk">
       <div class="billing_details pt-5">
         <div class="row">
-          <div class="col-lg-8">
-            <h3>Billing Details</h3>
+          <div class="col-lg-7">
+            <h3>Détails de la facturation</h3>
             <form id="form" class="row contact_form" method="post">
               {% csrf_token %}
               {% if not user.is_authenticated %}
@@ -31,7 +34,7 @@
                   type="text"
                   class="form-control"
                   id="first"
-                  placeholder="First Name"
+                  placeholder="Prénom"
                   name="name"
                 />
               </div> 
@@ -39,7 +42,7 @@
                 <div class="col-md-6 form-group p_star">
                 <input
                   class="form-control"
-                  placeholder="Phone Number"
+                  placeholder="Numéro de téléphone"
                   type="tel"
                   id="phone"
                   name="phone"
@@ -63,7 +66,7 @@
                   type="text"
                   class="form-control"
                   id="city"
-                  placeholder="city"
+                  placeholder="ville"
                   name="city"
                   required
                 />
@@ -75,7 +78,7 @@
                   class="form-control"
                   id="zip"
                   name="zipcode"
-                  placeholder="Postcode/ZIP"
+                  placeholder="Code Postal"
                 />
               </div>
               <div class="col-md-12 form-group p_star">
@@ -84,7 +87,7 @@
                   type="text"
                   class="form-control"
                   id="address"
-                  placeholder="Address"
+                  placeholder="Adresse"
                   name="address"
                 />
               </div>
@@ -92,15 +95,15 @@
                 {% if not user.is_authenticated %}
                 <div class="creat_account">
                   <input type="checkbox" id="f-option2" name="selector" />
-                  <label for="f-option2">Create an account?</label>
+                  <label for="f-option2">Créer un compte?</label>
                 </div>
                 {% endif %}
               </div>
              
               <div  class="col-md-12" class="creat_account">
                 <input type="checkbox" id="f-option4" name="selector" />
-                <label for="f-option4">I’ve read and accept the </label>
-                <a href="#">terms & conditions*</a>
+                <label for="f-option4">J'ai lu et accepté le </label>
+                <a href="#">termes et conditions*</a>
               </div>
               <div 
               class="col-md-12"
@@ -115,57 +118,34 @@
               </div>
             </form>
           </div>
-          <div class="col-lg-4">
+          <div class="col-lg-5">
             <div class="order_box">
-              <h2>Your Order</h2>
+              <h2>Votre commande</h2>
               <ul class="list">
                 <li>
-                  <a href="#">Product <span>Total</span></a>
+                  <a href="#">Produit <span>Totale</span></a>
                 </li>
                 {% for item in items %}
                 <li>
                   <a href="{% url 'single-product' item.product.id  %}"
-                    >{{item.product.name}}<span class="middle"
-                      >x{{item.quantity}}</span
-                    >
-                    <span class="last">${{item.product.price}}</span></a
+                    >{{item.product.name}} <strong class="mx-2 text-info">(x{{item.quantity}})</strong> 
+                    <span class="last">{{item.get_total}}DA</span></a
                   >
                 </li>
                 {% endfor %}
               </ul>
               <ul class="list list_2">
                 <li>
-                  <a href="#">Subtotal <span>${{order.get_cart_total}}</span></a>
+                  <a href="#">Total <span>{{order.get_cart_total}}DA</span></a>
                 </li>
                 <li>
-                  <a href="#" >Shipping <span id='shipping'></span></a>
+                  <a href="#" >expédition <span id='shipping'></span></a>
                 </li>
                 <li>
-                  <a href="#">Total <span>${{order.get_cart_total}}</span></a>
+                  <a href="#">Total avec expédition<span>{{order.get_cart_total}}DA</span></a>
                 </li>
               </ul>
-              <div class="payment_item">
-                <div class="radion_btn">
-                  <input type="radio" id="f-option5" name="selector" />
-                  <label for="f-option5">Check payments</label>
-                  <div class="check"></div>
-                </div>
-                <p>
-                  Please send a check to Store Name, Store Street, Store Town,
-                  Store State / County, Store Postcode.
-                </p>
-              </div>
-              <div class="payment_item active">
-                <div class="radion_btn">
-                  <input type="radio" id="f-option6" name="selector" />
-                  <label for="f-option6">Paypal </label>
-                  <div class="check"></div>
-                </div>
-                <p>
-                  Pay via PayPal; you can pay with your credit card if you don’t
-                  have a PayPal account.
-                </p>
-              </div>
+ 
               <div class="creat_account">
                 <input type="checkbox" id="f-option4" name="selector" />
                 <label for="f-option4">I’ve read and accept the </label>
@@ -181,8 +161,8 @@
     <div data-content id="home">
       <div class="billing_details pt-5">
         <div class="row">
-          <div class="col-lg-8">
-            <h3>Billing Details</h3>
+          <div class="col-lg-7">
+            <h3>Détails de la facturation</h3>
             <form id="form" class="row contact_form" method="post">
               {% csrf_token %}
               {% if not user.is_authenticated %}
@@ -192,7 +172,7 @@
                   type="text"
                   class="form-control"
                   id="first"
-                  placeholder="First Name"
+                  placeholder="Prénom"
                   name="name"
                 />
               </div> 
@@ -200,7 +180,7 @@
                 <div class="col-md-6 form-group p_star">
                 <input
                   class="form-control"
-                  placeholder="Phone Number"
+                  placeholder="Numéro de téléphone"
                   type="tel"
                   id="phone"
                   name="phone"
@@ -210,12 +190,12 @@
               </div>
               {% endif %}
               <div class="col-md-6 form-group p_star">
-                <select class="custom-select w-75 wilaya" id="wilaya">
+                <select class="custom-select w-75 wilaya" name="wilaya" id="wilaya">
                 </select>
               </div>
               
               <div class="col-md-6 form-group p_star">
-                <select class="custom-select w-75" id="commun">
+                <select class="custom-select w-75" name="commun" id="commun">
                 </select>
               </div>
               
@@ -224,7 +204,7 @@
                   type="text"
                   class="form-control"
                   id="city"
-                  placeholder="city"
+                  placeholder="ville"
                   name="city"
                   required
                 />
@@ -236,7 +216,7 @@
                   class="form-control"
                   id="zip"
                   name="zipcode"
-                  placeholder="Postcode/ZIP"
+                  placeholder="Code Postal"
                 />
               </div>
               <div class="col-md-12 form-group p_star">
@@ -245,7 +225,7 @@
                   type="text"
                   class="form-control"
                   id="address"
-                  placeholder="Address"
+                  placeholder="Adresse"
                   name="address"
                 />
               </div>
@@ -253,15 +233,15 @@
                 {% if not user.is_authenticated %}
                 <div class="creat_account">
                   <input type="checkbox" id="f-option2" name="selector" />
-                  <label for="f-option2">Create an account?</label>
+                  <label for="f-option2">Créer un compte?</label>
                 </div>
                 {% endif %}
               </div>
              
               <div  class="col-md-12" class="creat_account">
                 <input type="checkbox" id="f-option4" name="selector" />
-                <label for="f-option4">I’ve read and accept the </label>
-                <a href="#">terms & conditions*</a>
+                <label for="f-option4">J'ai lu et accepté le </label>
+                <a href="#">termes et conditions*</a>
               </div>
               <div 
               class="col-md-12"
@@ -276,57 +256,34 @@
               </div>
             </form>
           </div>
-          <div class="col-lg-4">
+          <div class="col-lg-5">
             <div class="order_box">
-              <h2>Your Order</h2>
+              <h2>Votre commande</h2>
               <ul class="list">
                 <li>
-                  <a href="#">Product <span>Total</span></a>
+                  <a href="#">Produit <span>Totale</span></a>
                 </li>
                 {% for item in items %}
                 <li>
                   <a href="{% url 'single-product' item.product.id  %}"
-                    >{{item.product.name}}<span class="middle"
-                      >x{{item.quantity}}</span
-                    >
-                    <span class="last">${{item.product.price}}</span></a
+                    >{{item.product.name}} <strong class="mx-2 text-info">(x{{item.quantity}})</strong> 
+                    <span class="last">{{item.get_total}}DA</span></a
                   >
                 </li>
                 {% endfor %}
               </ul>
               <ul class="list list_2">
                 <li>
-                  <a href="#">Subtotal <span>${{order.get_cart_total}}</span></a>
+                  <a href="#">Total <span>{{order.get_cart_total}}DA</span></a>
                 </li>
                 <li>
-                  <a href="#">Shipping <span>Flat rate: $50.00</span></a>
+                  <a href="#" >expédition <span id='shipping'></span></a>
                 </li>
                 <li>
-                  <a href="#">Total <span>${{order.get_cart_total}}</span></a>
+                  <a href="#">Total avec expédition<span>{{order.get_cart_total}}DA</span></a>
                 </li>
               </ul>
-              <div class="payment_item">
-                <div class="radion_btn">
-                  <input type="radio" id="f-option5" name="selector" />
-                  <label for="f-option5">Check payments</label>
-                  <div class="check"></div>
-                </div>
-                <p>
-                  Please send a check to Store Name, Store Street, Store Town,
-                  Store State / County, Store Postcode.
-                </p>
-              </div>
-              <div class="payment_item active">
-                <div class="radion_btn">
-                  <input type="radio" id="f-option6" name="selector" />
-                  <label for="f-option6">Paypal </label>
-                  <div class="check"></div>
-                </div>
-                <p>
-                  Pay via PayPal; you can pay with your credit card if you don’t
-                  have a PayPal account.
-                </p>
-              </div>
+ 
               <div class="creat_account">
                 <input type="checkbox" id="f-option4" name="selector" />
                 <label for="f-option4">I’ve read and accept the </label>
@@ -343,4 +300,163 @@
    
   </div>
 </section>
+    <script src="{% static 'js/vendor/jquery-2.2.4.min.js'%}"></script>
+
+	<script>
+
+    $(document).ready(function(){
+      var wilaya_select=document.getElementsByClassName("wilaya");
+      var commun_select=document.getElementById("commun");
+      var commun_select2=document.getElementById("commun2");
+
+      // load yalidin wilaya from url 
+              $.ajax({
+              url: "/getwilaya",
+              type: 'GET',
+              dataType: 'json', // added data type
+              success: function(data) {
+                data.forEach(element=>{
+                for(let i=0;i<wilaya_select.length;i++){
+                wilaya_select[i].innerHTML+=`<option name="state" value="${element.name}">${element.id} ${element.name}</option>`;
+              }
+                })
+      
+              }
+            });
+      wilaya_select[0].onchange=function(e){
+              console.log(e.target.value);
+              commun_select.innerHTML='';
+              let current_wilaya=e.target.value;
+              //display related communs 
+              $.ajax({
+              url: "/api/getcommunstrus/",
+              type: 'GET',
+              dataType: 'json', // added data type
+              success: function(data) {
+                data['communs'].forEach(element=>{
+                if(element.wilaya_name==current_wilaya){
+                  commun_select.innerHTML+=
+                  `<option name="commun" value="${element.name}">${element.name}</option>`;}
+                })
+      
+              },
+            });
+            var shipping = document.getElementById('shipping');
+
+
+            // and display deliveryfees
+            $.ajax({
+              url: "/api/getcommunstrus/",
+              type: 'GET',
+              dataType: 'json', // added data type
+              success: function(data) {
+                data['deliveryfees'].forEach(element=>{
+                if(element.wilaya_name==current_wilaya){
+                  shipping.innerHTML=`${element.desk_fee} DA`;
+
+                }
+                })
+      
+              },
+            });
+          };
+          wilaya_select[1].onchange=function(e){
+            console.log(e.target.value);
+            commun_select2.innerHTML='';
+            let current_wilaya2=e.target.value;
+            //display related communs 
+            $.ajax({
+            url: "/api/getcommunstrus/",
+            type: 'GET',
+            dataType: 'json', // added data type
+            success: function(data) {
+              data['communs'].forEach(element=>{
+              if(element.wilaya_name==current_wilaya2){
+                commun_select2.innerHTML+=
+                `<option name="commun" value="${element.name}">${element.name}</option>`;}
+              })
+    
+            },
+          });
+          var shipping_home = document.getElementById('shipping_home');
+
+
+          // and display deliveryfees
+          $.ajax({
+            url: "/api/getcommunstrus/",
+            type: 'GET',
+            dataType: 'json', // added data type
+            success: function(data) {
+              data['deliveryfees'].forEach(element=>{
+              if(element.wilaya_name==current_wilaya2){
+                shipping_home.innerHTML=`${element.home_fee} DA`;
+
+              }
+              })
+    
+            },
+          });
+        };
+    }) // end document ready
+
+    var form = document.getElementById("form");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      submitFormData();
+    });
+    function submitFormData() {
+      console.log("submite button clicked");
+      var userFormData = {
+        name: null,
+        phone: null,
+        total: total,
+      };
+      var shippingInfo = {
+        address: null,
+        city: null,
+        state: null,
+        zipcode: null,
+      };
+      shippingInfo.address = form.address.value;
+      shippingInfo.city = form.commun.value;
+      shippingInfo.state = form.wilaya.value;
+      shippingInfo.zipcode = form.zipcode.value;
+      name = name;
+      phone = phone;
+      if (user == "AnonymousUser") {
+        userFormData.name = form.name.value;
+        userFormData.phone = form.phone.value;
+      } else {
+        userFormData.name = name;
+        userFormData.phone = phone;
+      }
+
+      console.log("Shipping Info:", shippingInfo);
+      console.log("User Info:", userFormData);
+
+      var url = "/process_order/";
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "applicaiton/json",
+          "X-CSRFToken": csrftoken,
+        },
+        body: JSON.stringify({ form: userFormData, shipping: shippingInfo }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data);
+          fireSweetAlert();
+          cart = {};
+          document.cookie =
+            "cart=" + JSON.stringify(cart) + ";domain=;path=/";
+          window.location.href = "{% url 'products' %}";
+        })
+        .catch((error) => {
+          fireSweetAlertError();
+          console.error("Error:", error);
+        });
+    }
+	
+	</script>
 {% endblock content %}

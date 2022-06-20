@@ -39,14 +39,17 @@ def dashboard(request):
         "num_partners": num_partners,
         "num_orders": num_orders,
         "num_products": num_products,
-        "num_promotors": num_promotors
+        "num_promotors": num_promotors,
+        "titel":"Accueil"
     }
     return render(request, 'dashboard/pages/dashboard.html', context)
 
 
 def tables(request):
-    orders = Order.objects.filter(complete=True)
-    context = {"orders": orders, "titel": "orders"}
+    orders = Order.objects.filter(complete=True).order_by("-date_ordered")
+    orders_no_complete = Order.objects.filter(complete=False).count()
+
+    context = {"orders": orders, "titel": "orders","orders_no_complete":orders_no_complete}
 
     return render(request, "dashboard/pages/tables.html", context)
 
@@ -84,6 +87,7 @@ def add_product(request):
                                   image=image)
             product.save()
             print("product_ref",product.id)  
+            # using session for adding product variations later
             request.session['product_ref'] = product.id
             for i in images: 
                 p = ProductImage(product=product,image=i) 

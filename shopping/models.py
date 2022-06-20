@@ -157,8 +157,10 @@ class Customer(AbstractBaseUser, PermissionsMixin):
 
 
 class ImageBanner(models.Model):
+    price = models.FloatField("Prix promotion", null=True)
+    titel = models.CharField(("Titre de banner"), max_length=50, null=True)
     image = models.ImageField(upload_to='media/banners/')
-
+    category = models.CharField(("categorie de produit"), max_length=50, null=True)
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -262,7 +264,7 @@ class Variation(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     category = models.CharField(max_length=120, choices=VAR_CATEGORY)
     item = models.CharField(max_length=120)
-
+    price = models.FloatField(default=0)
     def __str__(self):
         return self.product.name
     objects = VariationManager()
@@ -336,12 +338,13 @@ class Rating(models.Model):
     def __str__(self):
         return f"{self.user.name} rate {self.stars} to {self.product.name}"
 
-
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.PROTECT, null=True)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
     quantity = models.IntegerField(default=0, null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
+    color= models.CharField(max_length=50,null=True)
+    size=models.CharField( max_length=50, null=True)
 
     def __str__(self):
         return f"{self.order}"

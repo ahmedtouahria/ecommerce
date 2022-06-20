@@ -199,8 +199,6 @@
     }
   }
 
-
-
   function countTags2() {
     input2.focus();
     tagNumb2.innerText = maxTags - tags2.length;
@@ -216,9 +214,6 @@
       });
     countTags2();
   }
-
-
-
   function addTag2(e) {
     if (e.which == 32) {
       let tag = e.target.value.replace(/\s+/g, " ");
@@ -233,19 +228,6 @@
       e.target.value = "";
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // ---- SEND REQUEST ---- ADD VARIATION
   const send = document.getElementById("color_send");
@@ -267,7 +249,11 @@
       body: JSON.stringify(data),
     }).then((res) => {
       console.log("Request complete! response:", res);
-    });
+    })
+    .then((data) => {
+      location.reload()
+  });
+    
   }
 
   input.addEventListener("keyup", addTag);

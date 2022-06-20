@@ -10,22 +10,21 @@
                     <div class="single-prd-item">
                         <img class="img-fluid" src="{{product.image.url}}" alt="">
                     </div>
+                    {% for img in product_imgs %}
                     <div class="single-prd-item">
-                        <img class="img-fluid" src="{{product.image.url}}" alt="">
-                    </div>
-                    <div class="single-prd-item">
-                        <img class="img-fluid" src="{{product.image.url}}" alt="">
-                    </div>
+                      <img class="img-fluid" src="{{img.image.url}}" alt="">
+                  </div>
+                    {% endfor %}
                 </div>
             </div>
             <div class="col-lg-5 offset-lg-1">
                 <div class="s_product_text">
                     <h3>{{product.name}}</h3>
-                    <h2>{{product.price}}$</h2>
+                    <h2>{{product.price}} DA </h2>
                    
                     <ul class="list">
-                        <li><a class="active" href="#"><span>Category</span> : {{product.category | capfirst}}</a></li>
-                        <li><a href="#"><span>Availibility</span> : In Stock</a></li>
+                        <li><a class="active" href="#"><span>Catégorie</span> : {{product.category | capfirst}}</a></li>
+                        <li><a href="#"><span>Disponibilité</span> : In Stock</a></li>
                         <div class="media-body">
                             <i class="fa fa-star text-warning"></i>
                             <i class="fa fa-star text-warning"></i>
@@ -38,47 +37,40 @@
 
                     {% if product.variation_set.all %}
                     {% if product.variation_set.sizes %}
+                    <form  method="post" id="form_order_item">
+                      {% csrf_token %}
                     <div class="row my-3 mx-2">
                         <div class='col-3'>
-                        <label class="pt-2" for="qty">Size:</label>
+                        <label class="pt-2" for="qty">Taille:</label>
                         </div>
                         <div class='col-9'>
-                            <select class=" mx-2">
+                            <select name="size" id="size_var" class=" mx-2">
                                 {% for item in product.variation_set.sizes  %}
-                                <option value="1">{{item.item}}</option>
+                                <option  value="{{item.item}}">{{item.item}}</option>
                                 {% endfor %}
                               </select>  
                             </div>
                       </div>
                       <div class="row my-3 mx-2">
                         <div class='col-3'>
-                        <label class="pt-2" for="qty">Colors:</label>
+                        <label class="pt-2" for="qty">Couleurs:</label>
                         </div>
                         <div class='col-9'>
-                                {% for item in product.variation_set.colors  %}
-                                <input value="{{item.item}}" class='red' name='color' type='radio' style="background:{{item.item}}" />
-                                {% endfor %}
-                         
+                          {% for item in product.variation_set.colors  %}
+                          <input data-variation="{{item.id}}" value="{{item.item}}" class='red' name='color' type='radio' style="background:{{item.item}}" />
+                          {% endfor %}
                             </div>
-                        
                       </div>
-                
                       {% endif %}
                       {% endif %}
-                    <div class="product_count">
-                        <label for="qty">Quantity:</label>
-                        <input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
-                        <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-                         class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
-                        <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) &amp;&amp; sst > 0 ) result.value--;return false;"
-                         class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
-                    </div>
                     <div class="card_area d-flex align-items-center">
-                        <a class="primary-btn update-cart" data-action="add" data-product="{{product.id}}" href="#">Add to Cart</a>
+                        <a id="add_to_cart" class="primary-btn" data-action="add" data-product="{{product.id}}" href="#">Ajouter au panier</a>
+                        
                         <a class="icon_btn" id="copy"><i class="fa fa-share"></i></a>
                         <a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
                     </div>
-
+                    
+                  </form>
                 </div>
             </div>
           
@@ -88,11 +80,9 @@
 <section class="product_description_area">
     <div class="container">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
-  
-
             <li class="nav-item">
                 <a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
-                 aria-selected="false">Reviews</a>
+                 aria-selected="false">Commentaires</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
@@ -335,12 +325,10 @@
           </div>
   
           <div class="price-box">
-            <p class="price">${{product.price}}</p>
-            <del>${{product.price}}</del>
+            <p class="price">{{product.price}}DA</p>
+            <del>{{product.price}}DA</del>
           </div>
-  
         </div>
-  
       </div>
       {% endfor %}
     </div>
@@ -351,22 +339,123 @@
     var total = '{{order.get_cart_total}}';
     var user ="{{request.user}}";
     var copy=document.getElementById('copy');
+   var form_order_item = document.getElementById("form_order_item");
+   var add_to_cart = document.getElementById("add_to_cart");
+   add_to_cart.addEventListener("click",()=>{
+ //   console.log(form_order_item.color.value,form_order_item.size.value)
+ try{
+  var color = form_order_item.color.value;
+  var size = form_order_item.size.value;
+ }
+catch{
+  var color =undefined;
+  var size = undefined;
+}
+  productId = {{product.id}};
+  if (user == "AnonymousUser") {
+    addCookieItem(productId, "add", color , size);
+    console.log("user is not login");
+  } 
+  else {
+    // for avoid duplicate request in ajax we need disable button
+    updateUserOrder(productId , "add" , color , size);
 
-    </script>
+    console.log("user is logged in");
+  }
 
-    <style>
-        * { box-sizing: border-box; }
+   });
 
+   function updateUserOrder(productId, action,color,size) {
+    $.ajax({
+      type: "POST",
+      beforeSend: function (request) {
+        request.setRequestHeader("Content-Type", "application/json");
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+      },
+      url: "/update_item/",
+      data: JSON.stringify({ productId: productId, action: action,productColor:color,productSize:size }),
+      processData: true,
+      success: function (msg) {
+        console.log("success" + msg);
+      },
+    });
+    // for display async in cart items without reload page
+    getCartItem();
+  }
+  // update order whene user is not authenticated
+  function addCookieItem(productId, action,color,size) {
+    console.log("User is not authenticated");
+    if (action == "add") {
+   
+      if (cart[productId] == undefined  ) 
+      {
+        cart[productId] = { quantity: 1 , color:color , size : size};
 
+      } 
+      else {
+        for (let i in cart){
+          if (i==productId){
+            console.log("true")
+            if(cart[i]["color"]==color && cart[i]["size"]==size){
+              cart[productId]["quantity"] += 1;
+            }
+            else{
+        cart[productId] = { quantity: 1 , color:color , size : size};
 
-.rating {
+            }
+          }
+        }
+      }
+    }
+    if (action == "remove") {
+      cart[productId]["quantity"] -= 1;
+
+      if (cart[productId]["quantity"] <= 0) {
+        console.log("Item should be deleted");
+        delete cart[productId];
+      }
+    }
+    console.log("CART:", cart);
+    document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
+    getCartItem();
+  }
+  const shareBtn=document.getElementById('copy');
+	const title="title";
+	const url=code_url;
+	//const ogBtnContent = shareBtn.textContent;
+	shareBtn.addEventListener('click', () => {
+			if (navigator.share) {
+			  navigator.share({
+				title,
+				url
+			  }).then(() => {
+				
+			  })
+			  .catch(err => {
+				showMessage(shareBtn, `Couldn't share 🙁`);
+			  });
+			} else {
+			  showMessage(shareBtn, 'Not supported 🙅‍');
+			}
+		  });
+		  
+		  function showMessage(element, msg) {
+			element.textContent = msg;
+			setTimeout(() => {
+			  element.textContent = '';
+			}, 2000);
+		  }
+</script>
+<style>
+  * { box-sizing: border-box; }
+  .rating {
   display: flex;
   width: 35%;
   justify-content: center;
   overflow: hidden;
   flex-direction: row-reverse;
   position: relative;
-}
+    }
 
 .rating-0 {
   filter: grayscale(100%);

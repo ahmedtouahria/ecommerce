@@ -168,24 +168,20 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['POST'])
-
 def add_product(request):
-    product_ref= request.session.get("product_ref") 
+    product_ref = request.session.get("product_ref",None)
     if request.method == 'POST':
-        sizes = request.data.get('sizes')
-        colors = request.data.get('colors')
-        print(request.data)
-        if product_ref is not None :
-            product=Product.objects.get(id=product_ref)
+        sizes = request.data.get('sizes',None)
+        colors = request.data.get('colors',None)
+        if product_ref is not None:
+            product = Product.objects.get(id=product_ref)
             for size in sizes:
-                s=Variation(product=product,category="size",item=size)
+                s = Variation(product=product, category="size", item=size)
                 s.save()
             for color in colors:
-                s=Variation(product=product,category="color",item=color)
+                s = Variation(product=product, category="color", item=color)
                 s.save()
-            return redirect("index")        
+            return redirect("index")
         else:
             print("product_ref is NONE")
-
-  #  print(request.data)
     return Response({"success": "true"})
