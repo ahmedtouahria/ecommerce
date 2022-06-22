@@ -1,4 +1,5 @@
-import uuid
+from typing import Optional
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import RegexValidator
@@ -6,13 +7,13 @@ from django.core.validators import MinLengthValidator
 from .utils import generate_random_code, generate_transform_id
 import random
 import os
-from colorfield.fields import ColorField
 from barcode.writer import ImageWriter
 import barcode
 from io import BytesIO
 from django.core.files import File
 from django.core.validators import MaxValueValidator, MinValueValidator
-
+from django.utils import timezone
+from django.utils.text import slugify
 
 # get image path for register files
 def upload_image_path_receveur(instance, filename):
@@ -56,13 +57,13 @@ def upload_image_path_category(instance, filename):
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, name, phone, password=None, is_staff=False, is_active=True, is_admin=False):
+    def create_user(self,email=None,phone=int,name=None, password=None, is_staff=False, is_active=True, is_admin=False,**other):
         if not phone:
-            raise ValueError('users must have a phone number')
+            phone=None
         if not password:
-            raise ValueError('user must have a password')
-        if not name:
-            raise ValueError('user must have a name')
+            password=f"pass{random.randint(1, 999666644666)}"
+        if not name or name==None:
+            name=str(phone)
         user_obj = self.model(
             name=name,
             phone=phone,
@@ -110,7 +111,7 @@ class Customer(AbstractBaseUser, PermissionsMixin):
     profits = models.FloatField(default=0)
     is_receveur = models.BooleanField(default=False)
     number_of_referalls = models.IntegerField(default=0)
-
+    email=models.EmailField( max_length=254,null=True, blank=True)
     active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
@@ -182,15 +183,19 @@ class CategorySub(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=200)
+    slug = models.SlugField(blank=True,null=True)
     category = models.ForeignKey(
         CategorySub, on_delete=models.PROTECT, null=True, blank=True)
     price_achat = models.FloatField(
         verbose_name="prix d'achat", null=True, blank=True)
     price = models.FloatField(
         verbose_name="prix de vent", null=True, blank=True)
+    price_promo = models.FloatField(
+        verbose_name="prix de promotion", null=True, blank=True)
     profit = models.FloatField(null=True, blank=True)
     description = models.CharField(max_length=300)
     quantity = models.IntegerField(default=1)
+    status = models.CharField(max_length=200,blank=True,null=True)
     image = models.ImageField(upload_to='media/products/')
     available = models.BooleanField(default=True)
     barcode = models.ImageField(upload_to='barcodes/', blank=True, null=True)
@@ -220,6 +225,8 @@ class Product(models.Model):
         if self.profit is None:
             self.profit = self.price - self.price_achat
             super().save(*args, **kwargs)
+        if self.slug == "" or self.slug is None :
+            self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
 
     def no_of_ratings(self):
@@ -246,7 +253,24 @@ class Product(models.Model):
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='media/products/')
+    def __str__(self):
+        return self.product.name
 
+class ToastMessage(models.Model):
+    title =models.CharField( max_length=50)
+    product = models.ForeignKey("shopping.Product", verbose_name=("produit"), on_delete=models.CASCADE)
+    date_add = models.DateTimeField(("la date"), auto_now=True)
+    def __str__(self):
+        return self.product.name
+
+
+class Affaire(models.Model):
+    product = models.ForeignKey("shopping.Product", verbose_name=("produit"), on_delete=models.CASCADE)
+    date_end = models.DateTimeField(("la date TERMINE "), auto_now=False)
+    def get_days(self):
+        return   self.date_end-timezone.now()
+    def __str__(self):
+        return self.product.name
 
 ''' -------- PRODUCT LOGIC ----------- '''
 

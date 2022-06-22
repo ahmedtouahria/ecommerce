@@ -75,11 +75,11 @@
               Profits
               <i class="fa fa-line-chart mx-2" aria-hidden="true"></i>
             </h3>
-            <p class="text-secondary h4">{{money.money}} DA</p>
+            <p class="text-secondary h4">{{money.money | default:"0"}} DA</p>
           </div>
           <div class="col-sm-6 my-3">
             <h3>Points</h3>
-            <p class="h4">{{request.user.point}} pts</p>
+            <p class="h4">{{request.user.point | default:"0"}} pts</p>
             <div class="progress mt-3">
               <div
                 class="progress-bar bg-success"

@@ -1,13 +1,15 @@
-from typing import List
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
 import json
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from shopping.models import *
 from django.contrib import messages
 from django.core.paginator import  Paginator
+from django.db.models import  Count,Max
+from datetime import date, timedelta
+from django.utils import timezone
+
 # Create your views here.
 ''' Nous avons deux cas ici
 1/ Lorsque le client est enregistré ==>  if request.user.is_authenticated:...
@@ -109,15 +111,25 @@ def index(request):
             customer=customer, complete=False)
         items = order.orderitem_set.all()
         cartItem = order.get_cart_items
-        print(cartItem)
         # Guest user
     else:
         cookieData = cookieCart(request)
         items = cookieData['items']
         order = cookieData['order']
         cartItem = cookieData['cartItem']
+    d=date.today()-timedelta(days=7)
+    order_items = OrderItem.objects.annotate(count_product=Max("quantity")).filter(date_added__gte=d).order_by("-count_product")
+    top_rated = Rating.objects.annotate(rating_count=Max("stars")).order_by("rating_count")
+    print(top_rated.values("rating_count"))
+    toast=ToastMessage.objects.all().last()
+    affaire = Affaire.objects.all()
     context = {
-        "new_arrival": Product.objects.all()[:5],
+        "new_arrival": Product.objects.all().reverse()[:5],
+        "trending": order_items[:5],
+        "top_rated": top_rated[:5],
+        "toast":toast,
+        "affaires":affaire,
+
         "category_sub": CategorySub.objects.all(),
         "category": Category.objects.all(),
         "imgs_banner": ImageBanner.objects.all()[:3],
@@ -148,17 +160,17 @@ def products(request):
         order = cookieData['order']
         cartItem = cookieData['cartItem']
     products = Product.objects.all()
-    paginator = Paginator(products,6)
+    paginator = Paginator(products,8)
     page_number=request.GET.get("page",1)
     page_products_display=paginator.get_page(page_number)
-    print("page number ",page_number)
     context = {
         "products": page_products_display,
         "categorys": Category.objects.all(),
         "order": order,
         "cartItem": cartItem,
         "paginator":paginator,
-        "page_number":page_number,
+        "page":page_products_display,
+        "page_number":int(page_number),
          "titel": "produits",
 
 
@@ -265,7 +277,7 @@ def register(request):
         messages.error(
             request, "Unsuccessful registration. Invalid information.")
 
-    return render(request, 'pages/register.html')
+    return render(request, 'dashboard/pages/sign-up.html')
 # login Customer views
 
 # la page d'authentication (Login)
@@ -291,7 +303,7 @@ def login_customer(request):
                 messages.error(request, "Invalid username or password.")
         else:
             messages.error(request, "Invalid username or password.")
-    return render(request, 'pages/login.html')
+    return render(request, 'dashboard/pages/login.html')
 
 
 @login_required(login_url='login')
@@ -407,9 +419,9 @@ def updateItem(request):
         customer=customer, complete=False)
     # load json request from user
     data = json.loads(request.body)
-    if "productColor" in data:
-        productColor = data['productColor']
-        productSize = data['productSize']
+    if "productColor" in data or "productSize" in data:
+        productColor = data.get("productColor",None)
+        productSize = data.get("productSize",None)
         productId = data['productId']
         action = data['action']
         product = Product.objects.filter(id=productId).first()

@@ -1,6 +1,35 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+{% if toast %}
+<div class="notification-toast" data-toast>
+  <button class="toast-close-btn" data-toast-close>
+    <ion-icon name="close-outline"></ion-icon>
+  </button>
+
+  <div class="toast-banner">
+    <img src="{{toast.product.image.url}}" alt="Rose Gold Earrings" width="80" height="70">
+  </div>
+
+  <div class="toast-detail">
+
+    <p class="toast-message">
+      {{toast.title}}
+    </p>
+
+    <p class="toast-title">
+      {{toast.product.name}}
+    </p>
+
+    <p class="toast-meta">
+      <time datetime="PT2M">2 Minutes</time> ago
+    </p>
+
+  </div>
+
+</div>
+{% endif %}
+
 
 <section class="banner my-3">
 
@@ -55,7 +84,7 @@
           <div class="category-content-box">
 
             <div class="category-content-flex">
-              <h3 class="category-item-title">{{cat.name}}</h3>
+              <h3 class="category-item-title">{{cat.name | capfirst}}</h3>
 
               <p class="category-item-amount">(53)</p>
             </div>
@@ -76,66 +105,21 @@
 <!-- End banner Area -->
 
 <!-- start features Area -->
-{% comment %} <section class="features-area section_gap">
-    <div class="container">
-        <div class="row features-inner">
-            <!-- single features -->
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="single-features">
-                    <div class="f-icon">
-                        <img src="{% static 'img/features/f-icon1.png'%}" alt="">
-                    </div>
-                    <h6>Free Delivery</h6>
-                    <p>Free Shipping on all order</p>
-                </div>
-            </div>
-            <!-- single features -->
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="single-features">
-                    <div class="f-icon">
-                        <img src="{% static 'img/features/f-icon2.png'%}" alt="">
-                    </div>
-                    <h6>Return Policy</h6>
-                    <p>Free Shipping on all order</p>
-                </div>
-            </div>
-            <!-- single features -->
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="single-features">
-                    <div class="f-icon">
-                        <img src="{% static 'img/features/f-icon3.png'%}" alt="">
-                    </div>
-                    <h6>24/7 Support</h6>
-                    <p>Free Shipping on all order</p>
-                </div>
-            </div>
-            <!-- single features -->
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="single-features">
-                    <div class="f-icon">
-                        <img src="{% static 'img/features/f-icon4.png'%}" alt="">
-                    </div>
-                    <h6>Secure Payment</h6>
-                    <p>Free Shipping on all order</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section> {% endcomment %}
+
 <!-- end features Area -->
 
 
 <div class="container">
-  <div class="product-minimal">
+<div class="product-minimal">
 
   <div class="product-showcase">
 
-    <h2 class="title">New Arrivals</h2>
+    <h2 class="title">Nouvelles Arrivées</h2>
 
     <div class="showcase-wrapper has-scrollbar">
 
       <div class="showcase-container">
-{% for product in new_arrival %}
+    {% for product in new_arrival %}
         <div class="showcase">
           <a href="#" class="showcase-img-box">
             {% if product.image %}
@@ -197,31 +181,31 @@
 
   <div class="product-showcase">
   
-    <h2 class="title">Trending</h2>
+    <h2 class="title">Tendance</h2>
   
     <div class="showcase-wrapper  has-scrollbar">
   
       <div class="showcase-container">
   
-        {% for product in new_arrival %}
+        {% for trend in trending %}
         <div class="showcase">
           <a href="#" class="showcase-img-box">
-               {% if product.image %}
-            <img src="{{product.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
+               {% if trend.product.image %}
+            <img src="{{trend.product.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
             {% endif %}
           </a>
 
           <div class="showcase-content">
 
             <a href="#">
-              <h4 class="showcase-title">{{product.name}}</h4>
+              <h4 class="showcase-title">{{trend.product.name}}</h4>
             </a>
 
-            <a href="#" class="showcase-category">{{product.cateogry}}</a>
+            <a href="#" class="showcase-category">{{trend.product.cateogry}}</a>
 
             <div class="price-box">
-              <p class="price">${{product.price}}</p>
-              <del>${{product.price}}</del>
+              <p class="price">{{trend.product.price}} DA</p>
+              <del>{{trend.product.price}} DA</del>
             </div>
 
           </div>
@@ -233,31 +217,32 @@
   
       <div class="showcase-container">
   
-        {% for product in new_arrival %}
+        {% for trend in trending %}
         <div class="showcase">
           <a href="#" class="showcase-img-box">
-               {% if product.image %}
-            <img src="{{product.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
+               {% if trend.product.image %}
+            <img src="{{trend.product.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
             {% endif %}
           </a>
 
           <div class="showcase-content">
 
             <a href="#">
-              <h4 class="showcase-title">{{product.name}}</h4>
+              <h4 class="showcase-title">{{trend.product.name}}</h4>
             </a>
 
-            <a href="#" class="showcase-category">{{product.cateogry}}</a>
+            <a href="#" class="showcase-category">{{trend.product.cateogry}}</a>
 
             <div class="price-box">
-              <p class="price">${{product.price}}</p>
-              <del>${{product.price}}</del>
+              <p class="price">{{trend.product.price}} DA</p>
+              <del>{{trend.product.price}} DA</del>
             </div>
 
           </div>
 
         </div>
         {% endfor %}
+  
       </div>
   
     </div>
@@ -266,31 +251,31 @@
 
   <div class="product-showcase">
   
-    <h2 class="title">Top Rated</h2>
+    <h2 class="title">meilleure cote <i class="fa fa-star text-warning"></i></h2>
   
     <div class="showcase-wrapper  has-scrollbar">
   
       <div class="showcase-container">
   
-        {% for product in new_arrival %}
+        {% for rate in top_rated %}
         <div class="showcase">
           <a href="#" class="showcase-img-box">
-               {% if product.image %}
-            <img src="{{product.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
+               {% if rate.product.image %}
+            <img src="{{rate.product.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
             {% endif %}
           </a>
 
           <div class="showcase-content">
 
             <a href="#">
-              <h4 class="showcase-title">{{product.name}}</h4>
+              <h4 class="showcase-title">{{rate.product.name}}</h4>
             </a>
 
-            <a href="#" class="showcase-category">{{product.cateogry}}</a>
+            <a href="#" class="showcase-category">{{rate.product.cateogry}}</a>
 
             <div class="price-box">
-              <p class="price">${{product.price}}</p>
-              <del>${{product.price}}</del>
+              <p class="price">{{rate.product.price}}DA</p>
+              <del>{{rate.product.price}}DA</del>
             </div>
 
           </div>
@@ -331,9 +316,98 @@
   
     </div>
   
+</div>
+
+</div>
+<div class="product-featured">
+
+  <h2 class="title">L'affaire d'aujourd'hui</h2>
+
+  <div class="showcase-wrapper has-scrollbar">
+{% for affaire in affaires %}
+    <div class="showcase-container">
+
+      <div class="showcase">
+        
+        <div class="showcase-banner">
+          {% if affaire.product.image %}
+          <img src="{{affaire.product.image.url}}" alt="shampoo, conditioner & facewash packs" class="showcase-img">
+          {% endif %}
+        </div>
+
+        <div class="showcase-content">
+          {{affaire.get_days}}
+          <div class="showcase-rating">
+            <ion-icon name="star"></ion-icon>
+            <ion-icon name="star"></ion-icon>
+            <ion-icon name="star"></ion-icon>
+            <ion-icon name="star-outline"></ion-icon>
+            <ion-icon name="star-outline"></ion-icon>
+          </div>
+
+          <a href="#">
+            <h3 class="showcase-title">{{affaire.product.name}}</h3>
+          </a>
+
+          <p class="showcase-desc">
+           {{affaire.product.description}}
+          </p>
+
+          <div class="price-box">
+            <p class="price">{{affaire.product.price}}DA</p>
+
+            <del>{{affaire.product.price}}DA</del>
+          </div>
+
+          <button class="add-cart-btn">Ajouter au panier</button>
+
+
+          <div class="countdown-box">
+
+            <p class="countdown-desc">
+              Dépêchez-vous!Offre se termine par:
+            </p>
+
+            <div class="countdown">
+
+              <div class="countdown-content">
+
+                <p class="display-number">360</p>
+
+                <p class="display-text">Days</p>
+
+              </div>
+
+              <div class="countdown-content">
+                <p class="display-number">24</p>
+                <p class="display-text">Hours</p>
+              </div>
+
+              <div class="countdown-content">
+                <p class="display-number">59</p>
+                <p class="display-text">Min</p>
+              </div>
+
+              <div class="countdown-content">
+                <p class="display-number">00</p>
+                <p class="display-text">Sec</p>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+{% endfor %}
   </div>
 
-</div></div>
+</div>
+
+</div>
 <!-- Start category Area -->
 
 <!-- End category Area -->
@@ -345,7 +419,7 @@
             <div class="row justify-content-center">
                 <div class="col-lg-6 text-center">
                     <div class="section-title">
-                        <h1>Latest Products</h1>
+                        <h1>Derniers produits</h1>
                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
                             dolore
                             magna aliqua.</p>
@@ -355,7 +429,7 @@
             <section class="lattest-product-area category-list">
               <div class="product-main container pt-5">
       
-                <h2 class="title">New Products</h2>
+                <h2 class="title">Nouveaux produits</h2>
               
                 <div class="product-grid" id="list_product">
               {% for product in products  %}
@@ -366,7 +440,16 @@
                       <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img default">
                       <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img hover">
               
-                      <p class="showcase-badge">15%</p>
+                      {% if product.status%}
+                      <p class="
+                      showcase-badge
+                      {% if product.status == "promotion" %}
+                      angle pink
+                      {% elif product.status == "nouvelle" %}
+                      angle black
+                      {% endif %}
+                      ">{{product.status}}</p>
+                {% endif %}
               
                       <div class="showcase-actions">
               
@@ -461,7 +544,7 @@
     <div class="single-product-slider">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-6 text-center">
+                <div class="col-6 col-lg-6 text-center">
                     <div class="section-title">
                         <h1>Coming Products</h1>
                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et

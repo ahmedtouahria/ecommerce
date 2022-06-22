@@ -24,8 +24,8 @@
                 <div class="media">
                   <div class="media-body">
                     <p>
-                      {{item.product.name}} - {% if item.color %} {{item.color}}
-                      - {{item.size}} {% endif %}
+                      {{item.product.name}} - {% if item.color and item.size %} {{item.color}}
+                      - {{item.size}} {% elif item.color and not item.size %} {{item.color}} {% elif not item.color and  item.size%} {{item.size}}{% endif %}
                     </p>
                   </div>
                 </div>
@@ -99,4 +99,48 @@
     </div>
   </div>
 </section>
+<script>
+
+    // update order whene user is not authenticated
+    function addCookieItem(productId, action) {
+      console.log("User is not authenticated");
+      if (action == "add") {
+        if (cart[productId] == undefined) {
+          cart[productId] = { quantity: 1 };
+        } else {
+          cart[productId]["quantity"] += 1;
+        }
+      }
+      if (action == "remove") {
+        cart[productId]["quantity"] -= 1;
+
+        if (cart[productId]["quantity"] <= 0) {
+          console.log("Item should be deleted");
+          delete cart[productId];
+        }
+      }
+      console.log("CART:", cart);
+      document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
+      getCartItem();
+    }
+
+    function updateUserOrder(productId, action) {
+      let data_send = { productId: productId, action: action };
+          $.ajax({
+            type: "POST",
+            beforeSend: function (request) {
+              request.setRequestHeader("Content-Type", "application/json");
+              request.setRequestHeader("X-CSRFToken", csrftoken);
+            },
+            url: "/update_item/",
+            data: JSON.stringify(data_send),
+            processData: true,
+            success: function (msg) {
+              console.log("success" + msg);
+            },
+          });
+          // for display async in cart items without reload page
+          getCartItem();
+        }
+</script>
 {% endblock content %}

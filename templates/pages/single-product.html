@@ -10,11 +10,20 @@
                     <div class="single-prd-item">
                         <img class="img-fluid" src="{{product.image.url}}" alt="">
                     </div>
+                    {% if product_imgs %}
                     {% for img in product_imgs %}
                     <div class="single-prd-item">
                       <img class="img-fluid" src="{{img.image.url}}" alt="">
-                  </div>
+                    </div>
                     {% endfor %}
+                    {% else %}
+                    <div class="single-prd-item">
+
+                    <img class="img-fluid" src="{{product.image.url}}" alt="">
+                  </div>
+
+                    {% endif %}
+
                 </div>
             </div>
             <div class="col-lg-5 offset-lg-1">
@@ -248,7 +257,16 @@
           <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img default">
           <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img hover">
   
-          <p class="showcase-badge">15%</p>
+          {% if product.status%}
+          <p class="
+          showcase-badge
+          {% if product.status == "promotion" %}
+          angle pink
+          {% elif product.status == "nouvelle" %}
+          angle black
+          {% endif %}
+          ">{{product.status}}</p>
+    {% endif %}
   
           <div class="showcase-actions">
   
@@ -334,6 +352,8 @@
     </div>
   
   </div>
+  <script src="{% static 'js/vendor/jquery-2.2.4.min.js'%}"></script>
+
 <script type="text/javascript">
     var code_url="http://127.0.0.1:8000/products/{{product.id}}/{{request.user.code}}";
     var total = '{{order.get_cart_total}}';
@@ -345,11 +365,15 @@
  //   console.log(form_order_item.color.value,form_order_item.size.value)
  try{
   var color = form_order_item.color.value;
+ }
+catch{
+  var color = undefined;
+}
+try{
   var size = form_order_item.size.value;
  }
 catch{
-  var color =undefined;
-  var size = undefined;
+  var size =  undefined;
 }
   productId = {{product.id}};
   if (user == "AnonymousUser") {
@@ -357,15 +381,29 @@ catch{
     console.log("user is not login");
   } 
   else {
-    // for avoid duplicate request in ajax we need disable button
     updateUserOrder(productId , "add" , color , size);
-
     console.log("user is logged in");
   }
 
    });
 
-   function updateUserOrder(productId, action,color,size) {
+function updateUserOrder(productId, action,color,size) {
+let data_send = {};
+if(color == undefined && size == undefined){
+  data_send= { productId: productId, action: action }
+}
+else if(color != undefined && size == undefined){
+  data_send= { productId: productId, action: action,productColor:color }
+
+}
+else if(color == undefined && size != undefined){
+  data_send= { productId: productId, action: action,productSize:size }
+
+}
+else{
+  data_send= { productId: productId, action: action,productSize:size,productColor:color }
+
+}
     $.ajax({
       type: "POST",
       beforeSend: function (request) {
@@ -373,7 +411,7 @@ catch{
         request.setRequestHeader("X-CSRFToken", csrftoken);
       },
       url: "/update_item/",
-      data: JSON.stringify({ productId: productId, action: action,productColor:color,productSize:size }),
+      data: JSON.stringify(data_send),
       processData: true,
       success: function (msg) {
         console.log("success" + msg);
@@ -445,7 +483,50 @@ catch{
 			  element.textContent = '';
 			}, 2000);
 		  }
-</script>
+
+              /* -----script to meal rating-------*/
+              $(".rating label").on("click", function () {
+                //console.log(user_id);
+                //console.log(this.dataset.rate);
+                var content = $("#content").val();
+                var stars = this.dataset.rate;
+                var product_id = this.dataset.product;
+                //console.log(content)
+                //console.log(product_id);
+                let data = {
+                  user_id: user_id,
+                  product_id: product_id,
+                  stars: stars,
+                  content: content,
+                };
+                if (user == "AnonymousUser") {
+                  window.location.href = "/login";
+                } else {
+                  if (content.trim() == "") {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Veuillez ne pas laisser le champ de commentaires vide",
+                      confirmButtonColor: "#ffba00",
+                    });
+                  } else {
+                    fetch("/api/product_rating/", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrftoken,
+                      },
+                      body: JSON.stringify(data),
+                    }).then((res) => {
+                      location.reload();
+                      console.log("Request complete! response:", res);
+                    });
+                  }
+                }
+              });
+      
+              /* ----- end script to meal rating-------*/
+    </script>
 <style>
   * { box-sizing: border-box; }
   .rating {

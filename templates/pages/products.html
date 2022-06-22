@@ -2,148 +2,9 @@
 {% block content %}
 {% load static %}
 
-<div class="container">
-  <div class="row">
-    <div class="col-xl-3 col-lg-4 col-md-5">
-      <div class="sidebar  has-scrollbar" data-mobile-menu>
-
-        <div class="sidebar-category">
-
-          <div class="sidebar-top">
-            <h2 class="sidebar-title">Category</h2>
-
-            <button class="sidebar-close-btn" data-mobile-menu-close-btn>
-              <ion-icon name="close-outline"></ion-icon>
-            </button>
-          </div>
-
-          <ul class="sidebar-menu-category-list">
-
-            <li class="sidebar-menu-category">
-
-              <button class="sidebar-accordion-menu" data-accordion-btn>
-
-                <div class="menu-title-flex">
-                  <img src="./assets/images/icons/dress.svg" alt="clothes" width="20" height="20"
-                    class="menu-title-img">
-                  <p class="menu-title">Clothes</p>
-                </div>
-
-                <div>
-                  <ion-icon name="add-outline" class="add-icon"></ion-icon>
-                  <ion-icon name="remove-outline" class="remove-icon"></ion-icon>
-                </div>
-
-              </button>
-
-              <ul class="sidebar-submenu-category-list" data-accordion>
-
-                <li class="sidebar-submenu-category">
-                  <a href="#" class="sidebar-submenu-title">
-                    <p class="product-name">Shirt</p>
-                    <data value="300" class="stock" title="Available Stock">300</data>
-                  </a>
-                </li>
-
-
-              </ul>
-
-            </li>
-
-          </ul>
-
-        </div>
-
-        <div class="product-showcase">
-
-          <h3 class="showcase-heading">best sellers</h3>
-
-          <div class="showcase-wrapper">
-
-            <div class="showcase-container">
-{% for product in products %}
-              <div class="showcase">
-
-                <a href="#" class="showcase-img-box">
-                  {% if product.image %}
-                  <img src="{{product.image.url}}" alt="baby fabric shoes" width="75" height="75"
-                    class="showcase-img">
-                  {% else %}
-                  <img src="https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/a0a300da-2e16-4483-ba64-9815cf0598ac/chaussure-air-force-1-07-pour-lKPQ6q.png" alt="baby fabric shoes" width="75" height="75"
-                    class="showcase-img">
-                  {% endif %}
-                  
-                </a>
-
-                <div class="showcase-content">
-
-                  <a href="#">
-                    <h4 class="showcase-title">{{product.name}}</h4>
-                  </a>
-
-                  <div class="showcase-rating">
-                    {% if product.avg_rating == 5 %}
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i>
-                    {% elif product.avg_rating == 4 %}
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-secondary"></i>
-
-                    {% elif product.avg_rating == 3 %}
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-secondary"></i>
-                    <i class="fa fa-star text-secondary"></i>
-
-                    {% elif product.avg_rating == 2 %}
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-secondary"></i>
-                    <i class="fa fa-star text-secondary"></i>
-                    <i class="fa fa-star text-secondary"></i>
-
-                    {% elif product.avg_rating == 1 %}
-                    <i class="fa fa-star text-warning"></i>
-                    <i class="fa fa-star text-secondary"></i>
-                    <i class="fa fa-star text-secondary"></i>
-                    <i class="fa fa-star text-secondary"></i>
-                    <i class="fa fa-star text-secondary"></i>
-                    {% else %}
-                    <i class="fa fa-star text-secondary"></i>
-                    <i class="fa fa-star text-secondary"></i>
-                    <i class="fa fa-star text-secondary"></i>
-                    <i class="fa fa-star text-secondary"></i>
-                    <i class="fa fa-star text-secondary"></i>
-                    {% endif %}
-                  </div>
-
-                  <div class="price-box">
-                    <del>{{product.price}}DA</del>
-                    <p class="price">{{product.price}} DA</p>
-                  </div>
-
-                </div>
-
-              </div>
-{% endfor %}
-          
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-    <div class="col-xl-9 col-lg-8 col-md-7 mt-5">
+<div class="container my-4">
+  <div class="row ">
+    <div class="col-12">
       <!-- Start Filter Bar -->
       <div class="filter-bar d-flex flex-wrap align-items-center">
         <div style="width: 100%">
@@ -175,10 +36,10 @@
       </div>
       <!-- End Filter Bar -->
       <!-- Start Best Seller -->
-      <section class="lattest-product-area category-list">
+      <section class="lattest-product-area category-list ">
         <div class="product-main container pt-5">
 
-          <h2 class="title">New Products</h2>
+          <h2 class="title">Nouveaux produits</h2>
         
           <div class="product-grid" id="list_product">
         {% for product in products  %}
@@ -189,7 +50,16 @@
                 <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img default">
                 <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img hover">
         
-                <p class="showcase-badge">15%</p>
+                {% if product.status%}
+                <p class="
+                showcase-badge
+                {% if product.status == "promotion" %}
+                angle pink
+                {% elif product.status == "nouvelle" %}
+                angle black
+                {% endif %}
+                ">{{product.status}}</p>
+          {% endif %}
         
                 <div class="showcase-actions">
         
@@ -289,16 +159,22 @@
           </select>
         </div>
         <div class="pagination ">
-          <a href="#" class="prev-arrow"
-            ><i class="fa fa-long-arrow-left" aria-hidden="true"></i
-          ></a>
+          {% if page.has_previous %}
+          <a href="?page={{page.previous_page_number}}"  class="prev-arrow"
+          ><i class="fa fa-long-arrow-left" aria-hidden="true"></i
+        ></a>
+          {% endif %}
+   
           {% for i in paginator.page_range  %}
-          
-          <a href="?page={{i}}" class=" {% if i == page_number  %} active {% endif %}  mx-1 ">{{i}}</a>
+          <a href="?page={{i}}" class="{% if i == page_number %}active{% endif %} mx-1 ">{{i}}</a>
           {% endfor %}
-          <a href="#" class="next-arrow"
+          {% if page.has_next %}
+
+          <a href="?page={{page.next_page_number}}" class="next-arrow"
             ><i class="fa fa-long-arrow-right" aria-hidden="true"></i
           ></a>
+          {% endif %}
+
         </div>
       </div>
       <!-- End Filter Bar -->
@@ -318,9 +194,16 @@
 
         <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img default">
         <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img hover">
-
-        <p class="showcase-badge">15%</p>
-
+{% if product.status%}
+        <p class="
+        showcase-badge
+        {% if product.status == "promotion" %}
+        angle pink
+        {% elif product.status == "nouvelles" %}
+        angle black
+        {% endif %}
+        ">{{product.status}}</p>
+  {% endif %}
         <div class="showcase-actions">
 
           <button class="btn-action">

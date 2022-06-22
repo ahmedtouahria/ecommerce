@@ -9,6 +9,7 @@ urlpatterns = [
     path('dashboard/',include('dashboard.urls')),
     
     path('api/',include('api.urls')),
-    path('api-auth/', include('rest_framework.urls'))
+    path('api-auth/', include('rest_framework.urls')),
+     path('oauth/', include('social_django.urls', namespace='social')), 
   #  path('',include('user.urls')),
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

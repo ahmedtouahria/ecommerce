@@ -1,16 +1,12 @@
-#from django.shortcuts import render
 from django.shortcuts import redirect
 from rest_framework import viewsets
-from django.db.models import Q
 import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-#from rest_framework import authentication, permissions
 from shopping.models import Customer, Order, Product, Rating
 from shopping.views import cookieCart
 from django.http import JsonResponse
-from rest_framework import generics
 from .serializers import *
 
 
@@ -51,7 +47,6 @@ class cartitemApi(APIView):
     """
     View to number cart item
     """
-
     def get(self, request, format=None):
 
         return Response({"cartItem": cartitem(request)})
@@ -74,13 +69,9 @@ def validate_username(request):
 
 def search_products(request):
     search_data = request.GET.get('search_data', None)
-  #  lower_value=request.GET.get('lower_value',None)
-   # upper_value=request.GET.get('upper_value',None)
-
     products_filtred = Product.objects.filter(name__icontains=search_data)
     data = products_filtred.values()
     return JsonResponse(list(data), safe=False)
-
 
 def product_rating(request):
     user_id = int(request.data.get('user_id'))
@@ -105,15 +96,13 @@ def product_rating(request):
 
 
 @api_view(['POST'])
-def hello_world(request):
+def rating_product(request):
 
     if request.method == 'POST':
         user_id = int(request.data['user_id'])
         product_id = int(request.data['product_id'])
         stars = int(request.data['stars'])
         content = request.data['content']
-
-       # print(user_id,product_id,stars)
         try:
             user = Customer.objects.get(id=user_id)
             product = Product.objects.get(id=product_id)
@@ -169,10 +158,10 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 @api_view(['POST'])
 def add_product(request):
-    product_ref = request.session.get("product_ref",None)
+    product_ref = request.session.get("product_ref", None)
     if request.method == 'POST':
-        sizes = request.data.get('sizes',None)
-        colors = request.data.get('colors',None)
+        sizes = request.data.get('sizes', None)
+        colors = request.data.get('colors', None)
         if product_ref is not None:
             product = Product.objects.get(id=product_ref)
             for size in sizes:
