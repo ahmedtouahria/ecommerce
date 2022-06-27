@@ -27,7 +27,6 @@
             <h3>Détails de la facturation</h3>
             <form id="form" class="row contact_form" method="post">
               {% csrf_token %}
-              {% if not user.is_authenticated %}
               <div class="col-md-6 form-group p_star">
                 <input
                   required
@@ -50,7 +49,6 @@
                   required
                 />
               </div>
-              {% endif %}
               <div class="col-md-6 form-group p_star">
                 <select class="custom-select w-75 wilaya" name="wilaya" id="wilaya">
                 </select>
@@ -142,7 +140,7 @@
                   <a href="#" >expédition <span id='shipping'></span></a>
                 </li>
                 <li>
-                  <a href="#">Total avec expédition<span>{{order.get_cart_total}}DA</span></a>
+                  <a href="#">Total avec expédition<span id="total_1">{{order.get_cart_total}}DA</span></a>
                 </li>
               </ul>
  
@@ -163,9 +161,8 @@
         <div class="row">
           <div class="col-lg-7">
             <h3>Détails de la facturation</h3>
-            <form id="form" class="row contact_form" method="post">
+            <form id="form2" class="row contact_form" method="post">
               {% csrf_token %}
-              {% if not user.is_authenticated %}
               <div class="col-md-6 form-group p_star">
                 <input
                   required
@@ -188,9 +185,8 @@
                   required
                 />
               </div>
-              {% endif %}
               <div class="col-md-6 form-group p_star">
-                <select class="custom-select w-75 wilaya" name="wilaya" id="wilaya">
+                <select class="custom-select w-75 wilaya" name="wilaya" id="wilaya2">
                 </select>
               </div>
               
@@ -280,7 +276,7 @@
                   <a href="#" >expédition <span id='shipping_home'></span></a>
                 </li>
                 <li>
-                  <a href="#">Total avec expédition<span>{{order.get_cart_total}}DA</span></a>
+                  <a href="#">Total avec expédition<span id="total_2">{{order.get_cart_total}}DA</span></a>
                 </li>
               </ul>
  
@@ -305,6 +301,9 @@
 	<script>
 
     $(document).ready(function(){
+      var total_order = {{order.get_cart_total}};
+      var arrData = [];
+      var wilaya_arr = [];
       var wilaya_select=document.getElementsByClassName("wilaya");
       var commun_select=document.getElementById("commun");
       var commun_select2=document.getElementById("commun2");
@@ -316,9 +315,7 @@
               dataType: 'json', // added data type
               success: function(data) {
                 data.forEach(element=>{
-                for(let i=0;i<wilaya_select.length;i++){
-                wilaya_select[i].innerHTML+=`<option name="state" value="${element.name}">${element.id} ${element.name}</option>`;
-              }
+                wilaya_select[0].innerHTML+=`<option name="state" value="${element.name}">${element.id} ${element.name}</option>`;
                 })
       
               }
@@ -342,7 +339,7 @@
               },
             });
             var shipping = document.getElementById('shipping');
-
+            var total_1 = document.getElementById('total_1');
 
             // and display deliveryfees
             $.ajax({
@@ -353,6 +350,8 @@
                 data['deliveryfees'].forEach(element=>{
                 if(element.wilaya_name==current_wilaya){
                   shipping.innerHTML=`${element.desk_fee} DA`;
+                  total_1.innerHTML=`${total_order+element.desk_fee} DA`;
+
 
                 }
                 })
@@ -360,77 +359,85 @@
               },
             });
           };
-          wilaya_select[1].onchange=function(e){
-            console.log(e.target.value);
-            commun_select2.innerHTML='';
-            let current_wilaya2=e.target.value;
-            //display related communs 
-            $.ajax({
-            url: "/api/getcommunstrus/",
-            type: 'GET',
-            dataType: 'json', // added data type
-            success: function(data) {
-              data['communs'].forEach(element=>{
-              if(element.wilaya_name==current_wilaya2){
-                commun_select2.innerHTML+=
-                `<option name="commun" value="${element.name}">${element.name}</option>`;}
-              })
-    
-            },
+          $.getJSON("{% static 'json/communs.json' %}", function (data) {
+            $.each(data["data"], function (index, value) {
+              wilaya_arr.push(value.wilaya_name);
+              arrData = data["data"];
+            });
+  
+            // Remove duplicates. We want unique wilaya.
+            wilaya_arr = Array.from(new Set(wilaya_arr));
+  
+            $.each(wilaya_arr, function (index, value) {
+              $("#wilaya2").append(
+                '<option name="wilaya" value="' + value + '">' + value + "</option>"
+              );
+            });
           });
-          var shipping_home = document.getElementById('shipping_home');
-
-
-          // and display deliveryfees
+          var total_2 = document.getElementById('total_2');
+          $("#wilaya2").change(function () {
+            let wilayaTarget = this.options[this.selectedIndex].value;
+            $("shipping_home").html()
+            let filterData = arrData.filter(function (value) {
+              return value.wilaya_name == wilayaTarget;
+            });
+            $("#commun2")
+              .empty()  
+            $.each(filterData, function (index, value) {
+              $("#commun2").append(
+                '<option name="commun" value="' +
+                  value.name +
+                  '">' +
+                  value.name +
+                  "</option>"
+              );
+            });
+                      // and display deliveryfees
           $.ajax({
             url: "/api/getcommunstrus/",
             type: 'GET',
             dataType: 'json', // added data type
             success: function(data) {
               data['deliveryfees'].forEach(element=>{
-              if(element.wilaya_name==current_wilaya2){
+              if(element.wilaya_name==wilayaTarget){
                 shipping_home.innerHTML=`${element.home_fee} DA`;
+                total_2.innerHTML=`${total_order+element.home_fee} DA`;
 
               }
               })
     
             },
           });
-        };
+          });
+
     }) // end document ready
 
     var form = document.getElementById("form");
+    var form2 = document.getElementById("form2");
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       submitFormData();
     });
+    form2.addEventListener("submit", function (e) {
+      e.preventDefault();
+      submitFormData2();
+    });
+  
     function submitFormData() {
       console.log("submite button clicked");
       var userFormData = {
-        name: null,
-        phone: null,
+        name: form.name.value,
+        phone: form.phone.value,
         total: total,
       };
       var shippingInfo = {
-        address: null,
-        city: null,
-        state: null,
-        zipcode: null,
+        address: form.address.value,
+        city: form.commun.value,
+        state: form.wilaya.value,
+        zipcode: form.zipcode.value,
+        
       };
-      shippingInfo.address = form.address.value;
-      shippingInfo.city = form.commun.value;
-      shippingInfo.state = form.wilaya.value;
-      shippingInfo.zipcode = form.zipcode.value;
-      name = name;
-      phone = phone;
-      if (user == "AnonymousUser") {
-        userFormData.name = form.name.value;
-        userFormData.phone = form.phone.value;
-      } else {
-        userFormData.name = name;
-        userFormData.phone = phone;
-      }
-
       console.log("Shipping Info:", shippingInfo);
       console.log("User Info:", userFormData);
 
@@ -441,7 +448,7 @@
           "Content-Type": "applicaiton/json",
           "X-CSRFToken": csrftoken,
         },
-        body: JSON.stringify({ form: userFormData, shipping: shippingInfo }),
+        body: JSON.stringify({ form: userFormData , shipping: shippingInfo,stop_disk:true  }),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -457,6 +464,42 @@
           console.error("Error:", error);
         });
     }
-	
+    function submitFormData2() {
+      console.log("submite button clicked");
+      var userFormData2 = {
+        name: form2.name.value,
+        phone: form2.phone.value,
+        total: total,
+      };
+      var shippingInfo2 = {
+        address: form2.address.value,
+        city: form2.commun.value,
+        state: form2.wilaya.value,
+        zipcode: form2.zipcode.value,
+        
+
+      };
+      var url = "/process_order/";
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken,
+        },
+        body: JSON.stringify({ form: userFormData2, shipping: shippingInfo2,stop_disk:false }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data);
+          fireSweetAlert();
+          cart = {};
+          document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
+          window.location.href = "{% url 'products' %}";
+        })
+        .catch((error) => {
+          fireSweetAlertError();
+          console.error("Error:", error);
+        });
+    }
 	</script>
 {% endblock content %}

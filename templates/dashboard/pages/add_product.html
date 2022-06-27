@@ -6,8 +6,8 @@
     {% csrf_token %}
     <div class="previews"></div>
 
-    <input class="form-control mb-4" name="name" placeholder="Name" multiple />
-    <select
+    <input required class="form-control mb-4" name="name" placeholder="Name" />
+    <select required
       name="category"
       class="form-select mb-4"
       aria-label="Default select example"
@@ -17,25 +17,26 @@
       <option>{{cat.name}}</option>
       {% endfor %}
     </select>
-    <input
+    <input required
       class="form-control mb-4"
       type="number"
       name="price1"
       placeholder="Price 1"
     />
     <input
+ required
       class="form-control mb-4"
       type="number"
       name="price2"
       placeholder="Price 2"
     />
-    <input
+    <input  required
       class="form-control mb-4"
       type="number"
       name="quantity"
       placeholder="quantity"
     />
-    <input
+    <input required
       class="form-control mb-4"
       name="description"
       placeholder="description"
@@ -78,6 +79,12 @@
       placeholder="add"
     />
   </form>
+ <p>
+  <a class="btn btn-primary" data-bs-toggle="collapse" href="#contentId" aria-expanded="false" aria-controls="contentId">
+    Ajouté les variations
+  </a>
+ </p>
+ <div class="collapse" id="contentId">
   <div class="row">
     <div class="col-12 col-md-6">
       <div class="wrapper mb-4">
@@ -108,28 +115,12 @@
     <input
     class="btn btn-outline-info btn-sm w-25"
     placeholder="add"
-    id="color_send"
-  />
+    id="color_send"/>
   </div>
+ </div>
 </div>
 <script>
-  function getToken(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-      var cookies = document.cookie.split(";");
-      for (var i = 0; i < cookies.length; i++) {
-        var cookie = cookies[i].trim();
-        // Does this cookie string begin with the name we want?
-        if (cookie.substring(0, name.length + 1) === name + "=") {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  }
-  // and we assign to variable csrftoken for post secure data
-  var csrftoken = getToken("csrftoken");
+ 
   /*
 
  <------- SCRIPT TO ADD SIZE AND COLORS IN THE TAGS AND SEND THIS INTO SERVER --------->
@@ -232,7 +223,12 @@
   // ---- SEND REQUEST ---- ADD VARIATION
   const send = document.getElementById("color_send");
   send.addEventListener("click", function (e) {
+//    _this.attr("disabled", "disabled");
+    send.disabled = true;
     addFormData();
+    send.disabled = false;
+
+    //_this.removeAttr("disabled");
   });
   function addFormData() {
     data = {

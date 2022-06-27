@@ -2,14 +2,14 @@
 {% load static %}
 {% block profile %}
 <div class="card">
-<h3 class="p-2">My orders</h3>
+<h3 class="p-2">Mes commandes</h3>
 
     <table class="table ">
         <thead class="thead-dark mx-2">
           <tr>
-            <th scope="col">Order 
+            <th scope="col">commande 
             </th>
-            <th scope="col">Transition_id</th>
+            <th scope="col">idDeTransition</th>
             <th scope="col">Date <i class="fa fa-calendar mx-2" aria-hidden="true"></i>
             </th>
           </tr>
@@ -17,7 +17,7 @@
         <tbody>
             {% for order in orders %}
           <tr>
-            <th scope="row"><a href="{% url 'myorders' order.id %}"><i class="fa fa-external-link mx-2" aria-hidden="true"></i></a>
+            <th scope="row"><a href="{% url 'myorders' order.transaction_id %}"><i class="fa fa-external-link mx-2" aria-hidden="true"></i></a>
             </th>
             <td>{{order.transaction_id}}</td>
             <td>{{order.date_ordered}}</td>
@@ -25,7 +25,25 @@
     {% endfor %}
         </tbody>
       </table>
-      
+      <div class="pagination my-3 mx-auto">
+        {% if page.has_previous %}
+        <a href="?page={{page.previous_page_number}}"  class="prev-arrow"
+        ><i class="fa fa-long-arrow-left" aria-hidden="true"></i
+      ></a>
+        {% endif %}
+  
+        {% for i in paginator.page_range  %}
+        <a href="?page={{i}}" class="{% if i == page_number %}active{% endif %} mx-1 ">{{i}}</a>
+        {% endfor %}
+        {% if page.has_next %}
+  
+        <a href="?page={{page.next_page_number}}" class="next-arrow"
+          ><i class="fa fa-long-arrow-right" aria-hidden="true"></i
+        ></a>
+        {% endif %}
+  
+      </div>
     </div>
+
 {% endblock profile %}
 

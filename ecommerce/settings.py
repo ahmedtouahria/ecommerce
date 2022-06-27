@@ -117,7 +117,10 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
+'''YALIDIN API '''
+ID_API_YALIDIN="99661386291735714432"
+TOKEN_API_YALIDIN="P1S1CFxh3daINmDr7JeTgHikEJiwybB52VyTcB67A5KLkFtSvWRmLfAlnQDNWsbn"
+BASE_URL_YALIDIN="https://api.yalidine.app/v1/"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/

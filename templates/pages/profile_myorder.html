@@ -1,8 +1,18 @@
 {% extends "pages/profile_base.html" %}
 {% load static %}
 {% block profile %}
+
 <div class="card">
-    <h4 class="p-2 text-info">Order {{order}}</h4>
+
+    <h4 class="p-2 text-info mx-auto">commande N- {{order.transaction_id}}</h4>
+    {% if messages %}
+{% for msg in messages %}
+<div class="alert alert-primary mx-2" role="alert">
+  <strong>{{msg}}</strong> <a href="#" class="alert-link">Cliquez ici <i class="fa fa-external-link mx-2" aria-hidden="true"></i></a>
+</div>
+{% endfor %}
+{% endif %}
+
     <section class="cart_area py-1">
         <div class="container">
           <div class="cart_inner">
@@ -10,10 +20,10 @@
               <table class="table">
                 <thead>
                   <tr>
-                    <th scope="col">Product</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Total</th>
+                    <th scope="col">Produit</th>
+                    <th scope="col">Prix</th>
+                    <th scope="col">Quantité</th>
+                    <th scope="col">Totale</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -81,14 +91,14 @@
       </section>
 </div>
 <div class="card mb-5 mt-0">
-  <h4 class="p-2 text-info">Your order status</h4>
-{% if order.status == "Ordered" %}
+  <h4 class="p-2 text-info mx-auto">Votre état de commande</h4>
+{% if last_status.last_status == "En préparation" %}
   <div class="row ">
     <div class="col-12 col-md-12 ">
       <div class="row justify-content-between">
         <div class="order-tracking completed">
           <span class="is-complete"></span>
-          <p>Ordered<br><span>{{order.date_ordered}}</span></p>
+          <p>En préparation<br></p><span>{{last_status.date_last_status}}</span>
         </div>
         <div class="order-tracking ">
           <span class="is-complete"></span>
@@ -101,17 +111,17 @@
       </div>
     </div>
   </div>
-  {% elif order.status == "Shipped" %}
+  {% elif last_status.last_status == "Expédié" %}
   <div class="row ">
     <div class="col-12 col-md-12 ">
       <div class="row justify-content-between">
         <div class="order-tracking completed">
           <span class="is-complete"></span>
-          <p>Ordered<br><span>{{order.date_ordered}}</span></p>
+          <p>En préparation<br><span></span></p>
         </div>
         <div class="order-tracking completed">
           <span class="is-complete "></span>
-          <p>Shipped<br><span>{{order.date_ordered}}</span></p>
+          <p>Expédié<br></p><span>{{last_status.date_last_status}}</span>
         </div>
         <div class="order-tracking">
           <span class="is-complete"></span>
@@ -120,21 +130,40 @@
       </div>
     </div>
   </div>
-  {% elif order.status == "Delivered" %}
+  {% elif last_status.last_status == "Livré" %}
   <div class="row ">
     <div class="col-12 col-md-12 ">
       <div class="row justify-content-between">
         <div class="order-tracking completed">
           <span class="is-complete"></span>
-          <p>Ordered<br><span>{{order.date_ordered}}</span></p>
+          <p>En préparation<br><span></span></p>
         </div>
         <div class="order-tracking completed">
           <span class="is-complete "></span>
-          <p>Shipped<br><span>{{order.date_ordered}}</span></p>
+          <p>Expédié<br><span></span></p>
         </div>
         <div class="order-tracking completed">
           <span class="is-complete"></span>
-          <p>Delivered<br><span></span></p>
+          <p>Livré<br></p><span>{{last_status.date_last_status}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="row ">
+    <div class="col-12 col-md-12 ">
+      <div class="row justify-content-between">
+        <div class="order-tracking ">
+          <span class="is-complete"></span>
+          <p>En préparation<br><span></span></p>
+        </div>
+        <div class="order-tracking ">
+          <span class="is-complete "></span>
+          <p>Expédié<br><span></span></p>
+        </div>
+        <div class="order-tracking ">
+          <span class="is-complete"></span>
+          <p>Livré<br></p><span></span>
         </div>
       </div>
     </div>

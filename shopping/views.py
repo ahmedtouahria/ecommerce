@@ -1,8 +1,10 @@
+from django.conf import settings
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 import json
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+import requests
 from shopping.models import *
 from django.contrib import messages
 from django.core.paginator import  Paginator
@@ -118,9 +120,9 @@ def index(request):
         order = cookieData['order']
         cartItem = cookieData['cartItem']
     d=date.today()-timedelta(days=7)
-    order_items = OrderItem.objects.annotate(count_product=Max("quantity")).filter(date_added__gte=d).order_by("-count_product")
-    top_rated = Rating.objects.annotate(rating_count=Max("stars")).order_by("rating_count")
-    print(top_rated.values("rating_count"))
+    order_items = Product.objects.all().order_by("-count_sould")[:7]
+
+    top_rated = Rating.objects.annotate(rating_count=Max("stars")).order_by("-rating_count")
     toast=ToastMessage.objects.all().last()
     affaire = Affaire.objects.all()
     context = {
@@ -129,7 +131,6 @@ def index(request):
         "top_rated": top_rated[:5],
         "toast":toast,
         "affaires":affaire,
-
         "category_sub": CategorySub.objects.all(),
         "category": Category.objects.all(),
         "imgs_banner": ImageBanner.objects.all()[:3],
@@ -159,7 +160,7 @@ def products(request):
         items = cookieData['items']
         order = cookieData['order']
         cartItem = cookieData['cartItem']
-    products = Product.objects.all()
+    products = Product.objects.filter(quantity__gt=0)
     paginator = Paginator(products,8)
     page_number=request.GET.get("page",1)
     page_products_display=paginator.get_page(page_number)
@@ -243,10 +244,20 @@ def productWithCode(request, pk, *args, **kwargs):
         items = cookieData['items']
         order = cookieData['order']
         cartItem = cookieData['cartItem']
+    try:
+        product_id = Product.objects.get(id=pk)
+    except Product.DoesNotExist:
+        product_id = None
+        return redirect('products')
     context = {
-        "product": Product.objects.get(id=pk),
+        "products": Product.objects.filter(category=product_id.category),
+        "ratings": Rating.objects.filter(product=product_id),
+        "stars": product_id.avg_rating,
+        "product": product_id,
         "order": order,
         "cartItem": cartItem,
+        "product_imgs":ProductImage.objects.filter(product=product_id),
+        "titel": str(product_id.name).replace(" ", "-").lower(),
     }
     return render(request, 'pages/single-product.html', context)
 
@@ -323,11 +334,31 @@ Profits page Logic
 @login_required(login_url='login')
 def profile(request):
     user = request.user
+    if request.user.is_authenticated:
+        customer = request.user
+        order, created = Order.objects.get_or_create(
+            customer=customer, complete=False)
+        items = order.orderitem_set.all()
+        cartItem = order.get_cart_items
+        # print(items)
+    else:
+        cookieData = cookieCart(request)
+        items = cookieData['items']
+        order = cookieData['order']
+        cartItem = cookieData['cartItem']
     try:
         money = Conversion.objects.get(receveur=user)
     except Conversion.DoesNotExist:
         money = 0
-    return render(request, "pages/myprofile.html", {"money": money, "titel": "profile"})
+    context={
+        "money": money,
+        "titel": "profile",
+        "items": items,
+        "order": order,
+        "cartItem": cartItem,
+         
+         }
+    return render(request, "pages/myprofile.html",context )
 
 
 @login_required(login_url='login')
@@ -335,24 +366,49 @@ def profile_orders(request):
     user = request.user
     orders = Order.objects.filter(
         customer=user, complete=True).order_by('-date_ordered')
+    paginator = Paginator(orders,8)
+    page_number=request.GET.get("page",1)
+    page_products_display=paginator.get_page(page_number)
+
 
     context = {
-        "orders": orders,
-        "titel": "Mes commandes"
+        "orders": page_products_display,
+        "titel": "Mes commandes",
+        "page":page_products_display,
+        "page_number":int(page_number),
 
+        "paginator":paginator,
 
     }
     return render(request, 'pages/profile_orders.html', context)
 
 
 def myorders(request, pk):
-    order = Order.objects.filter(id=pk).first()
-    order_items = OrderItem.objects.filter(order=order)
+    user = request.user
+    order = Order.objects.filter(transaction_id=pk).first()
+    headers = {"X-API-ID": settings.ID_API_YALIDIN,"X-API-TOKEN": settings.TOKEN_API_YALIDIN }
+    response = requests.get(f"{settings.BASE_URL_YALIDIN}parcels/{order.transaction_id}", headers=headers)
+    parcel = response.json()
+    print(parcel)
+    total_data=parcel.get("total_data",None)
+    if total_data > 0:
+        transaction_id = parcel.get('data',None)
+        last_status= transaction_id[0]
+        try:
+            if order.customer != user:
+                return redirect("profile_orders")
+        except:
+            return redirect("profile_orders")
+        order_items = OrderItem.objects.filter(order=order)
+    else:
+        order_items = OrderItem.objects.filter(order=order)
+        last_status=""
+        messages.info(request,"Cette demande est en attente!")
     context = {
         "order": order,
         "order_items": order_items,
-        "titel": "Mes commandes"
-
+        "titel": "Mes commandes",
+        "last_status":last_status
     }
     return render(request, 'pages/profile_myorder.html', context)
 
@@ -464,7 +520,8 @@ def updateItem(request):
 
 def processOrder(request):
     data = json.loads(request.body)
-    # print("process_o_c",request.session['ref_customer'])
+    print(data)
+    stop_disk=data.get("stop_desk",False)
     # get order if user is authenticated
     if request.user.is_authenticated:
         customer = request.user
@@ -496,10 +553,13 @@ def processOrder(request):
             ShippingAddress.objects.create(
                 customer=customer,
                 order=order,
+                name=data['form']['name'],
+                phone=data['form']['phone'],
                 address=data['shipping']['address'],
                 city=data['shipping']['city'],
                 state=data['shipping']['state'],
                 zipcode=data['shipping']['zipcode'],
+                is_stopdesk=stop_disk
             )
 
     else:

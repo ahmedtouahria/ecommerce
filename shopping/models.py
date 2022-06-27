@@ -1,5 +1,4 @@
-from typing import Optional
-
+import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import RegexValidator
@@ -182,7 +181,7 @@ class CategorySub(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200,unique=True)
     slug = models.SlugField(blank=True,null=True)
     category = models.ForeignKey(
         CategorySub, on_delete=models.PROTECT, null=True, blank=True)
@@ -200,7 +199,7 @@ class Product(models.Model):
     available = models.BooleanField(default=True)
     barcode = models.ImageField(upload_to='barcodes/', blank=True, null=True)
     barcode_num = models.CharField(max_length=13, null=True, blank=True)
-
+    count_sould=models.PositiveIntegerField(default=0)
     @property
     def profits(self):
         return self.price_achat-self.price
@@ -267,8 +266,17 @@ class ToastMessage(models.Model):
 class Affaire(models.Model):
     product = models.ForeignKey("shopping.Product", verbose_name=("produit"), on_delete=models.CASCADE)
     date_end = models.DateTimeField(("la date TERMINE "), auto_now=False)
-    def get_days(self):
-        return   self.date_end-timezone.now()
+
+    def get_time(self):
+        time_remaining={"days":0,"hours":0,"minuts":0,"seconds":0}
+        time_taking = self.date_end-timezone.now()
+        time_in_seconds=time_taking.total_seconds()
+        get_days = time_taking.days
+        time_remaining["days"]=get_days
+        time_remaining["hours"]=int((int(time_in_seconds)-int(get_days)*86400)/3600)
+        time_remaining["minuts"]=int((int(time_in_seconds)-int(get_days)*86400 - time_remaining["hours"]*3600)/60)
+        time_remaining["seconds"]=int((int(time_in_seconds)-int(get_days)*86400 - time_remaining["hours"]*3600 - time_remaining["minuts"]*60))
+        return  time_remaining
     def __str__(self):
         return self.product.name
 
@@ -309,11 +317,10 @@ class Order(models.Model):
     date_ordered = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False)
     transaction_id = models.CharField(max_length=8)
-    recommended_by = models.ForeignKey(
-        Customer, on_delete=models.SET_NULL, null=True, related_name="recommended_by")
+    recommended_by = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, related_name="recommended_by")
     status = models.CharField(
         max_length=100, choices=STATUS, default='Ordered')
-
+    confirmed=models.BooleanField(default=False)
     def customer_number(self):
         return self.customer.phone
 
@@ -343,7 +350,6 @@ class Order(models.Model):
         total = sum([item.quantity for item in orderitems])
         return total
 
-
 class Rating(models.Model):
     user = models.ForeignKey(
         Customer, on_delete=models.CASCADE, related_name="rate")
@@ -369,7 +375,6 @@ class OrderItem(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     color= models.CharField(max_length=50,null=True)
     size=models.CharField( max_length=50, null=True)
-
     def __str__(self):
         return f"{self.order}"
 
@@ -380,16 +385,16 @@ class OrderItem(models.Model):
 
 
 class ShippingAddress(models.Model):
-
-    customer = models.ForeignKey(
-        Customer, on_delete=models.SET_NULL, null=True)
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    name=models.CharField(max_length=50,null=True)
+    phone=models.CharField(max_length=14,null=True)
     address = models.CharField(max_length=200, null=False)
     city = models.CharField(max_length=200, null=False)
     state = models.CharField(max_length=200, null=False)
     zipcode = models.CharField(max_length=200, null=False)
     date_added = models.DateTimeField(auto_now_add=True)
-
+    is_stopdesk=models.BooleanField(default=True,null=True)
     def __str__(self):
         return f'{self.order}<--to-->{self.address}'
 

@@ -54,10 +54,8 @@
     <script src="{% static 'js/jquery.magnific-popup.min.js'%}"></script>
     <script src="{% static 'js/owl.carousel.min.js'%}"></script>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-	<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-	<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-    <!--===================gmaps Js==============================-->
-    <script src="{% static 'js/gmaps.min.js'%}"></script>
+	  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+	  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <script src="{% static 'js/main.js'%}"></script>
 {% comment %}     <script src="{% static 'js/script.js'%}"></script> {% endcomment %}
 
@@ -210,59 +208,7 @@ console.log("Cart:", cart);
         e.preventDefault();
         submitFormData();
       });*/
-      function submitFormData() {
-        console.log("submite button clicked");
-        var userFormData = {
-          name: null,
-          phone: null,
-          total: total,
-        };
-        var shippingInfo = {
-          address: null,
-          city: null,
-          state: null,
-          zipcode: null,
-        };
-        shippingInfo.address = form.address.value;
-        shippingInfo.city = form.commun.value;
-        shippingInfo.state = form.wilaya.value;
-        shippingInfo.zipcode = form.zipcode.value;
-        name = "{{request.user.name}}";
-        phone = "{{request.user.phone}}";
-        if (user == "AnonymousUser") {
-          userFormData.name = form.name.value;
-          userFormData.phone = form.phone.value;
-        } else {
-          userFormData.name = name;
-          userFormData.phone = phone;
-        }
-
-        console.log("Shipping Info:", shippingInfo);
-        console.log("User Info:", userFormData);
-
-        var url = "/process_order/";
-        fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "applicaiton/json",
-            "X-CSRFToken": csrftoken,
-          },
-          body: JSON.stringify({ form: userFormData, shipping: shippingInfo }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Success:", data);
-            fireSweetAlert();
-            cart = {};
-            document.cookie =
-              "cart=" + JSON.stringify(cart) + ";domain=;path=/";
-            window.location.href = "{% url 'products' %}";
-          })
-          .catch((error) => {
-            fireSweetAlertError();
-            console.error("Error:", error);
-          });
-      }
+    
       // function swite alert to hundel beutifule alert
       // success alert
       function fireSweetAlert() {
@@ -403,7 +349,7 @@ console.log("Cart:", cart);
     </script>
 	<script>
 		       // script realtime test username existed or no
-			   $("#username").keyup(function () {
+			 /*  $("#username").keyup(function () {
 				let username = $(this).val().trim();
 				$.ajax({
 				  url: "/api/validate_username/",
@@ -421,7 +367,7 @@ console.log("Cart:", cart);
 				});
 			  });
 			  //------ script realtime to test phone---//
-			  $("#phone").keyup(function () {
+		/*	  $("#phone").keyup(function () {
 				let phone = $(this).val().trim();
 				$.ajax({
 				  url: "/api/validate_username/",
@@ -441,9 +387,9 @@ console.log("Cart:", cart);
 					}
 				  },
 				});
-			  });
+			  });*/
 			  /////////////// script realtime search ///////////////////
-			  $("#search").keyup(function () {
+			 /* $("#search").keyup(function () {
 				let search_data = $(this).val();
 			//	let lower_value = $("#lower-value").html();
 			//	let upper_value = $("#upper-value").html();
@@ -565,7 +511,7 @@ console.log("Cart:", cart);
 					},
 				  });
 				}
-			  });
+			  });*/
 	</script>
 	<script>
 	 var dropdown_panel = document.getElementById("dropdown_panel");
@@ -610,8 +556,12 @@ console.log("Cart:", cart);
 				}); // data.forEach end
 			
 				}, //end success
-			}); //ajax end
+			}); 
+      
+ 
+      //ajax end
 		})
+
 	</script>
 	<script>
 

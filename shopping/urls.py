@@ -8,7 +8,7 @@ path('register/',register,name='register'),
 path('login/',login_customer,name='login'),
 path('profile/',profile,name='profile'),
 path('profile/orders',profile_orders,name='profile_orders'),
-path('profile/orders/<int:pk>',myorders,name='myorders'),
+path('profile/orders/<str:pk>',myorders,name='myorders'),
 
 
 path('products/<int:pk>',product,name='single-product'),
