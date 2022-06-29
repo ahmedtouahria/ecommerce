@@ -121,7 +121,7 @@
       <div class="showcase-container">
     {% for product in new_arrival %}
         <div class="showcase">
-          <a href="{% url 'single-product' product.id %}" class="showcase-img-box">
+          <a href="{% url 'single-product' product.slug %}" class="showcase-img-box">
             {% if product.image %}
             <img src="{{product.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
             {% endif %}
@@ -150,7 +150,7 @@
       
         {% for product in new_arrival %}
         <div class="showcase">
-          <a href="#" class="showcase-img-box">
+          <a href="{% url 'single-product' product.slug %}" class="showcase-img-box">
                {% if product.image %}
             <img src="{{product.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
             {% endif %}
@@ -189,7 +189,7 @@
   
         {% for trend in trending %}
         <div class="showcase">
-          <a href="#" class="showcase-img-box">
+          <a href="{% url 'single-product' trend.slug %}" class="showcase-img-box">
                {% if trend.image %}
             <img src="{{trend.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
             {% endif %}
@@ -259,7 +259,7 @@
   
         {% for rate in top_rated %}
         <div class="showcase">
-          <a href="#" class="showcase-img-box">
+          <a href="{% url 'single-product' rate.product.slug %}" class="showcase-img-box">
                {% if rate.product.image %}
             <img src="{{rate.product.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
             {% endif %}

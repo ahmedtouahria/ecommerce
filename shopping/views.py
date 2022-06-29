@@ -12,6 +12,8 @@ from django.db.models import  Count,Max
 from datetime import date, timedelta
 from django.utils import timezone
 
+from shopping.utils import *
+
 # Create your views here.
 ''' Nous avons deux cas ici
 1/ Lorsque le client est enregistré ==>  if request.user.is_authenticated:...
@@ -20,90 +22,9 @@ from django.utils import timezone
 '''
 
 
-def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
 
 # This function hundel all data about guest user help COOKIES and js
 
-
-def cookieCart(request):
-
-    # Create empty cart for now for non-logged in user
-    try:
-        cart = json.loads(request.COOKIES['cart'])
-    except:
-        cart = {}
-    print('cart', cart)
-    items = []
-    order = {"get_cart_total": 0, "get_cart_items": 0}
-    cartItem = order['get_cart_items']
-    for i in cart:
-        try:
-            cartItem += cart[i]['quantity']
-            product = Product.objects.get(id=i)
-            total = (product.price*cart[i]['quantity'])
-            order['get_cart_total'] += total
-            try:
-                item = {
-                    'id': product.id,
-                    'product': {'id': product.id, 'name': product.name, 'price': product.price,
-                                'image': product.image}, 'quantity': cart[i]['quantity'], 'color': cart[i]["color"], 'size': cart[i]["size"],
-                    'get_total': total,
-                }
-            except:
-                item = {
-                    'id': product.id,
-                    'product': {'id': product.id, 'name': product.name, 'price': product.price,
-                                'image': product.image}, 'quantity': cart[i]['quantity'],
-                    'get_total': total,
-                }
-            items.append(item)
-
-        except Product.DoesNotExist:
-            print("Product.DoesNotExist")
-    return {'cartItem': cartItem, 'order': order, 'items': items}
-
-
-def guestOrder(request, data):
-    name = data['form']['name']
-    phone = data['form']['phone']
-    cookieData = cookieCart(request)
-    items = cookieData['items']
-    print("items", items)
-    customer, created = Customer.objects.get_or_create(phone=phone, )
-    customer.name = name
-    customer.save()
-    order = Order.objects.create(
-        customer=customer,
-        complete=False,
-    )
-
-    for item in items:
-        print("item", item)
-        product = Product.objects.filter(id=item['id']).first()
-        try:
-            OrderItem.objects.create(
-                product=product,
-                order=order,
-                quantity=item['quantity'],
-                color=item['color'],
-                size=item['size']
-            )
-        except :
-            OrderItem.objects.create(
-                product=product,
-                order=order,
-                quantity=item['quantity'],
-            )
-    try:
-        return customer, order
-    except:
-        return None, None
 
 
 def index(request):
@@ -197,7 +118,7 @@ def product(request, pk):
         order = cookieData['order']
         cartItem = cookieData['cartItem']
     try:
-        product_id = Product.objects.get(id=pk)
+        product_id = Product.objects.get(slug=pk)
     except Product.DoesNotExist:
         product_id = None
         return redirect('products')
@@ -245,7 +166,7 @@ def productWithCode(request, pk, *args, **kwargs):
         order = cookieData['order']
         cartItem = cookieData['cartItem']
     try:
-        product_id = Product.objects.get(id=pk)
+        product_id = Product.objects.get(slug=pk)
     except Product.DoesNotExist:
         product_id = None
         return redirect('products')

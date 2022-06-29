@@ -12,37 +12,51 @@ from django.db.models import Q
 
 
 def dashboard(request):
-    today_mony = Product.objects.aggregate(total_price=Sum('price'))
-    today_profit = Product.objects.aggregate(total_price=Sum('profit'))
-    new_order = Order.objects.filter(
-        date_ordered__day=date.today().day).count()
-    new_clients = Customer.objects.filter(
-        created_at__day=date.today().day).count()
+    new_order = Order.objects.filter( date_ordered__day=date.today().day,confirmed=True)
+    today_mony=0
+    today_profit=0
+    for i in new_order:
+        orderitems=i.orderitem_set.all()
+        for j in orderitems:
+            today_mony=today_mony+j.product.price*j.quantity
+            today_profit=today_profit+j.product.profit*j.quantity
+    new_clients = Customer.objects.filter(created_at__day=date.today().day).count()
     num_users = Customer.objects.all().count()
     num_partners = Customer.objects.filter(is_receveur=True).count()
     num_orders = Order.objects.all().count()
     num_products = Product.objects.all().count()
     num_promotors = Customer.objects.filter(is_receveur=True)
     # dashboard chart graphic
-    chart_data = (
+    chart_data_order = (
         Order.objects.annotate(date=TruncMonth("date_ordered"))
         .values("date")
         .annotate(y=Count("id"))
         .order_by("-date")
     )
-    as_json = json.dumps(list(chart_data), cls=DjangoJSONEncoder)
+    chart_data_order_confirmed = (
+        Order.objects.filter(confirmed=True).annotate(date=TruncMonth("date_ordered"))
+        .values("date")
+        .annotate(y=Count("id"))
+        .order_by("-date")
+    )
+    chart_data_order = json.dumps(list(chart_data_order), cls=DjangoJSONEncoder)
+    chart_data_order_confirmed = json.dumps(list(chart_data_order_confirmed), cls=DjangoJSONEncoder)
+    print(chart_data_order_confirmed)
     context = {
-        "chart_data": as_json,
+        "chart_data_order_confirmed":chart_data_order_confirmed,
+        "chart_data": chart_data_order,
         "today_mony": today_mony,
         "today_profit": today_profit,
-        "new_order": new_order,
+        "new_order": new_order.count(),
         "new_clients": new_clients,
         "num_users": num_users,
         "num_partners": num_partners,
         "num_orders": num_orders,
         "num_products": num_products,
         "num_promotors": num_promotors,
-        "titel": "Accueil"
+        "titel": "Accueil",
+        "active": "home",
+
     }
     return render(request, 'dashboard/pages/dashboard.html', context)
 
@@ -59,8 +73,10 @@ def tables(request):
         "paginator": paginator,
         "page": page_products_display,
         "page_number": int(page_number),
-
-        "orders_no_complete": orders_no_complete}
+        "active": "tables",
+        "orders_no_complete": orders_no_complete
+        
+        }
 
     return render(request, "dashboard/pages/tables.html", context)
 
@@ -77,8 +93,9 @@ def stock(request):
     page_number = request.GET.get("page", 1)
     page_products_display = paginator.get_page(page_number)
     best_sellers = Product.objects.all().order_by("-count_sould")[:7]
-    quantity_in_stock = Product.objects.aggregate(
-        quantity_in_stock=Sum("quantity"))
+    quantity_in_stock = Product.objects.aggregate(quantity_in_stock=Sum("quantity"))
+    count_products_category=Product.objects.all().annotate(count_products=Sum("count_sould"))
+    print(count_products_category.values("count_products"))
     context = {
         "products": page_products_display,
         "titel": "stock",
@@ -88,7 +105,10 @@ def stock(request):
         "count_products": count_products,
         "best_sellers": best_sellers,
         "quantity_in_stock": quantity_in_stock,
-        "categorys": CategorySub.objects.all()
+        "categorys": CategorySub.objects.all(),
+        "active": "stock",
+
+        
     }
 
     return render(request, "dashboard/pages/stock.html", context)
@@ -104,7 +124,8 @@ def order_detail(request, pk):
     else:
         return redirect("tables")
     context = {"order_items": order_items,
-               "order_id": order_id, "titel": "order details"}
+        "active": "tables",
+               "order_id": order_id, "titel": "order details",}
     return render(request, 'dashboard/pages/order_detail.html', context)
 
 
@@ -155,37 +176,11 @@ def add_product(request):
     context = {"category": CategorySub.objects.all, "titel": "add product"}
     return render(request, 'dashboard/pages/add_product.html', context)
 
-
-def edit_product(request, pk):
-    if request.method == 'POST':
-        if "name" in request.POST:
-            name = request.POST.get('name', None)
-            price1 = float(request.POST.get('price1', None))
-            price2 = float(request.POST.get('price2', None))
-            category = request.POST.get('category', None)
-            quantity = int(request.POST.get('quantity', None))
-            description = request.POST.get('description', None)
-            images = request.FILES.getlist("images")
-            image = request.FILES.get("image", None)
-            try:
-                category_id = CategorySub.objects.get(name=category)
-            except:
-                category_id = None
-            try:
-                product = Product.objects.filter(id=pk).update(name=name, category=category_id, price_achat=price1,
-                                                               price=price2,
-                                                               quantity=quantity,
-                                                               description=description,
-                                                               image=image)
-                product.save()
-                print("product_ref", product.id)
-                # using session for adding product variations later
-                request.session['product_ref_edited'] = product.id
-                for i in images:
-                    p = ProductImage.objects.filter(product=product).update( image=i)
-                    p.save()
-            except:
-                print("error")
-
-    context = {"category": CategorySub.objects.all, "titel": "add product"}
-    return render(request, 'dashboard/pages/add_product.html', context)
+def single_product(request,pk):
+    product = Product.objects.filter(id=pk).first()
+    context={"product":product,
+        "active": "stock",
+    }
+    return render(request, 'dashboard/pages/single_product.html', context)
+    
+   

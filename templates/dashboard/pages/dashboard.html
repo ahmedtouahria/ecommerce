@@ -12,7 +12,7 @@
                 <div class="numbers">
                   <p class="text-sm mb-0 text-capitalize font-weight-bold">L'argent d'aujourd'hui</p>
                   <h5 class="font-weight-bolder mb-0">
-                    {{today_mony.total_price}} DA
+                    {{today_mony}} DA
                     <span class="text-success text-sm font-weight-bolder">+55%</span>
                   </h5>
                 </div>
@@ -34,7 +34,7 @@
                 <div class="numbers">
                   <p class="text-sm mb-0 text-capitalize font-weight-bold">Les bénéfices 24h</p>
                   <h5 class="font-weight-bolder mb-0">
-                    {{today_profit.total_price}} DA
+                    {{today_profit}} DA
                     <span class="text-success text-sm font-weight-bolder">+3%</span>
                   </h5>
                 </div>
@@ -217,7 +217,7 @@
             <h6>Aperçu des ventes</h6>
             <p class="text-sm">
               <i class="fa fa-arrow-up text-success"></i>
-              <span class="font-weight-bold">4% more</span> in 2021
+              <span class="font-weight-bold">4% Suite</span> en Juin
             </p>
           </div>
           <div class="card-body p-3">
@@ -382,7 +382,7 @@
     var ctx = document.getElementById("chart-bars").getContext("2d");
     // Sample data
   const chartData = {{chart_data | safe}};
-  
+
   console.log(chartData);
     // Parse the dates to JS
     chartData.forEach((d) => {
@@ -454,7 +454,6 @@
   
   
       var ctx2 = document.getElementById("chart-line").getContext("2d");
-  
       var gradientStroke1 = ctx2.createLinearGradient(0, 230, 0, 50);
   
       gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
@@ -466,11 +465,15 @@
       gradientStroke2.addColorStop(1, 'rgba(20,23,39,0.2)');
       gradientStroke2.addColorStop(0.2, 'rgba(72,72,176,0.0)');
       gradientStroke2.addColorStop(0, 'rgba(20,23,39,0)'); //purple colors
-  
+      const chartDataConfirmed = {{chart_data_order_confirmed | safe}};
+      chartDataConfirmed.forEach((d) => {
+        d.x = new Date(d.date);
+      });
       new Chart(ctx2, {
         type: "line",
         data: {
-          labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+          labels: ["Jun", "May", "Avr", "Jul", "Nov", "Oct", "Sep", "Aout", "Jul"],
+
           datasets: [{
               label: "Mobile apps",
               tension: 0.4,
@@ -480,9 +483,8 @@
               borderWidth: 3,
               backgroundColor: gradientStroke1,
               fill: true,
-              data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+              data: chartDataConfirmed,
               maxBarThickness: 6
-  
             },
             {
               label: "Websites",
@@ -493,7 +495,7 @@
               borderWidth: 3,
               backgroundColor: gradientStroke2,
               fill: true,
-              data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
+              data:chartData,
               maxBarThickness: 6
             },
           ],

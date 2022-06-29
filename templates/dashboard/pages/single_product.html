@@ -1,0 +1,68 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content_dashboard %}
+<div class="container">
+<div class="card mx-2">
+    <div class="row">
+ <div class="col col-md-6">
+    <img class="card-img-top m-2" src="{{product.image.url}}" height="500" alt="Title">
+    <div class="card-body">
+        <h4 class="card-title">{{product.name}}</h4>
+    </div>
+ </div>
+ <div class="col col-md-6">
+    <img width="65%" src="{{product.barcode.url}}" alt="barcode" >
+    <button type="button" id="printButton" class="btn btn-secondary">imprimer <i class="fa fa-print" aria-hidden="true"></i>    </button>
+<table class="table">
+    <thead>
+        <tr>
+            <th> <strong>prix d'achat</strong> </th>
+            <th class="text-primary">{{product.price_achat}} DA</th>
+        </tr>
+        <tr>
+            <th> <strong>prix de vente</strong> </th>
+            <th class="text-primary">{{product.price}} DA</th>
+        </tr>
+        <tr>
+            <th> <strong>nombre de ventes</strong> </th>
+            <th class="text-primary">{{product.count_sould}} vendée</th>
+        </tr>
+        <tr>
+            <th> <strong>la quantité en dépôt</strong> </th>
+            <th class="text-primary">{{product.quantity}}</th>
+        </tr>
+        <tr>
+            <th> <strong>étage</strong> </th>
+            <th class="text-primary">{{product.etage}}</th>
+        </tr>
+    </thead>
+</table>
+
+ </div>
+</div>
+</div>
+</div>
+<script src="{% static "dashboard/js/print.min.js" %}"></script>
+<script>
+function printImages() {
+	var images = [
+  	'{{product.barcode.url}}',
+  	'{{product.barcode.url}}',
+  	'{{product.barcode.url}}',
+  	'{{product.barcode.url}}',
+
+  ]
+  
+  printJS({
+  	printable: images,
+    type: 'image',
+    showModal: true, // Optional
+    modalMessage: 'Printing Images...', // Optional
+    style: 'img { max-width: 100px;}' // Optional
+  })
+}
+
+document.getElementById('printButton').addEventListener('click', printImages)
+
+</script>
+{% endblock content_dashboard %}

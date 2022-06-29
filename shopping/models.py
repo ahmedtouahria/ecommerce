@@ -1,4 +1,3 @@
-import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import RegexValidator
@@ -175,10 +174,11 @@ class CategorySub(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name='sub_cat')
     image = models.FileField(upload_to='media/category_sub/', null=True)
-
     def __str__(self):
         return self.name
-
+    def count_sould(self):
+        count_products_category=Product.objects.filter(category=self).aggregate(count_products=models.Sum("count_sould"))
+        return count_products_category
 
 class Product(models.Model):
     name = models.CharField(max_length=200,unique=True)
@@ -200,6 +200,7 @@ class Product(models.Model):
     barcode = models.ImageField(upload_to='barcodes/', blank=True, null=True)
     barcode_num = models.CharField(max_length=13, null=True, blank=True)
     count_sould=models.PositiveIntegerField(default=0)
+    etage = models.CharField(max_length=50,null=True)
     @property
     def profits(self):
         return self.price_achat-self.price
