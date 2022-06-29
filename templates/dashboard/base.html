@@ -16,7 +16,6 @@
   <!-- Nucleo Icons -->
   <link href="{% static 'dashboard/css/nucleo-icons.css' %}" rel="stylesheet" />
   <link href="{% static 'dashboard/css/print.min.css' %}" rel="stylesheet" />
-
   <link href="{% static 'dashboard/css/nucleo-svg.css' %}" rel="stylesheet" />
   
   <!-- Font Awesome Icons -->
@@ -41,12 +40,9 @@
 
   <!--   Core JS Files   -->
   <script src="{% static 'dashboard/js/plugins/perfect-scrollbar.min.js' %}"></script>
-
-  <script src="{% static 'dashboard/js/soft-ui-dashboard.min.js' %}"></script>
-  <script src="{% static 'dashboard/js/core/popper.min.js' %}"></script>
-  <script src="{% static 'dashboard/js/core/bootstrap.min.js' %}"></script>
   <script src="{% static 'dashboard/js/plugins/smooth-scrollbar.min.js' %}"></script>
-  <script src="{% static 'js/vendor/jquery-2.2.4.min.js'%}"></script>
+  <script src="{% static 'dashboard/js/soft-ui-dashboard.min.js' %}"></script>
+
   <script>
     function getToken(name) {
       var cookieValue = null;
@@ -66,74 +62,6 @@
     // and we assign to variable csrftoken for post secure data
     var csrftoken = getToken("csrftoken");
     // Script Upload images 
-    $(document).ready(function () {
-      ImgUpload();
-    });
-    
-    function ImgUpload() {
-      var imgWrap = "";
-      var imgArray = [];
-    
-      $('.upload__inputfile').each(function () {
-        $(this).on('change', function (e) {
-          imgWrap = $(this).closest('.upload__box').find('.upload__img-wrap');
-          var maxLength = $(this).attr('data-max_length');
-    
-          var files = e.target.files;
-          var filesArr = Array.prototype.slice.call(files);
-          var iterator = 0;
-          filesArr.forEach(function (f, index) {
-    
-            if (!f.type.match('image.*')) {
-              return;
-            }
-    
-            if (imgArray.length > maxLength) {
-              return false
-            } else {
-              var len = 0;
-              for (var i = 0; i < imgArray.length; i++) {
-                if (imgArray[i] !== undefined) {
-                  len++;
-                }
-              }
-              if (len > maxLength) {
-                return false;
-              } else {
-                imgArray.push(f);
-    
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                  var html = "<div class='upload__img-box'><div style='background-image: url(" + e.target.result + ")' data-number='" + $(".upload__img-close").length + "' data-file='" + f.name + "' class='img-bg'><div class='upload__img-close'></div></div></div>";
-                  imgWrap.append(html);
-                  iterator++;
-                }
-                reader.readAsDataURL(f);
-              }
-            }
-          });
-        });
-      });
-    
-      $('body').on('click', ".upload__img-close", function (e) {
-        var file = $(this).parent().data("file");
-        for (var i = 0; i < imgArray.length; i++) {
-          if (imgArray[i].name === file) {
-            imgArray.splice(i, 1);
-            break;
-          }
-        }
-        $(this).parent().parent().remove();
-      });
-    }
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-      var options = {
-        damping: '0.5'
-      }
-      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-    }
- 
   </script>
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
@@ -141,151 +69,5 @@
 
 
 
-<style>
-  .upload__inputfile {
-    width: 0.1px;
-    height: 0.1px;
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: -1;
- }
-  .upload__btn {
-    display: inline-block;
-    font-weight: 600;
-    color: #fff;
-    text-align: center;
-    min-width: 116px;
-    padding: 5px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: 2px solid;
-    background-color: #ff7600;
-    border-color: #ff7600;
-    border-radius: 10px;
-    line-height: 26px;
-    font-size: 14px;
- }
-  .upload__btn:hover {
-    background-color: unset;
-    color: #4045ba;
-    transition: all 0.3s ease;
- }
-  .upload__btn-box {
-    margin-bottom: 10px;
- }
-  .upload__img-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0 -10px;
- }
-  .upload__img-box {
-    width: 200px;
-    padding: 0 10px;
-    margin-bottom: 12px;
- }
-  .upload__img-close {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.5);
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    text-align: center;
-    line-height: 24px;
-    z-index: 1;
-    cursor: pointer;
- }
-  .upload__img-close:after {
-    content: '\2716';
-    font-size: 14px;
-    color: white;
- }
-  .img-bg {
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    position: relative;
-    padding-bottom: 100%;
- }
- /*---- TAGS INPUT SECTION*/ 
- .wrapper{
-  width: 496px;
-  background: #fff;
-  border-radius: 10px;
-  padding: 18px 25px 20px;
-  box-shadow: 0 0 30px rgba(0,0,0,0.06);
-}
-.wrapper :where(.title, li, li i, .details){
-  display: flex;
-  align-items: center;
-}
-.title img{
-  max-width: 21px;
-}
-.title h2{
-  font-size: 21px;
-  font-weight: 600;
-  margin-left: 8px;
-}
-.wrapper .content{
-  margin: 10px 0;
-}
-.content p{
-  font-size: 15px;
-}
-.content ul{
-  display: flex;
-  flex-wrap: wrap;
-  padding: 7px;
-  margin: 12px 0;
-  border-radius: 5px;
-  border: 1px solid #a6a6a6;
-}
-.content ul  li{
-  color: #333;
-  margin: 4px 3px;
-  list-style: none;
-  border-radius: 5px;
-  background: #F2F2F2;
-  padding: 5px 8px 5px 10px;
-  border: 1px solid #e3e1e1;
-}
-.content ul li i{
-  height: 20px;
-  width: 20px;
-  color: #808080;
-  margin-left: 8px;
-  font-size: 12px;
-  cursor: pointer;
-  border-radius: 50%;
-  background: #dfdfdf;
-  justify-content: center;
-}
-.content ul input{
-  flex: 1;
-  padding: 5px;
-  border: none;
-  outline: none;
-  font-size: 16px;
-}
-.wrapper .details{
-  justify-content: space-between;
-}
-.details button{
-  border: none;
-  outline: none;
-  color: #fff;
-  font-size: 14px;
-  cursor: pointer;
-  padding: 9px 15px;
-  border-radius: 5px;
-  background: #5372F0;
-  transition: background 0.3s ease;
-}
-.details button:hover{
-  background: #2c52ed;
-}
-</style>
+
 </body>

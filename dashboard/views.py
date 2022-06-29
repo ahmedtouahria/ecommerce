@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 import json
 from shopping.models import CategorySub, Customer, Order, OrderItem, Product, ProductImage, ShippingAddress, Variation
 from django.db.models import Avg, Count, Min, Sum
-from datetime import date, timedelta
+from datetime import date
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Count
 from django.db.models.functions import TruncDay, TruncMonth
@@ -12,7 +12,7 @@ from django.db.models import Q
 
 
 def dashboard(request):
-    new_order = Order.objects.filter( date_ordered__day=date.today().day,confirmed=True)
+    new_order = Order.objects.filter( date_ordered__month=date.today().month,confirmed=True)
     today_mony=0
     today_profit=0
     for i in new_order:
