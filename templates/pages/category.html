@@ -39,11 +39,11 @@
       <section class="lattest-product-area category-list ">
         <div class="product-main container pt-5">
 
-          <h2 class="title">Nouveaux produits</h2>
+          <h2 class="title">Produits</h2>
         
           <div class="product-grid" id="list_product">
         {% for product in products  %}
-            <div class="showcase ">
+            <div class="showcase loading">
         
               <div class="showcase-banner">
         
@@ -184,10 +184,10 @@
 
 <div class="product-main container py-5">
 
-  <h2 class="title">New Products</h2>
+  <h2 class="title">Autres catégories</h2>
 
   <div class="product-grid">
-{% for product in products  %}
+{% for product in other_products  %}
     <div class="showcase loading">
 
       <div class="showcase-banner ">

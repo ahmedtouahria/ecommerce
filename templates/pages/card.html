@@ -2,7 +2,6 @@
 
 <section class="cart_area">
   <div class="container">
-    <hr />
 
     <h2 class="pb-4">Votre commande</h2>
     <div class="cart_inner">
@@ -18,13 +17,12 @@
           </thead>
           <tbody>
             {% for item in items %}
-
             <tr>
               <td>
                 <div class="media">
                   <div class="media-body">
                     <p>
-                      {{item.product.name}} - {% if item.color and item.size %} {{item.color}}
+                      {{item.product.name | slice:":15"}} - {% if item.color and item.size %} {{item.color}}
                       - {{item.size}} {% elif item.color and not item.size %} {{item.color}} {% elif not item.color and  item.size%} {{item.size}}{% endif %}
                     </p>
                   </div>
@@ -39,25 +37,28 @@
                     readonly
                     type="text"
                     name="qty"
-                    id="sst-{{item.product.id}}"
+                    id="sst-{{item.id}}"
                     maxlength="2"
                     value="{{item.quantity}}"
                     title="Quantity:"
                     class="input-text qty"
                   />
                   <button
-                    onclick=" if (user!='AnonymousUser'){updateUserOrder({{item.product.id}}, 'add')}else {addCookieItem({{item.product.id}}, 'add')};var result = document.getElementById('sst-{{item.product.id}}'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                    onclick=" if (user!='AnonymousUser'){updateUserOrder({{item.product.id}}, 'add','{{item.color}}','{{item.size}}')}else {addCookieItem({{item.product.id}}, 'add','{{item.color}}','{{item.size}}')};var result = document.getElementById('sst-{{item.id}}'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
                     class="increase items-count"
                     type="button"
                   >
-                    <i class="lnr lnr-chevron-up"></i>
+                  <i class="lnr lnr-chevron-up"></i>
+
                   </button>
                   <button
-                    onclick="if (user!='AnonymousUser'){updateUserOrder({{item.product.id}}, 'remove')}else {addCookieItem({{item.product.id}}, 'remove')};var result = document.getElementById('sst-{{item.product.id}}'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+                  onclick=" if (user!='AnonymousUser'){updateUserOrder({{item.product.id}}, 'remove','{{item.color}}','{{item.size}}')}else {addCookieItem({{item.product.id}}, 'remove','{{item.color}}','{{item.size}}')};var result = document.getElementById('sst-{{item.id}}'); var sst = result.value; if( !isNaN( sst )) result.value--;return false;"
+
                     class="reduced items-count"
                     type="button"
                   >
-                    <i class="lnr lnr-chevron-down" type="button"></i>
+                  <i class="lnr lnr-chevron-down"></i>
+
                   </button>
                 </div>
               </td>
@@ -79,7 +80,6 @@
                 <strong class="text-info">{{order.get_cart_total}}DA</strong>
               </td>
             </tr>
-
             <tr class="out_button_area">
               <td></td>
               <td></td>
@@ -95,25 +95,43 @@
             </tr>
           </tbody>
         </table>
+        <hr>
+
       </div>
     </div>
   </div>
+  
 </section>
 <script>
 
     // update order whene user is not authenticated
-    function addCookieItem(productId, action) {
+    function addCookieItem(productId, action,color,size) {
       console.log("User is not authenticated");
       if (action == "add") {
-        if (cart[productId] == undefined) {
-          cart[productId] = { quantity: 1 };
-        } else {
-          cart[productId]["quantity"] += 1;
+     
+        if (cart[productId] == undefined  ) 
+        {
+          cart[productId] = { quantity: 1 , color:color , size : size};
+  
+        } 
+        else {
+          for (let i in cart){
+            if (i==productId){
+              console.log("true")
+              if(cart[i]["color"]==color && cart[i]["size"]==size){
+                cart[productId]["quantity"] += 1;
+              }
+              else{
+          cart[productId] = { quantity: 1 , color:color , size : size};
+  
+              }
+            }
+          }
         }
       }
       if (action == "remove") {
         cart[productId]["quantity"] -= 1;
-
+  
         if (cart[productId]["quantity"] <= 0) {
           console.log("Item should be deleted");
           delete cart[productId];
@@ -124,8 +142,23 @@
       getCartItem();
     }
 
-    function updateUserOrder(productId, action) {
-      let data_send = { productId: productId, action: action };
+    function updateUserOrder(productId, action,color,size) {
+      let data_send = {};
+      if(color == "None"  && size == "None" ){
+        data_send= { productId: productId, action: action }
+      }
+      else if(color != "None"  && size == "None" ){
+        data_send= { productId: productId, action: action,productColor:color }
+      
+      }
+      else if(color == "None"  && size != "None" ){
+        data_send= { productId: productId, action: action,productSize:size }
+      
+      }
+      else{
+        data_send= { productId: productId, action: action,productSize:size,productColor:color }
+      
+      }
           $.ajax({
             type: "POST",
             beforeSend: function (request) {

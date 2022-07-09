@@ -742,7 +742,7 @@
   }
 
   .submenu-category-list.active {
-    max-height: 148px;
+    max-height: 220px;
     visibility: visible;
   }
 
@@ -842,6 +842,7 @@
     border-radius: var(--border-radius-md);
     overflow: hidden;
     scroll-snap-align: start;
+    background: #f5e8dc;
   }
 
   .slider-item .banner-img {
@@ -2289,7 +2290,7 @@
       -webkit-transform: translateY(-50%);
       -ms-transform: translateY(-50%);
       transform: translateY(-50%);
-      max-width: 320px;
+      max-width: 85%;
     }
 
     .banner-subtitle {

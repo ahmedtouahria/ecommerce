@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 import json
-from shopping.models import CategorySub, Customer, Order, OrderItem, Product, ProductImage, ShippingAddress, Variation
+from shopping.models import CategorySub, Customer, Order, OrderItem, Product, ProductImage, ShippingAddress, Variant, Variation
 from django.db.models import Avg, Count, Min, Sum
 from datetime import date
 from django.core.serializers.json import DjangoJSONEncoder
@@ -26,18 +26,20 @@ def dashboard(request):
     num_orders = Order.objects.all().count()
     num_products = Product.objects.all().count()
     num_promotors = Customer.objects.filter(is_receveur=True)
+    best_sellers = Product.objects.all().order_by("-count_sould")[:7]
+
     # dashboard chart graphic
     chart_data_order = (
         Order.objects.annotate(date=TruncMonth("date_ordered"))
         .values("date")
         .annotate(y=Count("id"))
-        .order_by("-date")
+        .order_by("date")
     )
     chart_data_order_confirmed = (
         Order.objects.filter(confirmed=True).annotate(date=TruncMonth("date_ordered"))
         .values("date")
         .annotate(y=Count("id"))
-        .order_by("-date")
+        .order_by("date")
     )
     chart_data_order = json.dumps(list(chart_data_order), cls=DjangoJSONEncoder)
     chart_data_order_confirmed = json.dumps(list(chart_data_order_confirmed), cls=DjangoJSONEncoder)
@@ -50,6 +52,9 @@ def dashboard(request):
         "new_order": new_order.count(),
         "new_clients": new_clients,
         "num_users": num_users,
+        "categorys": CategorySub.objects.all(),
+        "best_sellers": best_sellers,
+
         "num_partners": num_partners,
         "num_orders": num_orders,
         "num_products": num_products,
@@ -67,6 +72,7 @@ def tables(request):
     paginator = Paginator(orders, 12)
     page_number = request.GET.get("page", 1)
     page_products_display = paginator.get_page(page_number)
+
     context = {
         "orders": page_products_display,
         "titel": "orders",
@@ -74,7 +80,8 @@ def tables(request):
         "page": page_products_display,
         "page_number": int(page_number),
         "active": "tables",
-        "orders_no_complete": orders_no_complete
+        "orders_no_complete": orders_no_complete,
+        "orders_edited": Order.objects.filter(edited=True).count()
         
         }
 
@@ -85,7 +92,7 @@ def stock(request):
     if request.method == "GET":
         query = request.GET.get("search", "")
         products = Product.objects.filter(
-            Q(name__icontains=query) | Q(category__name__icontains=query))
+            Q(name__icontains=query) | Q(category__name__icontains=query) | Q(barcode_num__icontains=query[:12]))
     else:
         products = Product.objects.all().order_by("-name")
     count_products = products.count()
@@ -95,6 +102,7 @@ def stock(request):
     best_sellers = Product.objects.all().order_by("-count_sould")[:7]
     quantity_in_stock = Product.objects.aggregate(quantity_in_stock=Sum("quantity"))
     count_products_category=Product.objects.all().annotate(count_products=Sum("count_sould"))
+    count_vend_products = OrderItem.objects.filter(order__confirmed=True).count()
     print(count_products_category.values("count_products"))
     context = {
         "products": page_products_display,
@@ -106,7 +114,9 @@ def stock(request):
         "best_sellers": best_sellers,
         "quantity_in_stock": quantity_in_stock,
         "categorys": CategorySub.objects.all(),
+        "count_vend_produts":count_vend_products,
         "active": "stock",
+        
 
         
     }
@@ -127,6 +137,9 @@ def order_detail(request, pk):
         "active": "tables",
                "order_id": order_id, "titel": "order details",}
     return render(request, 'dashboard/pages/order_detail.html', context)
+def options(request):
+    context = {"titel":"options"}
+    return render(request, 'dashboard/pages/options.html', context)
 
 
 def add_product(request):
@@ -140,6 +153,8 @@ def add_product(request):
             category = request.POST.get('category', None)
             quantity = int(request.POST.get('quantity', None))
             description = request.POST.get('description', None)
+            etagere = request.POST.get('etagere', None)
+
             images = request.FILES.getlist("images")
             image = request.FILES.get("image", None)
             print(images)
@@ -161,7 +176,9 @@ def add_product(request):
                                       price=price2,
                                       quantity=quantity,
                                       description=description,
-                                      image=image)
+                                      image=image,
+                                      etage=etagere
+                                      )
                     product.save()
                     print("product_ref", product.id)
             # using session for adding product variations later
@@ -178,8 +195,13 @@ def add_product(request):
 
 def single_product(request,pk):
     product = Product.objects.filter(id=pk).first()
-    context={"product":product,
+    variants=Variant.objects.filter(product=product)
+    print(variants)
+    context={
+        "product":product,
         "active": "stock",
+        "variants":variants,
+        "titel":product.slug
     }
     return render(request, 'dashboard/pages/single_product.html', context)
     

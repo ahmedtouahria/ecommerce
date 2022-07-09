@@ -19,9 +19,12 @@
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <!-- CSS Files -->
   <link id="pagestyle" href="{% static 'dashboard/css/soft-ui-dashboard.css' %}" rel="stylesheet" />
+  <link id="pagestyle" href="{% static 'css/new_style.css' %}" rel="stylesheet" />
+
 </head>
 <body class="g-sidenav-show  bg-gray-100">
   <main class="main-content  mt-0">
+    {% include "partes/navbar.html" %}
     <section class="min-vh-100 mb-8">
       <div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg" style="background-image: url('../assets/img/curved-images/curved14.jpg');">
         <span class="mask bg-gradient-dark opacity-6"></span>
@@ -34,7 +37,7 @@
           </div>
         </div>
       </div>
-      <div class="container">
+      
         <div class="row mt-lg-n10 mt-md-n11 mt-n10">
           <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
             <div class="card z-index-0">
@@ -86,13 +89,13 @@
                 </div>
               </div>
               <div class="card-body">
-                <form role="form text-left">
-
+                <form role="form text-left" method="post">
+                {% csrf_token %}
                   <div class="mb-3">
-                    <input type="email" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="email-addon">
+                    <input type="tel" name="phone" class="form-control" placeholder="Phone" aria-label="Email" aria-describedby="email-addon">
                   </div>
                   <div class="mb-3">
-                    <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password-addon">
+                    <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password-addon">
                   </div>
                   <div class="form-check form-check-info text-left">
                     <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked>
@@ -101,7 +104,7 @@
                     </label>
                   </div>
                   <div class="text-center">
-                    <button type="button" class="btn bg-gradient-dark w-100 my-4 mb-2">Sign up</button>
+                    <input type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2" value="S'identifier">
                   </div>
                   <p class="text-sm mt-3 mb-0">Already have an account? <a href="{% url 'login' %}" class="text-dark font-weight-bolder">Sign in</a></p>
                 </form>
@@ -109,12 +112,72 @@
             </div>
           </div>
         </div>
-      </div>
     </section>
 
   </main>
   <!--   Core JS Files   -->
+  <script>
+
+
+    // mobile menu variables
+    const mobileMenuOpenBtn = document.querySelectorAll('[data-mobile-menu-open-btn]');
+    const mobileMenu = document.querySelectorAll('[data-mobile-menu]');
+    const mobileMenuCloseBtn = document.querySelectorAll('[data-mobile-menu-close-btn]');
+    const overlay = document.querySelector('[data-overlay]');
+    
+    for (let i = 0; i < mobileMenuOpenBtn.length; i++) {
+    
+      // mobile menu function
+      const mobileMenuCloseFunc = function () {
+        mobileMenu[i].classList.remove('active');
+        overlay.classList.remove('active');
+      }
+    
+      mobileMenuOpenBtn[i].addEventListener('click', function () {
+        mobileMenu[i].classList.add('active');
+        overlay.classList.add('active');
+      });
+    
+      mobileMenuCloseBtn[i].addEventListener('click', mobileMenuCloseFunc);
+      overlay.addEventListener('click', mobileMenuCloseFunc);
+    
+    }
+    
+    
+    
+    
+    
+    // accordion variables
+    const accordionBtn = document.querySelectorAll('[data-accordion-btn]');
+    const accordion = document.querySelectorAll('[data-accordion]');
+    
+    for (let i = 0; i < accordionBtn.length; i++) {
+    
+      accordionBtn[i].addEventListener('click', function () {
+    
+        const clickedBtn = this.nextElementSibling.classList.contains('active');
+    
+        for (let i = 0; i < accordion.length; i++) {
+    
+          if (clickedBtn) break;
+    
+          if (accordion[i].classList.contains('active')) {
+    
+            accordion[i].classList.remove('active');
+            accordionBtn[i].classList.remove('active');
+    
+          }
+    
+        }
+    
+        this.nextElementSibling.classList.toggle('active');
+        this.classList.toggle('active');
+    
+      });
+    
+    }
+      </script>
   <script src="{% static 'dashboard/js/soft-ui-dashboard.min.js' %}"></script>
   <script src="{% static 'dashboard/js/core/bootstrap.min.js' %}"></script>
-  
+
 </body>

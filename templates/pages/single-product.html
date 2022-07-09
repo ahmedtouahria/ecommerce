@@ -1,11 +1,36 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block css %}
+
+<link
+rel="stylesheet"
+rel="preload"
+href="{% static 'css/owl.carousel.css'%}"
+/>
+<link
+rel="stylesheet"
+rel="preload"
+href="{% static 'css/nouislider.min.css'%}"
+/>
+<link
+rel="stylesheet"
+rel="preload"
+href="{% static 'css/ion.rangeSlider.css'%}"
+/>
+<link
+rel="stylesheet"
+rel="preload"
+href="{% static 'css/ion.rangeSlider.skinFlat.css'%}"
+/>
+{% endblock css %}
+
 {% block content %}
 
 <div class="product_image_area mb-5">
     <div class="container">
         <div class="row s_product_inner">
             <div class="col-lg-6">
+              
                 <div class="s_Product_carousel">
                     <div class="single-prd-item">
                         <img class="img-fluid" src="{{product.image.url}}" alt="">
@@ -43,9 +68,8 @@
                         </div>
                     </ul>
                     <p>{{product.description}}</p>
-
-                    {% if product.variation_set.all %}
-                    {% if product.variation_set.sizes %}
+   
+                    {% if variants %}
                     <form  method="post" id="form_order_item">
                       {% csrf_token %}
                     <div class="row my-3 mx-2">
@@ -54,9 +78,6 @@
                         </div>
                         <div class='col-9'>
                             <select name="size" id="size_var" class=" mx-2">
-                                {% for item in product.variation_set.sizes  %}
-                                <option  value="{{item.item}}">{{item.item}}</option>
-                                {% endfor %}
                               </select>  
                             </div>
                       </div>
@@ -64,13 +85,10 @@
                         <div class='col-3'>
                         <label class="pt-2" for="qty">Couleurs:</label>
                         </div>
-                        <div class='col-9'>
-                          {% for item in product.variation_set.colors  %}
-                          <input data-variation="{{item.id}}" value="{{item.item}}" class='red' name='color' type='radio' style="background:{{item.item}}" />
-                          {% endfor %}
+                        <div class='col-9' id="color_container">
+          
                             </div>
                       </div>
-                      {% endif %}
                       {% endif %}
                     <div class="card_area d-flex align-items-center">
                         <a id="add_to_cart" class="primary-btn" data-action="add" data-product="{{product.id}}" href="#">Ajouter au panier</a>
@@ -91,56 +109,24 @@
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
-                 aria-selected="false">Commentaires</a>
+                 aria-selected="false">commentaires</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
-                <p>Beryl Cook is one of Britain’s most talented and amusing artists .Beryl’s pictures feature women of all shapes
-                    and sizes enjoying themselves .Born between the two world wars, Beryl Cook eventually left Kendrick School in
-                    Reading at the age of 15, where she went to secretarial school and then into an insurance office. After moving to
-                    London and then Hampton, she eventually married her next door neighbour from Reading, John Cook. He was an
-                    officer in the Merchant Navy and after he left the sea in 1956, they bought a pub for a year before John took a
-                    job in Southern Rhodesia with a motor company. Beryl bought their young son a box of watercolours, and when
-                    showing him how to use it, she decided that she herself quite enjoyed painting. John subsequently bought her a
-                    child’s painting set for her birthday and it was with this that she produced her first significant work, a
-                    half-length portrait of a dark-skinned lady with a vacant expression and large drooping breasts. It was aptly
-                    named ‘Hangover’ by Beryl’s husband and</p>
-                <p>It is often frustrating to attempt to plan meals that are designed for one. Despite this fact, we are seeing
-                    more and more recipe books and Internet websites that are dedicated to the act of cooking for one. Divorce and
-                    the death of spouses or grown children leaving for college are all reasons that someone accustomed to cooking for
-                    more than one would suddenly need to learn how to adjust all the cooking practices utilized before into a
-                    streamlined plan of cooking that is more efficient for one person creating less</p>
-            </div>
-       
-
             <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-6 mb-5">
                         <div class="row total_rate">
-                            <div class="col-6">
+                            <div class="col-12">
                                 <div class="box_total">
-                                    <h5>Overall</h5>
+                                    <h5>Globalement</h5>
                                     <h4>{{product.avg_rating}}</h4>
-                                    <h6>({{product.no_of_ratings}} Reviews)</h6>
+                                    <h6>({{product.no_of_ratings}} Commentaires)</h6>
                                 </div>
                             </div>
-                            <div class="col-6">
-                                <div class="rating_list">
-                                    <h3>Based on 3 Reviews</h3>
-                                    <ul class="list">
-                                        <li><a href="#">5 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                                 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-                                        <li><a href="#">4 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                                 class="fa fa-star"></i> 01</a></li>
-                                        <li><a href="#">3 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>01</a></li>
-                                        <li><a href="#">2 Star <i class="fa fa-star"></i><i class="fa fa-star"></i>01</a></li>
-                                        <li><a href="#">1 Star <i class="fa fa-star"></i> 01</a></li>
-                                    </ul>
-                                </div>
-                            </div>
+                     
                         </div>
-                        <div class="review_list">
+                        <div class="review_list my-3">
                             {% for rate in ratings %}
                             <div class="review_item">
                                 <div class="media">
@@ -154,7 +140,7 @@
                                       />
                                     </div>
                                     <div class="media-body">
-                                        <h4>{{rate.get_user_name}}</h4>
+                                        <h4 class="fw-bold">{{rate.get_user_name}}</h4>
                                         {% if rate.stars == 5 %}
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
@@ -192,24 +178,24 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="col-lg-6 my-4">
+                    <div class="col-lg-6">
                         <div class="review_box">
-                            <h4>Add a Review</h4>
+                            <h4>Ajouter un commentaire</h4>
                             <div class="rating" >
-                                <input type="radio" name="rating" id="rating-5">
+                                <input value="5" type="radio" name="rating" id="rating-5">
                                 <label data-rate="5" data-product="{{product.id}}" for="rating-5"></label>
-                                <input type="radio" name="rating" id="rating-4">
+                                <input value="4" type="radio" name="rating" id="rating-4">
                                 <label data-rate="4" data-product="{{product.id}}" for="rating-4"></label>
-                                <input type="radio" name="rating" id="rating-3">
+                                <input value="3" type="radio" name="rating" id="rating-3">
                                 <label data-rate="3" data-product="{{product.id}}" for="rating-3"></label>
-                                <input type="radio" name="rating" id="rating-2">
+                                <input value="2" type="radio" name="rating" id="rating-2">
                                 <label data-rate="2" data-product="{{product.id}}" for="rating-2"></label>
-                                <input type="radio" name="rating" id="rating-1">
+                                <input value="1" type="radio" name="rating" id="rating-1">
                                 <label data-rate="1" data-product="{{product.id}}" for="rating-1"></label>
                                   </div>
-                            <p>Your Rating:</p>
+                            <p>votreNote:</p>
               
-                            <p>Outstanding</p>
+                            <p>exceptionnelle</p>
                             <form class="row contact_form" method="post" >
                                 {% csrf_token %}
                                 {% if not user.is_authenticated %}
@@ -352,17 +338,81 @@
     </div>
   
   </div>
+  <script>
+    // optimzation css loading 
+
+    </script>
+  <style>
+    
+.color_input {
+  display: none;
+}
+
+.button_color {
+  display: inline-block;
+  position: relative;
+  width: 50px;
+  height: 50px;
+  margin: 10px;
+  cursor: pointer;
+}
+
+.button_color span {
+  display: block;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  border-radius: 100%;
+  background: #eeeeee;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  transition: ease .3s;
+}
+
+.button_color span:hover {
+  padding: 10px;
+}
+
+.color_piker .button_color span {
+  background: #FF5722;
+}
+
+  </style>
   <script src="{% static 'js/vendor/jquery-2.2.4.min.js'%}"></script>
 
 <script type="text/javascript">
-    var code_url="http://127.0.0.1:8000/products/{{product.id}}/{{request.user.code}}";
-    var total = '{{order.get_cart_total}}';
-    var user ="{{request.user}}";
+    var code_url="http://127.0.0.1:8000/products/{{product.slug}}/{{request.user.code}}";
     var copy=document.getElementById('copy');
    var form_order_item = document.getElementById("form_order_item");
    var add_to_cart = document.getElementById("add_to_cart");
+ var color_list = new Set();
+ var size_list = new Set();
+
+ var color_container=document.getElementById("color_container");
+ var size_var = document.getElementById("size_var");
+{% for variant in variants %}
+color_list.add("{{variant.color}}");
+size_list.add("{{variant.size}}");
+{% endfor %}
+for (const color of color_list) 
+  color_container.innerHTML+=`<input  value="${color}" class='red' name='color' type='radio' style="background:${color};
+  box-sizing: border-box;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #c9c9c9;
+  border-radius: 50%;" />`;
+for (const size of size_list) 
+size_var.innerHTML+=`<option  value="${size}">${size}</option>`
+
    add_to_cart.addEventListener("click",()=>{
- //   console.log(form_order_item.color.value,form_order_item.size.value)
+ 
  try{
   var color = form_order_item.color.value;
  }
@@ -485,14 +535,15 @@ else{
 		  }
 
               /* -----script to meal rating-------*/
-              $(".rating label").on("click", function () {
-                //console.log(user_id);
-                //console.log(this.dataset.rate);
+              function rate_user() {
+                // place rate user number in localStorage (cookies)
+                const rate = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('rate='))
+                ?.split('=')[1];
                 var content = $("#content").val();
-                var stars = this.dataset.rate;
-                var product_id = this.dataset.product;
-                //console.log(content)
-                //console.log(product_id);
+                var stars = rate;
+                var product_id = $(".rating label").data('product');
                 let data = {
                   user_id: user_id,
                   product_id: product_id,
@@ -502,14 +553,7 @@ else{
                 if (user == "AnonymousUser") {
                   window.location.href = "/login";
                 } else {
-                  if (content.trim() == "") {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Oops...",
-                      text: "Veuillez ne pas laisser le champ de commentaires vide",
-                      confirmButtonColor: "#ffba00",
-                    });
-                  } else {
+ 
                     fetch("/api/product_rating/", {
                       method: "POST",
                       headers: {
@@ -521,9 +565,19 @@ else{
                       location.reload();
                       console.log("Request complete! response:", res);
                     });
-                  }
                 }
-              });
+              }
+              $(".rating label").on("click",function(){
+                console.log(this.dataset.rate)
+                document.cookie = "rate="+this.dataset.rate+"; SameSite=None; Secure";
+     
+              })
+             $("textarea").keyup(function(e){
+                if(e.keyCode == 13)
+                {
+                  rate_user()
+                }
+            });
       
               /* ----- end script to meal rating-------*/
     </script>
@@ -531,45 +585,51 @@ else{
   * { box-sizing: border-box; }
   .rating {
   display: flex;
-  width: 35%;
+  width: 75%;
   justify-content: center;
   overflow: hidden;
   flex-direction: row-reverse;
   position: relative;
     }
 
-.rating-0 {
-  filter: grayscale(100%);
-}
-
-.rating > input {
-  display: none;
-}
-
-.rating > label {
-  cursor: pointer;
-  width: 40px;
-  height: 40px;
-  margin-top: auto;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23e3e3e3' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 76%;
-  transition: .3s;
-}
-
-.rating > input:checked ~ label,
-.rating > input:checked ~ label ~ label {
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23fcd93a' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
-}
-
-
-.rating > input:not(:checked) ~ label:hover,
-.rating > input:not(:checked) ~ label:hover ~ label {
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23d8b11e' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
-}
-
-
+    .rating {
+      display: flex;
+      justify-content: center;
+      overflow: hidden;
+      flex-direction: row-reverse;
+      position: relative;
+    }
+    
+    .rating-0 {
+      filter: grayscale(100%);
+    }
+    
+    .rating > input {
+      display: none;
+    }
+    
+    .rating > label {
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      margin-top: auto;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23e3e3e3' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 76%;
+      transition: .3s;
+    }
+    
+    .rating > input:checked ~ label,
+    .rating > input:checked ~ label ~ label {
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23fcd93a' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
+    }
+    
+    
+    .rating > input:not(:checked) ~ label:hover,
+    .rating > input:not(:checked) ~ label:hover ~ label {
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23d8b11e' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
+    }
   
   .red {
     -webkit-appearance: none;

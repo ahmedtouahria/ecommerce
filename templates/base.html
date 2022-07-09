@@ -23,50 +23,74 @@
     <!--===============================CSS============================================= -->
     <link
       rel="stylesheet"
-      href="https://unpkg.com/swiper/swiper-bundle.min.css"
+      rel="preload"
+      href="{% static 'css/linearicons.css'%}"
     />
-    <link rel="stylesheet" href="{% static 'css/new_style.css'%}" />
-
-    <link rel="stylesheet" href="{% static 'css/linearicons.css'%}" />
-    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css'%}" />
-    <link rel="stylesheet" href="{% static 'css/themify-icons.css'%}" />
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css'%}" />
-    <link rel="stylesheet" href="{% static 'css/owl.carousel.css'%}" />
-    <link rel="stylesheet" href="{% static 'css/nice-select.css'%}" />
-    <link rel="stylesheet" href="{% static 'css/nouislider.min.css'%}" />
-    <link rel="stylesheet" href="{% static 'css/ion.rangeSlider.css'%}" />
+    <link rel="stylesheet" rel="preload" href="{% static 'css/new_style.css'%}" />
     <link
       rel="stylesheet"
-      href="{% static 'css/ion.rangeSlider.skinFlat.css'%}"
+      rel="preload"
+      href="{% static 'css/themify-icons.css'%}"
     />
-    <link rel="stylesheet" href="{% static 'css/main.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css'%}" />
+    <link rel="stylesheet" href="{% static 'css/nice-select.css'%}" />
+
+    <link
+    rel="stylesheet"
+    rel="preload"
+    href="{% static 'css/main.css'%}"
+  />
+  {% block css %}
+  
+  {% endblock css %}
   </head>
   <body>
     {% include 'partes/navbar.html' %} {% block content %} {% endblock %} 
-	{% include 'partes/footer.html' %}
+    {% include 'partes/footer.html' %}
+    <script>
+    // optimzation css loading 
+      window.addEventListener('load', () => {
+        let link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = "{% static 'css/main.css'%}";
+        document.head.appendChild(link)
+        let link2 = document.createElement('link');
+        link2.rel = 'stylesheet';
+        link2.type = 'text/css';
+        link2.href = "{% static 'css/font-awesome.min.css'%}";
+        document.head.appendChild(link2)
+      })
+    </script>
     <script src="{% static 'js/vendor/jquery-2.2.4.min.js'%}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script async src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="{% static 'js/vendor/bootstrap.min.js'%}"></script>
-    <script src="{% static 'js/jquery.ajaxchimp.min.js'%}"></script>
     <script src="{% static 'js/jquery.nice-select.min.js'%}"></script>
-    <script src="{% static 'js/jquery.sticky.js'%}"></script>
-    <script src="{% static 'js/nouislider.min.js'%}"></script>
-    <script src="{% static 'js/jquery.magnific-popup.min.js'%}"></script>
-    <script src="{% static 'js/owl.carousel.min.js'%}"></script>
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-	  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-	  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-    <script src="{% static 'js/main.js'%}"></script>
-{% comment %}     <script src="{% static 'js/script.js'%}"></script> {% endcomment %}
+    <script async src="{% static 'js/nouislider.min.js'%}"></script>
+    <script async src="{% static 'js/jquery.magnific-popup.min.js'%}"></script>
+    <script async src="{% static 'js/owl.carousel.min.js'%}"></script>
+    <script async src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
+    {% comment %}
+    <script src="{% static 'js/script.js'%}"></script>
+    {% endcomment %} {% comment %}
+    <script src="{% static 'js/script.js'%}"></script>
+    {% endcomment %}
 
     <script type="text/javascript">
-      var code_url =
-        "http://127.0.0.1:8000/products/{{product.id}}/{{request.user.code}}";
+  
       var total = "{{order.get_cart_total}}";
       var user = "{{request.user}}";
       var user_id = "{{request.user.id}}";
-     var name = "{{request.user.name}}";
-    var  phone = "{{request.user.phone}}";
+      var name = "{{request.user.name}}";
+      var phone = "{{request.user.phone}}";
       // Function to get TOKENT
       function getToken(name) {
         var cookieValue = null;
@@ -107,22 +131,22 @@
         return null;
       }
       var cart = JSON.parse(getCookie("cart"));
-if (cart == undefined) {
-  cart = {};
-  console.log("Cart Created!", cart);
-  document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
-}
-function getCartItem() {
-  $.ajax({
-    url: "/api/cartitemApi/",
-    type: "GET",
-    success: function (res) {
-      console.log(res.cartItem);
-      $(".cartItem").html(res.cartItem);
-    },
-  });
-}
-console.log("Cart:", cart);
+      if (cart == undefined) {
+        cart = {};
+        console.log("Cart Created!", cart);
+        document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
+      }
+      function getCartItem() {
+        $.ajax({
+          url: "/api/cartitemApi/",
+          type: "GET",
+          success: function (res) {
+            console.log(res.cartItem);
+            $(".cartItem").html(res.cartItem);
+          },
+        });
+      }
+      console.log("Cart:", cart);
       // object cart (container shopping bug user GUEST)
       var cart = JSON.parse(getCookie("cart"));
       if (cart == undefined) {
@@ -142,8 +166,8 @@ console.log("Cart:", cart);
       }
       console.log("Cart:", cart);
       // simple code to hundler update cart whene user chose a product
-     // var updateBtns = document.getElementsByClassName("update-cart");
-    /*  for (i = 0; i < updateBtns.length; i++) {
+      // var updateBtns = document.getElementsByClassName("update-cart");
+      /*  for (i = 0; i < updateBtns.length; i++) {
         updateBtns[i].addEventListener("click", function () {
           var productId = this.dataset.product;
           var action = this.dataset.action;
@@ -163,7 +187,7 @@ console.log("Cart:", cart);
         });
       }*/
       // update order whene user is authenticated
-    /*  function updateUserOrder(productId, action) {
+      /*  function updateUserOrder(productId, action) {
         $.ajax({
           type: "POST",
           beforeSend: function (request) {
@@ -203,12 +227,12 @@ console.log("Cart:", cart);
         getCartItem();
       }*/
       // hundel checkout and order
-     /* var form = document.getElementById("form");
+      /* var form = document.getElementById("form");
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         submitFormData();
       });*/
-    
+
       // function swite alert to hundel beutifule alert
       // success alert
       function fireSweetAlert() {
@@ -251,41 +275,34 @@ console.log("Cart:", cart);
     <script>
       //ADD THIS PIECE OF CODE IN YOUR JS OR HTML PAGE UNDER SCRIPT
 
-      var swiper = new Swiper(".mySwiper", {
-        spaceBetween: 30,
-        centeredSlides: true,
-        autoplay: {
-          delay: 2500,
-          disableOnInteraction: false,
-        },
-        pagination: {
-          el: ".swiper-pagination",
-          clickable: true,
-        },
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-      });
       $(document).ready(function () {
-		const tabs = document.querySelectorAll("[data-target]"),
-		tabContents = document.querySelectorAll("[data-content]");
-	  tabs.forEach((tab) => {
-		tab.addEventListener("click", () => {
-		  const target = document.querySelector(tab.dataset.target);
-		  tabContents.forEach((tc) => {
-			tc.classList.remove("is-active");
-		  });
-		  target.classList.add("is-active");
+        $("select").niceSelect();
+        $(".s_Product_carousel").owlCarousel({
+          items: 1,
+          autoplay: false,
+          autoplayTimeout: 5000,
+          loop: true,
+          nav: false,
+          dots: true,
+        });
 
-		  tabs.forEach((t) => {
-			t.classList.remove("is-active");
-		  });
-		  tab.classList.add("is-active");
-		});
-	  });
+        const tabs = document.querySelectorAll("[data-target]"),
+          tabContents = document.querySelectorAll("[data-content]");
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            const target = document.querySelector(tab.dataset.target);
+            tabContents.forEach((tc) => {
+              tc.classList.remove("is-active");
+            });
+            target.classList.add("is-active");
 
-		
+            tabs.forEach((t) => {
+              t.classList.remove("is-active");
+            });
+            tab.classList.add("is-active");
+          });
+        });
+
         $(".custom-select").niceSelect("destroy");
 
         //--------- script to hundel sidebar for mini devices---------//
@@ -311,390 +328,63 @@ console.log("Cart:", cart);
         }, 4000);
         //--------end script to hundel sidebar for mini devices--------//
 
-
-        //---------------script to copy in clipboard with web Api---------------//
-/*	const shareBtn=document.getElementById('copy');
-	const title="title";
-	const url=code_url;
-	//const ogBtnContent = shareBtn.textContent;
-	shareBtn.addEventListener('click', () => {
-			if (navigator.share) {
-			  navigator.share({
-				title,
-				url
-			  }).then(() => {
-				
-			  })
-			  .catch(err => {
-				showMessage(shareBtn, `Couldn't share 🙁`);
-			  });
-			} else {
-			  showMessage(shareBtn, 'Not supported 🙅‍');
-			}
-		  });
-		  
-		  function showMessage(element, msg) {
-			element.textContent = msg;
-			setTimeout(() => {
-			  element.textContent = '';
-			}, 2000);
-		  }*/
-        ///////////////////////--Scripts to hundel requests (search product , filter data ) --///////////////////////////////////////////
- 
-        //--- script realtime filter ----//
-     
         //--- END--script realtime filter ----//
       });
-	//})
+      //})
     </script>
-	<script>
-		       // script realtime test username existed or no
-			 /*  $("#username").keyup(function () {
-				let username = $(this).val().trim();
-				$.ajax({
-				  url: "/api/validate_username/",
-				  data: { username: username },
-				  dataType: "json",
-				  success: function (data) {
-					if (data.is_exists) {
-					  console.log("existe");
-					  $("#username").addClass("is-invalid");
-					} else {
-					  console.log("success");
-					  $("#username").removeClass("is-invalid").addClass("is-valid");
-					}
-				  },
-				});
-			  });
-			  //------ script realtime to test phone---//
-		/*	  $("#phone").keyup(function () {
-				let phone = $(this).val().trim();
-				$.ajax({
-				  url: "/api/validate_username/",
-				  data: { phone: phone },
-				  dataType: "json",
-				  success: function (data) {
-					if (data.is_number_exists) {
-					  console.log("existe");
-					  $("#phone").addClass("is-invalid");
-					} else {
-					  if (phone.length == 10) {
-						console.log("success");
-						$("#phone").removeClass("is-invalid").addClass("is-valid");
-					  } else {
-						$("#phone").addClass("is-invalid");
-					  }
-					}
-				  },
-				});
-			  });*/
-			  /////////////// script realtime search ///////////////////
-			 /* $("#search").keyup(function () {
-				let search_data = $(this).val();
-			//	let lower_value = $("#lower-value").html();
-			//	let upper_value = $("#upper-value").html();
-				if (search_data.trim().length > 0) {
-				  $.ajax({
-					url: "/api/search_products/",
-					data: {
-					  search_data: search_data,
-					 // lower_value: lower_value,
-					//  upper_value: upper_value,
-					},
-					dataType: "json",
-					success: function (data) {
-					  $("#list_product").html("");
-					  console.log(data);
-					  if (data.length == 0) {
-						$("#list_product").html(
-						  ' <div class="my-5" style="width: 100%;text-align: center;"> <img src="{% static "img/no_data.svg" %}" width="200" height="200" ><h1>No data found</h1></div>'
-						);
-					  } else {
-						data.forEach((element) => {
-						  document.getElementById("list_product").innerHTML += `
-				  
-						  <div class="showcase">
-        
-							<div class="showcase-banner">
-					  
-							  <img src="/media/${element.image}" alt="Mens Winter Leathers Jackets" width="300" class="product-img default">
-							  <img src="/media/${element.image}" alt="Mens Winter Leathers Jackets" width="300" class="product-img hover">
-					  
-							  <p class="showcase-badge">15%</p>
-					  
-							  <div class="showcase-actions">
-					  
-								<button class="btn-action">
-								  <ion-icon name="heart-outline"></ion-icon>
-								</button>
-					  
-								<button class="btn-action">
-								  <ion-icon name="eye-outline"></ion-icon>
-								</button>
-					  
-								<button class="btn-action">
-								  <ion-icon name="repeat-outline"></ion-icon>
-								</button>
-					  
-								<button class="btn-action update-cart"  data-action="add"
-								data-product="${element.id}">
-								  <ion-icon name="bag-add-outline"></ion-icon>
-								</button>
-					  
-							  </div>
-					  
-							</div>
-					  
-							<div class="showcase-content">
-					  
-							  <a href="#" class="showcase-category">${element.category_id}</a>
-					  
-							  <a href="">
-								<h3 class="showcase-title">${element.name}</h3>
-							  </a>
-					  
-							  <div class="showcase-rating">
-								{% if product.avg_rating == 5 %}
-								<i class="fa fa-star text-warning"></i>
-								<i class="fa fa-star text-warning"></i>
-								<i class="fa fa-star text-warning"></i>
-								<i class="fa fa-star text-warning"></i>
-								<i class="fa fa-star text-warning"></i>
-								{% elif product.avg_rating == 4 %}
-								<i class="fa fa-star text-warning"></i>
-								<i class="fa fa-star text-warning"></i>
-								<i class="fa fa-star text-warning"></i>
-								<i class="fa fa-star text-warning"></i>
-								<i class="fa fa-star"></i>
-					  
-								{% elif product.avg_rating == 3 %}
-								<i class="fa fa-star text-warning"></i>
-								<i class="fa fa-star text-warning"></i>
-								<i class="fa fa-star text-warning"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-					  
-								{% elif product.avg_rating == 2 %}
-								<i class="fa fa-star text-warning"></i>
-								<i class="fa fa-star text-warning"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-					  
-								{% elif product.avg_rating == 1 %}
-								<i class="fa fa-star text-warning"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								{% else %}
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								<i class="fa fa-star"></i>
-								{% endif %}
-							  </div>
-					  
-							  <div class="price-box">
-								<p class="price">${element.price}</p>
-								<del>${element.price}</del>
-							  </div>
-					  
-							</div>
-					  
-						  </div>
-				  
-				  `;
-						});
-					  }
-					},
-				  });
-				}
-			  });*/
-	</script>
-	<script>
-	 var dropdown_panel = document.getElementById("dropdown_panel");
-  //   var category_name = document.querySelector(".main-categories .main-nav-list .category_name");
- // dropdown_panel=$('#dropdown_panel');
-  //category_name=$('.main-categories .main-nav-list .category_name');
-	 $(document).ready(function(){
-		    //dropdown_panel=$('#dropdown_panel');
-		    // Script to get Category and sub_cat and display in navbar 
-			$.ajax({
-			  	url: "/api/category/",
-			  	type: "GET",
-			  	dataType: "json", // added data type
-			  	success: function (data) {
-				dropdown_panel.innerHTML = '';
-				var i=0;
-				data.forEach((element) => {
-				  var sub_cat=element.sub_cat;
-				  dropdown_panel.innerHTML += ` <ul class="dropdown-panel-list">
-							<li class="menu-title">
-							  <a href="#">${element.name}</a>
-							</li>
-							<li class="panel-list-item panel_list_item" id="panel_list_item">
-							</li>
-							<li class="panel-list-item">
-							  <a href="#">
-								<img src="${element.image}" alt="headphone collection" width="250"
-								  height="119">
-							  </a>
-							</li>
-			  
-						  </ul>`;
-				  var panel_list_item = document.getElementsByClassName("panel_list_item");
-				  var arr_panel_list_item=[];
-					console.log(i);
-					//panel_list_item[i].innerHTML='';
-					sub_cat.forEach(cat=>{
-					panel_list_item[i].innerHTML+=`<a href="#">${cat.name}</a>`;
-					})
-					console.log(arr_panel_list_item)
-					i++;
-				}); // data.forEach end
-			
-				}, //end success
-			}); 
-      
- 
-      //ajax end
-		})
+    <script>
+      // mobile menu variables
+      const mobileMenuOpenBtn = document.querySelectorAll(
+        "[data-mobile-menu-open-btn]"
+      );
+      const mobileMenu = document.querySelectorAll("[data-mobile-menu]");
+      const mobileMenuCloseBtn = document.querySelectorAll(
+        "[data-mobile-menu-close-btn]"
+      );
+      const overlay = document.querySelector("[data-overlay]");
 
-	</script>
-	<script>
+      for (let i = 0; i < mobileMenuOpenBtn.length; i++) {
+        // mobile menu function
+        const mobileMenuCloseFunc = function () {
+          mobileMenu[i].classList.remove("active");
+          overlay.classList.remove("active");
+        };
 
+        mobileMenuOpenBtn[i].addEventListener("click", function () {
+          mobileMenu[i].classList.add("active");
+          overlay.classList.add("active");
+        });
 
-// mobile menu variables
-const mobileMenuOpenBtn = document.querySelectorAll('[data-mobile-menu-open-btn]');
-const mobileMenu = document.querySelectorAll('[data-mobile-menu]');
-const mobileMenuCloseBtn = document.querySelectorAll('[data-mobile-menu-close-btn]');
-const overlay = document.querySelector('[data-overlay]');
-
-for (let i = 0; i < mobileMenuOpenBtn.length; i++) {
-
-  // mobile menu function
-  const mobileMenuCloseFunc = function () {
-    mobileMenu[i].classList.remove('active');
-    overlay.classList.remove('active');
-  }
-
-  mobileMenuOpenBtn[i].addEventListener('click', function () {
-    mobileMenu[i].classList.add('active');
-    overlay.classList.add('active');
-  });
-
-  mobileMenuCloseBtn[i].addEventListener('click', mobileMenuCloseFunc);
-  overlay.addEventListener('click', mobileMenuCloseFunc);
-
-}
-
-
-
-
-
-// accordion variables
-const accordionBtn = document.querySelectorAll('[data-accordion-btn]');
-const accordion = document.querySelectorAll('[data-accordion]');
-
-for (let i = 0; i < accordionBtn.length; i++) {
-
-  accordionBtn[i].addEventListener('click', function () {
-
-    const clickedBtn = this.nextElementSibling.classList.contains('active');
-
-    for (let i = 0; i < accordion.length; i++) {
-
-      if (clickedBtn) break;
-
-      if (accordion[i].classList.contains('active')) {
-
-        accordion[i].classList.remove('active');
-        accordionBtn[i].classList.remove('active');
-
+        mobileMenuCloseBtn[i].addEventListener("click", mobileMenuCloseFunc);
+        overlay.addEventListener("click", mobileMenuCloseFunc);
       }
 
-    }
+      // accordion variables
+      const accordionBtn = document.querySelectorAll("[data-accordion-btn]");
+      const accordion = document.querySelectorAll("[data-accordion]");
 
-    this.nextElementSibling.classList.toggle('active');
-    this.classList.toggle('active');
+      for (let i = 0; i < accordionBtn.length; i++) {
+        accordionBtn[i].addEventListener("click", function () {
+          const clickedBtn =
+            this.nextElementSibling.classList.contains("active");
 
-  });
+          for (let i = 0; i < accordion.length; i++) {
+            if (clickedBtn) break;
 
-}
-	</script>
+            if (accordion[i].classList.contains("active")) {
+              accordion[i].classList.remove("active");
+              accordionBtn[i].classList.remove("active");
+            }
+          }
+
+          this.nextElementSibling.classList.toggle("active");
+          this.classList.toggle("active");
+        });
+      }
+    </script>
     <style>
-      * {
-        box-sizing: border-box;
-      }
-
-      .rating {
-        display: flex;
-        overflow: hidden;
-        position: relative;
-      }
-
-      .rating-0 {
-        filter: grayscale(100%);
-      }
-
-      .rating > input {
-        display: none;
-      }
-
-      .rating > label {
-        cursor: pointer;
-        width: 35px;
-        height: 35px;
-        margin-top: auto;
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23e3e3e3' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: 76%;
-        transition: 0.3s;
-      }
-
-      .rating > input ~ label,
-      .rating > input ~ label ~ label {
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23fcd93a' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
-      }
-
-      .rating > input:not(:checked) ~ label:hover,
-      .rating > input:not(:checked) ~ label:hover ~ label {
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23d8b11e' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
-      }
-      .swiper {
-        width: 100%;
-        height: 100%;
-      }
-
-      .swiper-slide {
-        text-align: center;
-        font-size: 18px;
-        background: #fff;
-
-        /* Center slide text vertically */
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: -webkit-flex;
-        display: flex;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
-        -webkit-justify-content: center;
-        justify-content: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        -webkit-align-items: center;
-        align-items: center;
-      }
-
-      .swiper-slide img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
+      
+     
       .country_select ul.list {
         max-height: 350px;
         overflow-y: scroll !important;
@@ -752,6 +442,33 @@ for (let i = 0; i < accordionBtn.length; i++) {
         background-color: #4042f6;
         color: #fff;
       }
+      .skeleton {
+  animation: skeleton-loading 1s linear infinite alternate;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: hsl(200, 20%, 80%);
+  }
+  100% {
+    background-color: hsl(200, 20%, 95%);
+  }
+}
+
+.skeleton-text {
+  width: 100%;
+  height: 0.7rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.skeleton-text__body {
+  width: 75%;
+}
+
+.skeleton-footer {
+  width: 30%;
+}
     </style>
   </body>
 </html>

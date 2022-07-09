@@ -5,7 +5,7 @@
   <div class="main-body">
     <div class="row">
       <div class="col-lg-4">
-        <div class="card">
+        <div class="card card_base">
           <div class="card-body">
             <div class="d-flex flex-column align-items-center text-center">
               <img
@@ -66,7 +66,7 @@
 </div>
 <style>
   .card {
-    margin-top: 100px;
+    margin-top: 50px;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -80,7 +80,11 @@
     box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%),
       0 2px 6px 0 rgb(206 206 238 / 54%);
   }
-
+@media (max-width:1020px) {
+  .card_base{
+    display: none;
+  }
+}
   .me-2 {
     margin-right: 0.5rem !important;
   }

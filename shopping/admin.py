@@ -88,6 +88,8 @@ admin.site.register(ShippingAddress, ShippingAddressAdmin)
 admin.site.register(Favorite, FavoritectAdmin)
 admin.site.register(ImageBanner, BannerImage)
 admin.site.register(Variation)
+admin.site.register(Variant)
+
 admin.site.register(ToastMessage)
 admin.site.register(Affaire)
 

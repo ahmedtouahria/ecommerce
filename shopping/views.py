@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.conf import settings
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
@@ -7,10 +8,12 @@ from django.http import JsonResponse
 import requests
 from shopping.models import *
 from django.contrib import messages
-from django.core.paginator import  Paginator
-from django.db.models import  Count,Max
+from django.core.paginator import Paginator
+from django.db.models import Count, Max
 from datetime import date, timedelta
 from django.utils import timezone
+
+from shopping.utils import recommendation
 
 # Create your views here.
 ''' Nous avons deux cas ici
@@ -18,7 +21,6 @@ from django.utils import timezone
 2/ Lorsqu'il n'est pas inscrit ===> else:...
 
 '''
-
 
 
 # This function hundel all data about guest user help COOKIES and js
@@ -87,7 +89,7 @@ def guestOrder(request, data):
                 color=item['color'],
                 size=item['size']
             )
-        except :
+        except:
             OrderItem.objects.create(
                 product=product,
                 order=order,
@@ -102,28 +104,31 @@ def guestOrder(request, data):
 def index(request):
     if request.user.is_authenticated:
         customer = request.user
-        order, created = Order.objects.get_or_create(
+        order_changed = request.session.get("order_changed_id", None)
+        if order_changed is not None:
+            order = Order.objects.get(customer=customer,transaction_id=order_changed)
+        else:
+            order, created = Order.objects.get_or_create(
             customer=customer, complete=False)
         items = order.orderitem_set.all()
         cartItem = order.get_cart_items
-        # Guest user
     else:
         cookieData = cookieCart(request)
         items = cookieData['items']
         order = cookieData['order']
         cartItem = cookieData['cartItem']
-    d=date.today()-timedelta(days=7)
+    d = date.today()-timedelta(days=7)
     order_items = Product.objects.all().order_by("-count_sould")[:7]
-
-    top_rated = Rating.objects.annotate(rating_count=Max("stars")).order_by("-rating_count")
-    toast=ToastMessage.objects.all().last()
+    top_rated = Rating.objects.annotate(
+        rating_count=Max("stars")).order_by("-rating_count")
+    toast = ToastMessage.objects.all().last()
     affaire = Affaire.objects.all()
     context = {
         "new_arrival": Product.objects.all().reverse()[:5],
         "trending": order_items[:5],
         "top_rated": top_rated[:5],
-        "toast":toast,
-        "affaires":affaire,
+        "toast": toast,
+        "affaires": affaire,
         "category_sub": CategorySub.objects.all(),
         "category": Category.objects.all(),
         "imgs_banner": ImageBanner.objects.all()[:3],
@@ -132,7 +137,6 @@ def index(request):
         "order": order,
         "cartItem": cartItem,
         "titel": "Accueil",
-
     }
     return render(request, 'pages/home.html', context)
 # products views
@@ -143,7 +147,11 @@ def index(request):
 def products(request):
     if request.user.is_authenticated:
         customer = request.user
-        order, created = Order.objects.get_or_create(
+        order_changed = request.session.get("order_changed_id", None)
+        if order_changed is not None:
+            order = Order.objects.get(customer=customer,transaction_id=order_changed)
+        else:
+            order, created = Order.objects.get_or_create(
             customer=customer, complete=False)
         items = order.orderitem_set.all()
         cartItem = order.get_cart_items
@@ -153,33 +161,47 @@ def products(request):
         items = cookieData['items']
         order = cookieData['order']
         cartItem = cookieData['cartItem']
+    order_items = Product.objects.all().order_by("-count_sould")[:7]
+
     products = Product.objects.filter(quantity__gt=0)
-    paginator = Paginator(products,8)
-    page_number=request.GET.get("page",1)
-    page_products_display=paginator.get_page(page_number)
+    paginator = Paginator(products, 8)
+    page_number = request.GET.get("page", 1)
+    page_products_display = paginator.get_page(page_number)
     context = {
+        "trending": order_items[:5],
         "products": page_products_display,
-        "categorys": Category.objects.all(),
+        "category": Category.objects.all(),
         "order": order,
         "cartItem": cartItem,
-        "paginator":paginator,
-        "page":page_products_display,
-        "page_number":int(page_number),
-         "titel": "produits",
-
-
+        "paginator": paginator,
+        "page": page_products_display,
+        "page_number": int(page_number),
+        "titel": "produits",
     }
     return render(request, 'pages/products.html', context)
 
 # la page d'un seule produit
+def categorys(request,cat):
+    category=CategorySub.objects.filter(name=cat).first()
+    products=Product.objects.filter(category=category)
+    other_products=Product.objects.filter(category__category=category.category,)
 
+    context={"products":products,
+        "category": Category.objects.all(),
+        "other_products":other_products
+    }
+    return render(request,"pages/category.html",context)
 
 def product(request, pk):
     # print("customer_ref",request.session['ref_customer'])
 
     if request.user.is_authenticated:
         customer = request.user
-        order, created = Order.objects.get_or_create(
+        order_changed = request.session.get("order_changed_id", None)
+        if order_changed is not None:
+            order = Order.objects.get(customer=customer,transaction_id=order_changed)
+        else:
+            order, created = Order.objects.get_or_create(
             customer=customer, complete=False)
         items = order.orderitem_set.all()
         cartItem = order.get_cart_items
@@ -194,14 +216,20 @@ def product(request, pk):
     except Product.DoesNotExist:
         product_id = None
         return redirect('products')
+    order_items = Product.objects.all().order_by("-count_sould")[:7]
+
     context = {
         "products": Product.objects.filter(category=product_id.category),
         "ratings": Rating.objects.filter(product=product_id),
+        "variants": Variant.objects.filter(product=product_id),
+        "trending": order_items[:5],
+        "category": Category.objects.all(),
+
         "stars": product_id.avg_rating,
         "product": product_id,
         "order": order,
         "cartItem": cartItem,
-        "product_imgs":ProductImage.objects.filter(product=product_id),
+        "product_imgs": ProductImage.objects.filter(product=product_id),
         "titel": str(product_id.name).replace(" ", "-").lower(),
 
     }
@@ -211,8 +239,6 @@ def product(request, pk):
 
 def productWithCode(request, pk, *args, **kwargs):
     code = str(kwargs.get('ref_code'))
-    print("ip", get_client_ip(request))
-    request.session['client_ip'] = []
    # client_ip=get_client_ip(request)
     try:
         customer = Customer.objects.get(code=code)
@@ -242,14 +268,19 @@ def productWithCode(request, pk, *args, **kwargs):
     except Product.DoesNotExist:
         product_id = None
         return redirect('products')
+    order_items = Product.objects.all().order_by("-count_sould")[:7]
+
     context = {
         "products": Product.objects.filter(category=product_id.category),
+        "trending": order_items[:5],
         "ratings": Rating.objects.filter(product=product_id),
         "stars": product_id.avg_rating,
         "product": product_id,
+        "category": Category.objects.all(),
+
         "order": order,
         "cartItem": cartItem,
-        "product_imgs":ProductImage.objects.filter(product=product_id),
+        "product_imgs": ProductImage.objects.filter(product=product_id),
         "titel": str(product_id.name).replace(" ", "-").lower(),
     }
     return render(request, 'pages/single-product.html', context)
@@ -329,7 +360,11 @@ def profile(request):
     user = request.user
     if request.user.is_authenticated:
         customer = request.user
-        order, created = Order.objects.get_or_create(
+        order_changed = request.session.get("order_changed_id", None)
+        if order_changed is not None:
+            order = Order.objects.get(customer=customer,transaction_id=order_changed)
+        else:
+            order, created = Order.objects.get_or_create(
             customer=customer, complete=False)
         items = order.orderitem_set.all()
         cartItem = order.get_cart_items
@@ -343,15 +378,20 @@ def profile(request):
         money = Conversion.objects.get(receveur=user)
     except Conversion.DoesNotExist:
         money = 0
-    context={
+    order_items = Product.objects.all().order_by("-count_sould")[:7]
+
+    context = {
         "money": money,
+        "trending": order_items[:5],
         "titel": "profile",
         "items": items,
+        "category": Category.objects.all(),
+
         "order": order,
         "cartItem": cartItem,
-         
-         }
-    return render(request, "pages/myprofile.html",context )
+
+    }
+    return render(request, "pages/myprofile.html", context)
 
 
 @login_required(login_url='login')
@@ -359,34 +399,39 @@ def profile_orders(request):
     user = request.user
     orders = Order.objects.filter(
         customer=user, complete=True).order_by('-date_ordered')
-    paginator = Paginator(orders,8)
-    page_number=request.GET.get("page",1)
-    page_products_display=paginator.get_page(page_number)
-
+    paginator = Paginator(orders, 8)
+    page_number = request.GET.get("page", 1)
+    page_products_display = paginator.get_page(page_number)
+    order_items = Product.objects.all().order_by("-count_sould")[:7]
 
     context = {
         "orders": page_products_display,
+        "trending": order_items[:5],
         "titel": "Mes commandes",
-        "page":page_products_display,
-        "page_number":int(page_number),
+        "category": Category.objects.all(),
 
-        "paginator":paginator,
+        "page": page_products_display,
+        "page_number": int(page_number),
+        "paginator": paginator,
 
     }
     return render(request, 'pages/profile_orders.html', context)
 
+@login_required(login_url='login')
 
 def myorders(request, pk):
     user = request.user
     order = Order.objects.filter(transaction_id=pk).first()
-    headers = {"X-API-ID": settings.ID_API_YALIDIN,"X-API-TOKEN": settings.TOKEN_API_YALIDIN }
-    response = requests.get(f"{settings.BASE_URL_YALIDIN}parcels/{order.transaction_id}", headers=headers)
+    headers = {"X-API-ID": settings.ID_API_YALIDIN,
+               "X-API-TOKEN": settings.TOKEN_API_YALIDIN}
+    response = requests.get(
+        f"{settings.BASE_URL_YALIDIN}parcels/{order.transaction_id}", headers=headers)
     parcel = response.json()
     print(parcel)
-    total_data=parcel.get("total_data",None)
+    total_data = parcel.get("total_data", None)
     if total_data > 0:
-        transaction_id = parcel.get('data',None)
-        last_status= transaction_id[0]
+        transaction_id = parcel.get('data', None)
+        last_status = transaction_id[0]
         try:
             if order.customer != user:
                 return redirect("profile_orders")
@@ -395,13 +440,18 @@ def myorders(request, pk):
         order_items = OrderItem.objects.filter(order=order)
     else:
         order_items = OrderItem.objects.filter(order=order)
-        last_status=""
-        messages.info(request,"Cette demande est en attente!")
+        last_status = ""
+        messages.info(request, "Cette demande est en attente!")
+    product_items = Product.objects.all().order_by("-count_sould")[:7]
+
     context = {
         "order": order,
+        "trending":product_items,
         "order_items": order_items,
         "titel": "Mes commandes",
-        "last_status":last_status
+        "last_status": last_status,
+        "category": Category.objects.all(),
+
     }
     return render(request, 'pages/profile_myorder.html', context)
 
@@ -412,7 +462,11 @@ def myorders(request, pk):
 def card(request):
     if request.user.is_authenticated:
         customer = request.user
-        order, created = Order.objects.get_or_create(
+        order_changed = request.session.get("order_changed_id", None)
+        if order_changed is not None:
+            order = Order.objects.get(customer=customer,transaction_id=order_changed)
+        else:
+            order, created = Order.objects.get_or_create(
             customer=customer, complete=False)
         items = order.orderitem_set.all()
         cartItem = order.get_cart_items
@@ -423,11 +477,16 @@ def card(request):
         order = cookieData['order']
         cartItem = cookieData['cartItem']
         print("order", order)
+    order_items = Product.objects.all().order_by("-count_sould")[:7]
+
     context = {
         "items": items,
+        "trending": order_items[:5],
         "order": order,
         "cartItem": cartItem,
-        "titel": "panier"
+        "titel": "panier",
+        "category": Category.objects.all(),
+
 
     }
     return render(request, 'pages/card.html', context)
@@ -439,7 +498,11 @@ def card(request):
 def checkout(request):
     if request.user.is_authenticated:
         customer = request.user
-        order, created = Order.objects.get_or_create(
+        order_changed = request.session.get("order_changed_id", None)
+        if order_changed is not None:
+            order = Order.objects.get(customer=customer,transaction_id=order_changed)
+        else:
+            order, created = Order.objects.get_or_create(
             customer=customer, complete=False)
         items = order.orderitem_set.all()
         cartItem = order.get_cart_items
@@ -449,11 +512,16 @@ def checkout(request):
         items = cookieData['items']
         order = cookieData['order']
         cartItem = cookieData['cartItem']
+    order_items = Product.objects.all().order_by("-count_sould")[:7]
+
 
     context = {
         "items": items,
+        "trending": order_items[:5],
         "order": order,
         "cartItem": cartItem,
+        "category": Category.objects.all(),
+
         "titel": "vérifier"
     }
     return render(request, 'pages/checkout.html', context)
@@ -464,25 +532,26 @@ def checkout(request):
 def updateItem(request):
     # get user
     customer = request.user
-    order, created = Order.objects.get_or_create(
-        customer=customer, complete=False)
+    order_changed = request.session.get("order_changed_id", None)
+    if order_changed is not None:
+        order = Order.objects.get(customer=customer,transaction_id=order_changed)
+    else:
+        order, created = Order.objects.get_or_create(
+            customer=customer, complete=False)
     # load json request from user
     data = json.loads(request.body)
     if "productColor" in data or "productSize" in data:
-        productColor = data.get("productColor",None)
-        productSize = data.get("productSize",None)
+        productColor = data.get("productColor", None)
+        productSize = data.get("productSize", None)
         productId = data['productId']
         action = data['action']
         product = Product.objects.filter(id=productId).first()
-        order, created = Order.objects.get_or_create(
-            customer=customer, complete=False)
         orderItem, created = OrderItem.objects.get_or_create(
             order=order, product=product, color=productColor, size=productSize)
         if action == 'add':
             orderItem.quantity = (orderItem.quantity + 1)
         elif action == 'remove':
             orderItem.quantity = (orderItem.quantity - 1)
-
         orderItem.save()
 
         if orderItem.quantity <= 0:
@@ -491,59 +560,52 @@ def updateItem(request):
         # get required data from json  "productId" & "action user (add,remove)"
         productId = data['productId']
         action = data['action']
-        print('Action:', action)
-        print('Product:', productId)
         product = Product.objects.filter(id=productId).first()
-        order, created = Order.objects.get_or_create(
-            customer=customer, complete=False)
         orderItem, created = OrderItem.objects.get_or_create(
             order=order, product=product)
         if action == 'add':
             orderItem.quantity = (orderItem.quantity + 1)
         elif action == 'remove':
             orderItem.quantity = (orderItem.quantity - 1)
-
         orderItem.save()
-
         if orderItem.quantity <= 0:
             orderItem.delete()
-
     return JsonResponse('Item was added', safe=False)
 
 
 def processOrder(request):
     data = json.loads(request.body)
     print(data)
-    stop_disk=data.get("stop_desk",False)
+    stop_disk = data.get("stop_desk", False)
     # get order if user is authenticated
     if request.user.is_authenticated:
         customer = request.user
-        order, created = Order.objects.get_or_create(
-            customer=customer, complete=False)
+        order_changed = request.session.get("order_changed_id", None)
+        if order_changed is not None:
+            order = Order.objects.get(customer=customer,transaction_id=order_changed)
+            order.confirmed=False
+            order.save()
+        else:
+            order, created = Order.objects.get_or_create(customer=customer, complete=False)
     # get order if user is not authenticated
     else:
         customer, order = guestOrder(request, data)
     # get ref_customer (user shared product)
-
-    try:
-        user_id = request.session['ref_customer']
-        user_recommended = Customer.objects.get(id=user_id)
-    except:
-        user_recommended = None
-    if user_recommended is not None and request.user != user_recommended and order is not None:
-        order.recommended_by = user_recommended
-        order.save()
-        user_recommended.point += 1
-        user_recommended.number_of_referalls += 1
-        user_recommended.is_receveur = True
-        user_recommended.save()
+    '''recommendation function'''
+    recommendation(request,Customer,order)
     if customer is not None:
         total = float(data['form']['total'])
-        print("total", total, "order.get_cart_total ", order.get_cart_total)
         if total > 0:
             order.complete = True
             order.save()
-            ShippingAddress.objects.create(
+            shipping=ShippingAddress.objects.filter(order=order)
+            '''============ if edited parcel ================ '''
+            if shipping.count() >0:
+                '''===== make order -> edited for "patch" request not "post" to "YALIDIN" ========'''
+                order.edited=True
+                order.save()
+                '''=====we need update shipping address========'''
+                shipping.update(
                 customer=customer,
                 order=order,
                 name=data['form']['name'],
@@ -554,7 +616,21 @@ def processOrder(request):
                 zipcode=data['shipping']['zipcode'],
                 is_stopdesk=stop_disk
             )
-
+                ''' ======== change session value to parcel =========='''
+                request.session["order_changed_id"]=None
+            #========= if create new parcel ================
+            else:
+                ShippingAddress.objects.create(
+                customer=customer,
+                order=order,
+                name=data['form']['name'],
+                phone=data['form']['phone'],
+                address=data['shipping']['address'],
+                city=data['shipping']['city'],
+                state=data['shipping']['state'],
+                zipcode=data['shipping']['zipcode'],
+                is_stopdesk=stop_disk
+            )
     else:
         redirect("login")
     return JsonResponse('Payment submitted..', safe=False)

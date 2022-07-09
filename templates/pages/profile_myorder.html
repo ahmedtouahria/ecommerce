@@ -71,6 +71,7 @@
                     </td>
                   </tr>
                   {% endfor %}
+                <tr>
     
                     <td></td>
                     <td></td>
@@ -81,10 +82,19 @@
                       <h5>${{order.get_cart_total}}</h5>
                     </td>
                   </tr>
-                 
-         
                 </tbody>
               </table>
+              <hr>
+              {% if last_status.last_status == "En préparation" %}
+                <div class="row m-3">
+                <div class="col-6">modéfier cette commande</div>
+                <div class="col-6"> <a href="{% url 'card' %}" id="edit_order" class="btn btn-outline-primary"><i class="fa fa-external-link mx-2" aria-hidden="true"></i></a>
+                </div>
+
+              </div>
+              {% endif %}
+              <hr>
+
             </div>
           </div>
         </div>
@@ -102,7 +112,7 @@
         </div>
         <div class="order-tracking ">
           <span class="is-complete"></span>
-          <p>Shipped<br><span></span></p>
+          <p>Expédié<br><span></span></p>
         </div>
         <div class="order-tracking">
           <span class="is-complete"></span>
@@ -125,7 +135,7 @@
         </div>
         <div class="order-tracking">
           <span class="is-complete"></span>
-          <p>Delivered<br><span></span></p>
+          <p>Livré<br><span></span></p>
         </div>
       </div>
     </div>
@@ -242,4 +252,24 @@
   .order-tracking:first-child:before{display: none;}
   .order-tracking.completed:before{background-color: #27aa80;}
 </style>
+<script>
+  edit_order = document.getElementById("edit_order");
+  edit_order.addEventListener("click", function(){
+    $.ajax({
+      type: "POST",
+      beforeSend: function (request) {
+        request.setRequestHeader("Content-Type", "application/json");
+        request.setRequestHeader("X-CSRFToken", csrftoken);
+      },
+      url: "/api/edit_order/",
+      data: JSON.stringify({order_tracking:"{{order.transaction_id}}"}),
+      processData: true,
+      success: function (msg) {
+        console.log("success" + msg);
+        //location.href("/cart")
+      },
+    });
+  })
+ 
+</script>
 {% endblock profile %}

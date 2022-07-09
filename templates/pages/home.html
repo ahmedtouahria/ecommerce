@@ -37,7 +37,7 @@
 
       <div class="slider-container has-scrollbar">
 {% for img in imgs_banner %}
-        <div class="slider-item">
+        <div class="slider-item skeleton">
           <img src="{{img.image.url}}" alt="women's latest fashion sale" class="banner-img">
 
           <div class="banner-content">
@@ -412,252 +412,133 @@
 
 <!-- End category Area -->
 <!-- start product Area -->
-<section class="owl-carousel active-product-area section_gap">
-    <!-- single product slide -->
-    <div class="single-product-slider">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-6 text-center">
-                    <div class="section-title">
-                        <h1>Derniers produits</h1>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                            dolore
-                            magna aliqua.</p>
-                    </div>
+<section class="related-product-area section_gap_bottom">
+  <div class="single-product-slider">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <div class="section-title">
+                    <h1>Derniers produits</h1>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
+                        dolore
+                        magna aliqua.</p>
                 </div>
             </div>
-            <section class="lattest-product-area category-list">
-              <div class="product-main container pt-5">
-      
-                <h2 class="title">Nouveaux produits</h2>
-              
-                <div class="product-grid" id="list_product">
-              {% for product in products  %}
-                  <div class="showcase">
-              
-                    <div class="showcase-banner">
-              
-                      <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img default">
-                      <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img hover">
-              
-                      {% if product.status%}
-                      <p class="
-                      showcase-badge
-                      {% if product.status == "promotion" %}
-                      angle pink
-                      {% elif product.status == "nouvelle" %}
-                      angle black
-                      {% endif %}
-                      ">{{product.status}}</p>
-                {% endif %}
-              
-                      <div class="showcase-actions">
-              
-                        <button class="btn-action">
-                          <ion-icon name="heart-outline"></ion-icon>
-                        </button>
-              
-                        <button class="btn-action">
-                          <ion-icon name="eye-outline"></ion-icon>
-                        </button>
-              
-                        <button class="btn-action">
-                          <ion-icon name="repeat-outline"></ion-icon>
-                        </button>
-              
-                        <button class="btn-action update-cart"  data-action="add"
-                        data-product="{{product.id}}">
-                          <ion-icon name="bag-add-outline"></ion-icon>
-                        </button>
-              
-                      </div>
-              
-                    </div>
-              
-                    <div class="showcase-content">
-              
-                      <a href="#" class="showcase-category">{{product.category}}</a>
-              
-                      <a href="{% url 'single-product' product.id %}">
-                        <h3 class="showcase-title">{{product.name}}</h3>
-                      </a>
-              
-                      <div class="showcase-rating">
-                        {% if product.avg_rating == 5 %}
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        {% elif product.avg_rating == 4 %}
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star"></i>
-              
-                        {% elif product.avg_rating == 3 %}
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-              
-                        {% elif product.avg_rating == 2 %}
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-              
-                        {% elif product.avg_rating == 1 %}
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        {% else %}
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        {% endif %}
-                      </div>
-              
-                      <div class="price-box">
-                        <p class="price">${{product.price}}</p>
-                        <del>${{product.price}}</del>
-                      </div>
-              
-                    </div>
-              
-                  </div>
-                  {% endfor %}
-                </div>
-              
-              </div>
-            </section>
         </div>
-    </div>
-    <!-- single product slide -->
-    <div class="single-product-slider">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-6 col-lg-6 text-center">
-                    <div class="section-title">
-                        <h1>Coming Products</h1>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                            dolore
-                            magna aliqua.</p>
-                    </div>
+        <section class="lattest-product-area category-list">
+          <div class="product-main container pt-5">
+  
+            <h2 class="title">Nouveaux produits</h2>
+          
+            <div class="product-grid" id="list_product">
+          {% for product in products  %}
+              <div class="showcase">
+          
+                <div class="showcase-banner">
+          
+                  <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img default">
+                  <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img hover">
+          
+                  {% if product.status%}
+                  <p class="
+                  showcase-badge
+                  {% if product.status == "promotion" %}
+                  angle pink
+                  {% elif product.status == "nouvelle" %}
+                  angle black
+                  {% endif %}
+                  ">{{product.status}}</p>
+            {% endif %}
+          
+                  <div class="showcase-actions">
+          
+                    <button class="btn-action">
+                      <ion-icon name="heart-outline"></ion-icon>
+                    </button>
+          
+                    <button class="btn-action">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </button>
+          
+                    <button class="btn-action">
+                      <ion-icon name="repeat-outline"></ion-icon>
+                    </button>
+          
+                    <button class="btn-action update-cart"  data-action="add"
+                    data-product="{{product.id}}">
+                      <ion-icon name="bag-add-outline"></ion-icon>
+                    </button>
+          
+                  </div>
+          
                 </div>
+          
+                <div class="showcase-content">
+          
+                  <a href="#" class="showcase-category">{{product.category}}</a>
+          
+                  <a href="{% url 'single-product' product.id %}">
+                    <h3 class="showcase-title">{{product.name}}</h3>
+                  </a>
+          
+                  <div class="showcase-rating">
+                    {% if product.avg_rating == 5 %}
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    {% elif product.avg_rating == 4 %}
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star"></i>
+          
+                    {% elif product.avg_rating == 3 %}
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+          
+                    {% elif product.avg_rating == 2 %}
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+          
+                    {% elif product.avg_rating == 1 %}
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    {% else %}
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    {% endif %}
+                  </div>
+          
+                  <div class="price-box">
+                    <p class="price">${{product.price}}</p>
+                    <del>${{product.price}}</del>
+                  </div>
+          
+                </div>
+          
+              </div>
+              {% endfor %}
             </div>
-            <section class="lattest-product-area category-list">
-              <div class="product-main container pt-5">
-      
-                <h2 class="title">New Products</h2>
-              
-                <div class="product-grid" id="list_product">
-              {% for product in products  %}
-                  <div class="showcase">
-              
-                    <div class="showcase-banner">
-              
-                      <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img default">
-                      <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img hover">
-              
-                      <p class="showcase-badge">15%</p>
-              
-                      <div class="showcase-actions">
-              
-                        <button class="btn-action">
-                          <ion-icon name="heart-outline"></ion-icon>
-                        </button>
-              
-                        <button class="btn-action">
-                          <ion-icon name="eye-outline"></ion-icon>
-                        </button>
-              
-                        <button class="btn-action">
-                          <ion-icon name="repeat-outline"></ion-icon>
-                        </button>
-              
-                        <button class="btn-action update-cart"  data-action="add"
-                        data-product="{{product.id}}">
-                          <ion-icon name="bag-add-outline"></ion-icon>
-                        </button>
-              
-                      </div>
-              
-                    </div>
-              
-                    <div class="showcase-content">
-              
-                      <a href="#" class="showcase-category">{{product.category}}</a>
-              
-                      <a href="{% url 'single-product' product.id %}">
-                        <h3 class="showcase-title">{{product.name}}</h3>
-                      </a>
-              
-                      <div class="showcase-rating">
-                        {% if product.avg_rating == 5 %}
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        {% elif product.avg_rating == 4 %}
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star"></i>
-              
-                        {% elif product.avg_rating == 3 %}
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-              
-                        {% elif product.avg_rating == 2 %}
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-              
-                        {% elif product.avg_rating == 1 %}
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        {% else %}
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        {% endif %}
-                      </div>
-              
-                      <div class="price-box">
-                        <p class="price">${{product.price}}</p>
-                        <del>${{product.price}}</del>
-                      </div>
-              
-                    </div>
-              
-                  </div>
-                  {% endfor %}
-                </div>
-              
-              </div>
-            </section>
-        </div>
+          
+          </div>
+        </section>
     </div>
+</div>
 </section>
 <!-- end product Area -->
 
@@ -670,138 +551,132 @@
 
 <!-- Start related-product Area -->
 <section class="related-product-area section_gap_bottom">
+  <div class="single-product-slider">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-6 text-center">
                 <div class="section-title">
-                    <h1>Deals of the Week</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                    <h1>Derniers produits</h1>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
+                        dolore
                         magna aliqua.</p>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-9">
-                <div class="row">
-                    <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                        <div class="single-related-product d-flex">
-                            <a href="#"><img src="{% static 'img/r1.jpg'%}" alt=""></a>
-                            <div class="desc">
-                                <a href="#" class="title">Black lace Heels</a>
-                                <div class="price">
-                                    <h6>$189.00</h6>
-                                    <h6 class="l-through">$210.00</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                        <div class="single-related-product d-flex">
-                            <a href="#"><img src="{% static 'img/r2.jpg'%}" alt=""></a>
-                            <div class="desc">
-                                <a href="#" class="title">Black lace Heels</a>
-                                <div class="price">
-                                    <h6>$189.00</h6>
-                                    <h6 class="l-through">$210.00</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                        <div class="single-related-product d-flex">
-                            <a href="#"><img src="{% static 'img/r3.jpg'%}" alt=""></a>
-                            <div class="desc">
-                                <a href="#" class="title">Black lace Heels</a>
-                                <div class="price">
-                                    <h6>$189.00</h6>
-                                    <h6 class="l-through">$210.00</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                        <div class="single-related-product d-flex">
-                            <a href="#"><img src="{% static 'img/r5.jpg'%}" alt=""></a>
-                            <div class="desc">
-                                <a href="#" class="title">Black lace Heels</a>
-                                <div class="price">
-                                    <h6>$189.00</h6>
-                                    <h6 class="l-through">$210.00</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                        <div class="single-related-product d-flex">
-                            <a href="#"><img src="{% static 'img/r6.jpg'%}" alt=""></a>
-                            <div class="desc">
-                                <a href="#" class="title">Black lace Heels</a>
-                                <div class="price">
-                                    <h6>$189.00</h6>
-                                    <h6 class="l-through">$210.00</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                        <div class="single-related-product d-flex">
-                            <a href="#"><img src="{% static 'img/r7.jpg'%}" alt=""></a>
-                            <div class="desc">
-                                <a href="#" class="title">Black lace Heels</a>
-                                <div class="price">
-                                    <h6>$189.00</h6>
-                                    <h6 class="l-through">$210.00</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6">
-                        <div class="single-related-product d-flex">
-                            <a href="#"><img src="{% static 'img/r9.jpg'%}" alt=""></a>
-                            <div class="desc">
-                                <a href="#" class="title">Black lace Heels</a>
-                                <div class="price">
-                                    <h6>$189.00</h6>
-                                    <h6 class="l-through">$210.00</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6">
-                        <div class="single-related-product d-flex">
-                            <a href="#"><img src="{% static 'img/r10.jpg'%}" alt=""></a>
-                            <div class="desc">
-                                <a href="#" class="title">Black lace Heels</a>
-                                <div class="price">
-                                    <h6>$189.00</h6>
-                                    <h6 class="l-through">$210.00</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6">
-                        <div class="single-related-product d-flex">
-                            <a href="#"><img src="{% static 'img/r11.jpg'%}" alt=""></a>
-                            <div class="desc">
-                                <a href="#" class="title">Black lace Heels</a>
-                                <div class="price">
-                                    <h6>$189.00</h6>
-                                    <h6 class="l-through">$210.00</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <section class="lattest-product-area category-list">
+          <div class="product-main container pt-5">
+  
+            <h2 class="title">Nouveaux produits</h2>
+          
+            <div class="product-grid" id="list_product">
+          {% for product in products  %}
+              <div class="showcase">
+          
+                <div class="showcase-banner">
+          
+                  <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img default">
+                  <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img hover">
+          
+                  {% if product.status%}
+                  <p class="
+                  showcase-badge
+                  {% if product.status == "promotion" %}
+                  angle pink
+                  {% elif product.status == "nouvelle" %}
+                  angle black
+                  {% endif %}
+                  ">{{product.status}}</p>
+            {% endif %}
+          
+                  <div class="showcase-actions">
+          
+                    <button class="btn-action">
+                      <ion-icon name="heart-outline"></ion-icon>
+                    </button>
+          
+                    <button class="btn-action">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </button>
+          
+                    <button class="btn-action">
+                      <ion-icon name="repeat-outline"></ion-icon>
+                    </button>
+          
+                    <button class="btn-action update-cart"  data-action="add"
+                    data-product="{{product.id}}">
+                      <ion-icon name="bag-add-outline"></ion-icon>
+                    </button>
+          
+                  </div>
+          
                 </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="ctg-right">
-                    <a href="#" target="_blank">
-                        <img class="img-fluid d-block mx-auto" src="{% static 'img/category/c5.jpg'%}" alt="">
-                    </a>
+          
+                <div class="showcase-content">
+          
+                  <a href="#" class="showcase-category">{{product.category}}</a>
+          
+                  <a href="{% url 'single-product' product.id %}">
+                    <h3 class="showcase-title">{{product.name}}</h3>
+                  </a>
+          
+                  <div class="showcase-rating">
+                    {% if product.avg_rating == 5 %}
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    {% elif product.avg_rating == 4 %}
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star"></i>
+          
+                    {% elif product.avg_rating == 3 %}
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+          
+                    {% elif product.avg_rating == 2 %}
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+          
+                    {% elif product.avg_rating == 1 %}
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    {% else %}
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    {% endif %}
+                  </div>
+          
+                  <div class="price-box">
+                    <p class="price">${{product.price}}</p>
+                    <del>${{product.price}}</del>
+                  </div>
+          
                 </div>
+          
+              </div>
+              {% endfor %}
             </div>
-        </div>
+          
+          </div>
+        </section>
     </div>
+</div>
 </section>
 
 {% endblock %}

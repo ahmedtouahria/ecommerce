@@ -49,12 +49,12 @@
                   required
                 />
               </div>
-              <div class="col-md-6 form-group p_star">
+              <div class="col-6 form-group p_star">
                 <select class="custom-select w-75 wilaya" name="wilaya" id="wilaya">
                 </select>
               </div>
               
-              <div class="col-md-6 form-group p_star">
+              <div class="col-6 form-group p_star">
                 <select class="custom-select w-75" name="commun" id="commun">
                 </select>
               </div>
@@ -185,12 +185,12 @@
                   required
                 />
               </div>
-              <div class="col-md-6 form-group p_star">
+              <div class="col-6 form-group p_star">
                 <select class="custom-select w-75 wilaya" name="wilaya" id="wilaya2">
                 </select>
               </div>
               
-              <div class="col-md-6 form-group p_star">
+              <div class="col-6 form-group p_star">
                 <select class="custom-select w-75" name="commun" id="commun2">
                 </select>
               </div>
@@ -501,5 +501,21 @@
           console.error("Error:", error);
         });
     }
+    const tabs = document.querySelectorAll("[data-target]"),
+    tabContents = document.querySelectorAll("[data-content]");
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const target = document.querySelector(tab.dataset.target);
+      tabContents.forEach((tc) => {
+        tc.classList.remove("is-active");
+      });
+      target.classList.add("is-active");
+
+      tabs.forEach((t) => {
+        t.classList.remove("is-active");
+      });
+      tab.classList.add("is-active");
+    });
+  });
 	</script>
 {% endblock content %}

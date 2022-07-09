@@ -21,15 +21,15 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     #'django.contrib.admin',
+    'shopping',
+
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
      'social_django',
-    'corsheaders',
     'rest_framework',
-    'shopping',
     'admin_interface', 
     'colorfield', 
     'django.contrib.admin',
@@ -48,12 +48,7 @@ MIDDLEWARE = [
     'social_django.middleware.SocialAuthExceptionMiddleware',  # <-- Here
 
 ]
-CORS_ALLOWED_ORIGINS = [
-        "https://example.com",
-        "https://sub.example.com",
-        "http://localhost:8000",
-        "http://127.0.0.1:9000"
-    ]
+
 ROOT_URLCONF = 'ecommerce.urls'
 
 TEMPLATES = [
@@ -87,7 +82,13 @@ DATABASES = {
                 'default': config('DATABASE_URL', default=default_dburl, cast=dburl),
             }
 
-
+""" DATABASES = {
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'ecommerce',
+    }
+}
+ """
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 

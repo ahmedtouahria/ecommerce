@@ -158,14 +158,14 @@
           <a href="{% url 'products' %}" class="menu-title">Catégories</a>
 
           <div class="dropdown-panel" id="dropdown_panel">
-            {% comment %} {% for cat in category %}
+         {% for cat in category %}
             <ul class="dropdown-panel-list">
               <li class="menu-title">
                 <a href="#">{{cat.name}}</a>
               </li>
-              {% for item in cat.categorySub_set.all %}
+              {% for item in cat.category_sub.all %}
               <li class="panel-list-item">
-                <a href="#">{{item.name}}</a>
+                <a href="{% url 'category' item.name %}">{{item.name}}</a>
               </li>
               {% endfor %}
               <li class="panel-list-item">
@@ -179,7 +179,7 @@
                 </a>
               </li>
             </ul>
-            {% endfor %} {% endcomment %}
+            {% endfor %} 
           </div>
         </li>
 
@@ -283,33 +283,33 @@
   </nav>
 
   <div class="mobile-bottom-navigation">
-    <button class="action-btn" data-mobile-menu-open-btn>
+    <button class="action-btn " data-mobile-menu-open-btn>
       <i class="fa fa-bars" aria-hidden="true"></i>
     </button>
 
-    <a href="{% url 'card' %}" class="action-btn">
+    <a href="{% url 'card' %}" class="action-btn ">
       <i class="fa fa-shopping-bag" aria-hidden="true"></i>
       <span class="count cartItem">{{cartItem}}</span>
     </a>
 
-    <a href="{% url 'index' %}" class="action-btn">
+    <a href="{% url 'index' %}" class="action-btn ">
       <i class="fa fa-home" aria-hidden="true"></i>
     </a>
 
-    <button class="action-btn">
+    <button class="action-btn ">
       <i class="fa fa-heart" aria-hidden="true"></i>
 
       <span class="count">0</span>
     </button>
 
-    <button class="action-btn" data-mobile-menu-open-btn>
+    <button class="action-btn " data-mobile-menu-open-btn>
       <i class="fa fa-th-large" aria-hidden="true"></i>
     </button>
   </div>
 
   <nav class="mobile-navigation-menu has-scrollbar" data-mobile-menu>
     <div class="menu-top">
-      <h2 class="menu-title">menu</h2>
+      <h2 class="menu-title">Mr Shoopping</h2>
 
       <button class="menu-close-btn" data-mobile-menu-close-btn>
         <ion-icon name="close-outline"></ion-icon>
@@ -317,13 +317,12 @@
     </div>
 
     <ul class="mobile-menu-category-list">
-      <li class="menu-category">
-        <a href="#" class="menu-title">Accueil</a>
-      </li>
-
+   
+      {% if user.is_authenticated %}
       <li class="menu-category">
         <button class="accordion-menu" data-accordion-btn>
-          <p class="menu-title">Pour des hommes</p>
+          <p class="menu-title">
+            Mon compte</p>
 
           <div>
             <ion-icon name="add-outline" class="add-icon"></ion-icon>
@@ -333,51 +332,35 @@
 
         <ul class="submenu-category-list" data-accordion>
           <li class="submenu-category">
-            <a href="#" class="submenu-title">Shirt</a>
+            <div class="row">
+              <div class="col-2"> <a href="{% url 'profile' %}"
+            ><img
+              src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"
+              class="rounded-circle"
+              height="30"
+              alt="Avatar"
+              loading="lazy"
+          /></a></div>
+              <div class="col-3"> <a href="{% url 'profile' %}" class="submenu-title">Profile</a></div>
+            </div>
+           
           </li>
-
           <li class="submenu-category">
-            <a href="#" class="submenu-title">Shorts & Jeans</a>
+            <a href="{% url 'profile_orders' %}" class="submenu-title my-3"><i class="fa fa-shopping-bag mx-2 mr-3 text-warning" style="font-size: large;" aria-hidden="true"></i>mes commandes</a>
           </li>
-
           <li class="submenu-category">
-            <a href="#" class="submenu-title">Safety Shoes</a>
+            <a href="#" class="submenu-title my-3"><i class="fa fa-external-link mx-2 mr-3 text-info" style="font-size: large;" aria-hidden="true"></i>recommendations</a>
           </li>
-
           <li class="submenu-category">
-            <a href="#" class="submenu-title">Wallet</a>
+            <a href="#" class="submenu-title my-3 mb-5"><i class="fa fa-gift mx-2 mr-3 text-success" style="font-size: large;" aria-hidden="true"></i>Cadeaux</a>
           </li>
         </ul>
       </li>
-
+      {% else %}
       <li class="menu-category">
-        <button class="accordion-menu" data-accordion-btn>
-          <p class="menu-title">aux femmes</p>
-
-          <div>
-            <ion-icon name="add-outline" class="add-icon"></ion-icon>
-            <ion-icon name="remove-outline" class="remove-icon"></ion-icon>
-          </div>
-        </button>
-
-        <ul class="submenu-category-list" data-accordion>
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Dress & Frock</a>
-          </li>
-
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Earrings</a>
-          </li>
-
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Necklace</a>
-          </li>
-
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Makeup Kit</a>
-          </li>
-        </ul>
+        <a href="{% url 'login' %}" class="menu-title"><i class="fa fa-sign-in mx-2 text-warning" aria-hidden="true"></i>connection</a>
       </li>
+      {% endif %}
 
       <li class="menu-category">
         <button class="accordion-menu" data-accordion-btn>
@@ -436,53 +419,28 @@
           </li>
         </ul>
       </li>
-
+      {% if user.is_authenticated %}
       <li class="menu-category">
-        <a href="#" class="menu-title">Blog</a>
+        <a href="{% url 'logout_request' %}" class="menu-title"><i class="fa fa-sign-out mx-2 text-warning" aria-hidden="true"></i>déconnecté</a>
       </li>
-
-      <li class="menu-category">
-        <a href="#" class="menu-title">Offres chaudes</a>
-      </li>
+      {% endif %}
     </ul>
 
     <div class="menu-bottom">
       <ul class="menu-category-list">
         <li class="menu-category">
           <button class="accordion-menu" data-accordion-btn>
-            <p class="menu-title">Langue</p>
+            <p class="menu-title">langue</p>
 
             <ion-icon name="caret-back-outline" class="caret-back"></ion-icon>
           </button>
 
           <ul class="submenu-category-list" data-accordion>
             <li class="submenu-category">
-              <a href="#" class="submenu-title">English</a>
+              <a href="#" class="submenu-title">Français</a>
             </li>
-
             <li class="submenu-category">
-              <a href="#" class="submenu-title">Espa&ntilde;ol</a>
-            </li>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Fren&ccedil;h</a>
-            </li>
-          </ul>
-        </li>
-
-        <li class="menu-category">
-          <button class="accordion-menu" data-accordion-btn>
-            <p class="menu-title">Currency</p>
-            <ion-icon name="caret-back-outline" class="caret-back"></ion-icon>
-          </button>
-
-          <ul class="submenu-category-list" data-accordion>
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">USD &dollar;</a>
-            </li>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">EUR &euro;</a>
+              <a href="#" class="submenu-title">العربية</a>
             </li>
           </ul>
         </li>
@@ -519,7 +477,7 @@
 <div class="sidebar has-scrollbar" data-mobile-menu>
   <div class="sidebar-category">
     <div class="sidebar-top">
-      <h2 class="sidebar-title">Category</h2>
+      <h2 class="sidebar-title">Catégorie</h2>
 
       <button class="sidebar-close-btn" data-mobile-menu-close-btn>
         <ion-icon name="close-outline"></ion-icon>
@@ -527,17 +485,18 @@
     </div>
 
     <ul class="sidebar-menu-category-list">
+      {% for cat in category %}
       <li class="sidebar-menu-category">
         <button class="sidebar-accordion-menu" data-accordion-btn>
           <div class="menu-title-flex">
             <img
-              src="./assets/images/icons/dress.svg"
-              alt="clothes"
+              src="{{cat.image.url}}"
+              alt="{{cat.name}}"
               width="20"
               height="20"
               class="menu-title-img"
             />
-            <p class="menu-title">Clothes</p>
+            <p class="menu-title">{{cat.name}}</p>
           </div>
 
           <div>
@@ -547,14 +506,18 @@
         </button>
 
         <ul class="sidebar-submenu-category-list" data-accordion>
+          {% for c in cat.category_sub.all %}
           <li class="sidebar-submenu-category">
             <a href="#" class="sidebar-submenu-title">
-              <p class="product-name">Shirt</p>
-              <data value="300" class="stock" title="Available Stock">300</data>
+              <p class="product-name">{{c.name}}</p>
+              <img width="20"src="{{c.image.url}}" alt="">
             </a>
           </li>
+      {% endfor %}
+
         </ul>
       </li>
+      {% endfor %}
     </ul>
   </div>
 
@@ -563,7 +526,7 @@
 
     <div class="showcase-wrapper">
       <div class="showcase-container">
-        {% for product in products %}
+        {% for product in trending %}
         <div class="showcase">
           <a href="#" class="showcase-img-box">
             {% if product.image %}
@@ -637,6 +600,3 @@
   </div>
 </div>
 
-<style>
-
-</style>

@@ -19,8 +19,13 @@ from django.contrib import messages
 def cartitem(request):
     if request.user.is_authenticated:
         customer = request.user
-        order, created = Order.objects.get_or_create(
-            customer=customer, complete=False)
+        order_changed = request.session.get("order_changed_id", None)
+        if order_changed is not None:
+            order = Order.objects.get(customer=customer,transaction_id=order_changed)
+            order.confirmed=False
+            order.save()
+        else:
+            order, created = Order.objects.get_or_create(customer=customer, complete=False)
         items = order.orderitem_set.all()
         cartItem = order.get_cart_items
     else:
@@ -57,16 +62,12 @@ def rating_product(request):
             user = Customer.objects.get(id=user_id)
             product = Product.objects.get(id=product_id)
             print(user, product)
-            try:
-                rate = Rating.objects.get(user=user, product=product)
-                rate.stars = stars
-                rate.content = content
-                rate.save()
-            except:
-                rate = Rating.objects.create(user=user, product=product, stars=stars, content=content)
-
+            rate,create = Rating.objects.get_or_create(user=user, product=product)
+            rate.stars = stars
+            rate.content = content
+            rate.save()
         except:
-            print("except")
+            print("Exception for rating system ")
 
         return Response({"message": "Hello, world!"})
 
@@ -100,10 +101,6 @@ def get_cokmmuns(request,pk):
 
     return Response({"communs": result})
 
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-
 
 @api_view(['POST'])
 def add_product(request):
@@ -115,13 +112,15 @@ def add_product(request):
             product = Product.objects.get(id=product_ref)
             if sizes is not None:
                 for size in sizes:
-                    s = Variation(product=product, category="size", item=size)
-                    s.save()
-            if colors is not None:
-                for color in colors:
-                    s = Variation(product=product,
-                                  category="color", item=color)
-                    s.save()
+                    #s = Variation(product=product, category="size", item=size)
+                    #s.save()
+                    size,create=Size.objects.get_or_create(size=size)
+                    for color in colors:
+                    #s = Variation(product=product,category="color", item=color)
+                    #s.save()
+                        color,create=Color.objects.get_or_create(color=color)
+                        Variant.objects.create(product=product,size=size,color=color)
+
             return redirect("index")
         else:
             print("product_ref is NONE")
@@ -149,6 +148,7 @@ def send_order(request):
                 product.save()
                 #-----PRODUCT LIST IN PARCEL--------#
                 product_list.append({"produit": i.product.name, "quantité": i.quantity})
+                
             data = OrderedDict(
                 [(0,
                   OrderedDict(
@@ -164,12 +164,40 @@ def send_order(request):
                     ("freeshipping", freeshipping), ("is_stopdesk", shipping_obj.is_stopdesk), ("has_exchange", has_exchange), ("product_to_collect", str(product_list))])),])
             url = settings.BASE_URL_YALIDIN+"parcels/"
             headers = {"X-API-ID": settings.ID_API_YALIDIN,"X-API-TOKEN": settings.TOKEN_API_YALIDIN, "Content-Type": "application/json"}
-            response = requests.post(url=url, headers=headers, data=json.dumps((data)))
-            my_response=response.json()
-            print("yalidin",my_response)
-            transition_yal=my_response[str(order_id)]["tracking"]
-            transaction_id=Order.objects.filter(id=order_id).update(transaction_id=transition_yal,confirmed=True,)
-            print(transaction_id)
+            if not order_obj.edited:
+                response = requests.post(url=url, headers=headers, data=json.dumps((data)))
+                my_response=response.json()
+                transition_yal=my_response[str(order_id)]["tracking"]
+                transaction_id=Order.objects.filter(id=order_id).update(transaction_id=transition_yal,confirmed=True)
+                print(transaction_id)
+                print("yalidin",my_response)
+            else:
+                data=OrderedDict(
+                    [("order_id", str(order_obj.id)), 
+                    ("firstname", shipping_obj.name),
+                    ("familyname", shipping_obj.name),
+                    ("contact_phone",  shipping_obj.phone),
+                    ("address", shipping_obj.address),
+                    ("to_commune_name", shipping_obj.city),
+                    ("to_wilaya_name", shipping_obj.state),
+                    ("product_list", str(product_list)),
+                    ("price", int(order_obj.get_cart_total)),
+                    ("freeshipping", freeshipping), ("is_stopdesk", shipping_obj.is_stopdesk), ("has_exchange", has_exchange), ("product_to_collect", str(product_list))])
+                response = requests.patch(url=url+order_obj.transaction_id, headers=headers, data=json.dumps((data)))
+                my_response=response.json()
+                print("yalidin",my_response)
+                order_obj.confirmed=True
+                order_obj.save()
+                
+
         else:
             messages.error(request,"le commande n'éxite pas")
     return Response({"success": "true"})
+
+@api_view(['POST'])
+def edit_parcel(request):
+    if request.method=="POST":
+        order=request.data.get("order_tracking",None)
+        request.session["order_changed_id"]=order
+        print(request.session["order_changed_id"])
+    return Response({"success":"true"})
