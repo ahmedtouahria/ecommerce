@@ -5,25 +5,17 @@
 <div class="container my-4">
   <div class="row ">
     <div class="col-12">
-      <!-- Start Filter Bar -->
       <div class="filter-bar d-flex flex-wrap align-items-center">
         <div style="width: 100%">
           <form class="d-flex" style="margin-top: 10px">
             {% csrf_token %}
-            <input
-              class="form-control p-10"
-              type="search"
-              id="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
           </form>
         </div>
         <div class="sorting">
           <select>
-            <option value="1">Default sorting</option>
-            <option value="1">Default sorting</option>
-            <option value="1">Default sorting</option>
+            {% for cat in categorys %}
+            <option value="{{cat.name}}">{{cat.name}}</option>
+            {% endfor %}
           </select>
         </div>
         <div class="sorting mr-auto">
@@ -34,17 +26,67 @@
           </select>
         </div>
       </div>
+      
       <!-- End Filter Bar -->
       <!-- Start Best Seller -->
       <section class="lattest-product-area category-list ">
-        <div class="product-main container pt-5">
+        <div class="row">
+          <div class="col-md-3 my-3">  <div class="sidebar-category">
 
-          <h2 class="title">Nouveaux produits</h2>
+            <div class="sidebar-top">
+              <h2 class="sidebar-title">Category</h2>
+
+              <button class="sidebar-close-btn" data-mobile-menu-close-btn>
+                <ion-icon name="close-outline"></ion-icon>
+              </button>
+            </div>
+
+            <ul class="sidebar-menu-category-list">
+              {% for cat in category %}
+              <li class="sidebar-menu-category">
+                <button class="sidebar-accordion-menu" data-accordion-btn>
+                  <div class="menu-title-flex d-flex">
+                    <img
+                      src="{{cat.image.url}}"
+                      alt="{{cat.name}}"
+                      width="40"
+                      height="40"
+                      class="menu-title-img"
+                      style="
+    border-radius: 50%;
+"
+                    />
+                    <p class="menu-title mx-2 ">{{cat.name}}</p>
+                  </div>
+                  <div>
+                    <i class="fa fa-plus add-icon text-secondary"  aria-hidden="true"></i>
+                    <i class="fa fa-minus remove-icon text-secondary aria-hidden="true"></i>
+
+                  </div>
+                </button>
+                <ul class="sidebar-submenu-category-list" data-accordion>
+                  {% for c in cat.category_sub.all %}
+                  <li class="sidebar-submenu-category">
+                    <a href="#" class="sidebar-submenu-title">
+                      <p class="product-name">{{c.name}}</p>
+                      <img width="28"src="{{c.image.url}}" alt="">
+                    </a>
+                  </li>
+              {% endfor %}
         
+                </ul>
+              </li>
+              {% endfor %}  
+            </ul>
+
+          </div></div>
+          <div class="col-md-9">
+            
+            <div class="product-main container pt-5">
+          <h2 class="title">Nouveaux produits</h2>
           <div class="product-grid" id="list_product">
         {% for product in products  %}
             <div class="showcase ">
-        
               <div class="showcase-banner">
         
                 <img src="{{product.image.url}}" alt="Mens Winter Leathers Jackets" width="300" class="product-img default skeleton">
@@ -86,11 +128,12 @@
         
               <div class="showcase-content">
         
-                <a href="#" class="showcase-category">{{product.category}}</a>
+                <a href="{% url 'category' product.category.name %}"  style="font-weight: bold" class="showcase-category">{{product.category}}</a>
         
                 <a href="{% url 'single-product' product.slug %}">
-                  <h3 class="showcase-title">{{product.name}}</h3>
+                  <h3 style="font-weight: bold; color: rgba(27, 27, 27, 0.879)"class="showcase-title">{{product.name}}</h3>
                 </a>
+        
         
                 <div class="showcase-rating">
                   {% if product.avg_rating == 5 %}
@@ -104,34 +147,31 @@
                   <i class="fa fa-star text-warning"></i>
                   <i class="fa fa-star text-warning"></i>
                   <i class="fa fa-star text-warning"></i>
-                  <i class="fa fa-star"></i>
-        
+                  <i class="fa fa-star text-secondary"></i>        
                   {% elif product.avg_rating == 3 %}
                   <i class="fa fa-star text-warning"></i>
                   <i class="fa fa-star text-warning"></i>
                   <i class="fa fa-star text-warning"></i>
-                  <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
-        
+                  <i class="fa fa-star text-secondary"></i>
+                  <i class="fa fa-star text-secondary"></i>
                   {% elif product.avg_rating == 2 %}
                   <i class="fa fa-star text-warning"></i>
                   <i class="fa fa-star text-warning"></i>
-                  <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
-        
+                  <i class="fa fa-star text-secondary"></i>
+                  <i class="fa fa-star text-secondary"></i>
+                  <i class="fa fa-star text-secondary"></i>   
                   {% elif product.avg_rating == 1 %}
                   <i class="fa fa-star text-warning"></i>
-                  <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
+                  <i class="fa fa-star text-secondary"></i>
+                  <i class="fa fa-star text-secondary"></i>
+                  <i class="fa fa-star text-secondary"></i>
+                  <i class="fa fa-star text-secondary"></i>
                   {% else %}
-                  <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
+                  <i class="fa fa-star text-secondary"></i>
+                  <i class="fa fa-star text-secondary"></i>
+                  <i class="fa fa-star text-secondary"></i>
+                  <i class="fa fa-star text-secondary"></i>
+                  <i class="fa fa-star text-secondary"></i>
                   {% endif %}
                 </div>
         
@@ -146,7 +186,10 @@
             {% endfor %}
           </div>
         
+        </div></div>
+
         </div>
+       
       </section>
       <!-- End Best Seller -->
       <!-- Start Filter Bar -->
@@ -229,10 +272,10 @@
 
       <div class="showcase-content">
 
-        <a href="#" class="showcase-category">{{product.category}}</a>
-
+        <a href="{% url 'category' product.category.name %}"  style="font-weight: bold" class="showcase-category">{{product.category}}</a>
+        
         <a href="{% url 'single-product' product.slug %}">
-          <h3 class="showcase-title">{{product.name}}</h3>
+          <h3 style="font-weight: bold; color: rgba(27, 27, 27, 0.879)"class="showcase-title">{{product.name}}</h3>
         </a>
 
         <div class="showcase-rating">

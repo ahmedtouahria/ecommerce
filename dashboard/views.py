@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 import json
-from shopping.models import CategorySub, Customer, Order, OrderItem, Product, ProductImage, ShippingAddress, Variant, Variation
+from shopping.models import CategorySub, Customer, Order, OrderItem, Product, ProductImage, ShippingAddress, Variant
 from django.db.models import Avg, Count, Min, Sum
 from datetime import date
 from django.core.serializers.json import DjangoJSONEncoder

@@ -21,20 +21,36 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     #'django.contrib.admin',
-    'shopping',
-
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+      'allauth.socialaccount.providers.google', 
+       'allauth.socialaccount.providers.facebook',
      'social_django',
     'rest_framework',
     'admin_interface', 
     'colorfield', 
     'django.contrib.admin',
-    
+    'constance',
+    'constance.backends.database',
+    'shopping',
+
 ]
+CONSTANCE_ADDITIONAL_FIELDS = {
+    'image_field': ['django.forms.ImageField', {}]
+}
+CONSTANCE_CONFIG = {
+    'LOGO': ("logo.png", 'Logo du site Web',"image_field"),
+    'ID_API_YALIDIN': ("", 'id de votre compte yalidin'), 
+   'TOKEN_API_YALIDIN': ("", 'token de votre compte yalidin'),
+   'BASE_URL_YALIDIN': ("https://api.yalidine.app/v1/", 'token de votre compte yalidin'), 
+
+}
 SESSION_COOKIE_AGE=60*60*24
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -64,6 +80,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',  # <-- Here
                 'social_django.context_processors.login_redirect',
+                
             ],
         },
     },
@@ -118,11 +135,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-'''YALIDIN API '''
-ID_API_YALIDIN="99661386291735714432"
-TOKEN_API_YALIDIN="P1S1CFxh3daINmDr7JeTgHikEJiwybB52VyTcB67A5KLkFtSvWRmLfAlnQDNWsbn"
-BASE_URL_YALIDIN="https://api.yalidine.app/v1/"
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
@@ -131,21 +143,50 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 STATIC_ROOT=os.path.join(BASE_DIR,'static')
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 STATICFILES_DIRS = [os.path.join(BASE_DIR,'ecommerce/static')]
 MEDIA_ROOT = os.path.join(BASE_DIR, '') # 'data' is my media folder
 MEDIA_URL = '/media/'
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.facebook.FacebookOAuth2',
-    'social_core.backends.twitter.TwitterOAuth',
-    'social_core.backends.github.GithubOAuth2',
     'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.google.GoogleOAuth2',
+     'allauth.account.auth_backends.AuthenticationBackend',
 )
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
 SOCIAL_AUTH_FACEBOOK_KEY = '555839889591329'  # App ID
 SOCIAL_AUTH_FACEBOOK_SECRET = 'fc9452a738571beab5e75bf550c8d4a8'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '29609871729-p38280llfq9r2h8jq7jnsrqninstrmg2.apps.googleusercontent.com'  # App ID
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SITE_ID = 1
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': '29609871729-p38280llfq9r2h8jq7jnsrqninstrmg2.apps.googleusercontent.com',
+            'secret': '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',
+            'key': '',
+            
+        },
+                'SCOPE': [
+            'profile',
+            'email',
+        ],
+    }
+}
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+SOCIALACCOUNT_LOGIN_ON_GET=True
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'index'

@@ -8,9 +8,9 @@ from .models import *
 class UserAdmin(BaseUserAdmin):
     model = Customer
 #####################################################################
-    list_display = ('name', 'phone', 'point', 'code')
+    list_display = ('email', 'phone', 'name', 'point')
     list_filter = ('staff', 'active', 'admin', )
-    fieldsets = ((None, {'fields': ('name', 'phone', 'point', 'code', 'profits', 'password',
+    fieldsets = ((None, {'fields': ('name','email', 'phone', 'point', 'code', 'profits', 'password',
                  'image')}), ('Permissions', {'fields': ('active', 'staff', 'admin')}), )
     readonly_fields = ('code', 'profits', 'point')
     add_fieldsets = (
@@ -87,7 +87,6 @@ admin.site.register(OrderItem, OrderItemAdmin)
 admin.site.register(ShippingAddress, ShippingAddressAdmin)
 admin.site.register(Favorite, FavoritectAdmin)
 admin.site.register(ImageBanner, BannerImage)
-admin.site.register(Variation)
 admin.site.register(Variant)
 
 admin.site.register(ToastMessage)

@@ -1,4 +1,4 @@
-{% extends "pages/profile_base.html" %} {% load static %} {% block profile %}
+{% extends "pages/profile_base.html" %} {% load static %} {% block profile %}{% load account %}
 <div class="card">
   <div class="card-body">
     <div class=" image_mobile mx-auto mb-3 justify-content-center text-center ">
@@ -8,14 +8,17 @@
         class="rounded-circle p-1 bg-warning mx-auto d-block skeleton"
         width="110"
     />
+    
   <h4 class="my-3">{{request.user}}</h4>
   </div>
+  <form  method="post">
+    {% csrf_token %}
     <div class="row mb-3">
       <div class="col-sm-3">
         <h6 class="mt-2">Full Name</h6>
       </div>
       <div class="col-sm-9 text-secondary">
-        <input type="text" class="form-control" value="{{request.user}}" />
+        <input  name="name" type="text" class="form-control" value="{{request.user.name}}" />
       </div>
     </div>
 
@@ -25,6 +28,7 @@
       </div>
       <div class="col-sm-9 text-secondary">
         <input
+        name="phone"
           type="text"
           class="form-control"
           value="{{request.user.phone}}"
@@ -33,13 +37,13 @@
     </div>
     <div class="row mb-3">
       <div class="col-sm-3">
-        <h6 class="mt-2">Mobile</h6>
+        <h6 class="mt-2">Email</h6>
       </div>
       <div class="col-sm-9 text-secondary">
         <input
           type="text"
           class="form-control"
-          value="{{request.user.phone}}"
+          value="{{request.user.email}}"
         />
       </div>
     </div>
@@ -60,7 +64,7 @@
       <div class="col-sm-3"></div>
       <div class="col-sm-9 text-secondary">
         <input
-          type="button"
+          type="submit"
           class="btnprofile btn btn-warning text-light px-4"
           value="Save Changes"
         />
@@ -68,6 +72,7 @@
     </div>
   </div>
 </div>
+</form>
 <div class="row">
   <div class="col-sm-12">
     <div class="card mt-1">

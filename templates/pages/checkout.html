@@ -12,10 +12,14 @@
 <section class="filters">
   <ul class="filters-content">
     <button class="filters__button is-active" data-target="#desk">
-     Stop bureau
+     <i class="fa fa-building mx-2" aria-hidden="true"></i>
+
+     Stop bureau 
+
     </button>
     <button class="filters__button" data-target="#home">
-      a maison
+  <i class="fa fa-home mx-2" aria-hidden="true"></i>
+  a maison  
     </button>
   </ul>
 
@@ -37,7 +41,6 @@
                   name="name"
                 />
               </div> 
-  
                 <div class="col-md-6 form-group p_star">
                 <input
                   class="form-control"
@@ -297,17 +300,15 @@
   </div>
 </section>
     <script src="{% static 'js/vendor/jquery-2.2.4.min.js'%}"></script>
-
 	<script>
-
     $(document).ready(function(){
+      "use strict"
       var total_order = {{order.get_cart_total}};
       var arrData = [];
       var wilaya_arr = [];
       var wilaya_select=document.getElementsByClassName("wilaya");
       var commun_select=document.getElementById("commun");
       var commun_select2=document.getElementById("commun2");
-
       // load yalidin wilaya from url 
               $.ajax({
               url: "/getwilaya",
@@ -317,7 +318,6 @@
                 data.forEach(element=>{
                 wilaya_select[0].innerHTML+=`<option name="state" value="${element.name}">${element.id} ${element.name}</option>`;
                 })
-      
               }
             });
       wilaya_select[0].onchange=function(e){
@@ -453,14 +453,12 @@
         .then((response) => response.json())
         .then((data) => {
           console.log("Success:", data);
-          fireSweetAlert();
           cart = {};
           document.cookie =
             "cart=" + JSON.stringify(cart) + ";domain=;path=/";
           window.location.href = "{% url 'products' %}";
         })
         .catch((error) => {
-          fireSweetAlertError();
           console.error("Error:", error);
         });
     }
@@ -476,8 +474,6 @@
         city: form2.commun.value,
         state: form2.wilaya.value,
         zipcode: form2.zipcode.value,
-        
-
       };
       var url = "/process_order/";
       fetch(url, {

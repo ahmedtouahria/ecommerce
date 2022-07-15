@@ -8,7 +8,7 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <!-- Favicon-->
-    <link rel="shortcut icon" href="{% static 'img/fav.png' %}" />
+    <link rel="shortcut icon" href="/media/{{config.LOGO}}" />
     <!-- Author Meta -->
     <meta name="author" content="CodePixar" />
     <!-- Meta Description -->
@@ -21,75 +21,106 @@
     <!-- Site Title -->
     <title>Ahmed Shop | {{titel}}</title>
     <!--===============================CSS============================================= -->
-    <link
-      rel="stylesheet"
-      rel="preload"
-      href="{% static 'css/linearicons.css'%}"
-    />
-    <link rel="stylesheet" rel="preload" href="{% static 'css/new_style.css'%}" />
-    <link
-      rel="stylesheet"
-      rel="preload"
-      href="{% static 'css/themify-icons.css'%}"
-    />
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css'%}" />
-    <link rel="stylesheet" href="{% static 'css/nice-select.css'%}" />
+
 
     <link
-    rel="stylesheet"
-    rel="preload"
-    href="{% static 'css/main.css'%}"
-  />
-  {% block css %}
-  
-  {% endblock css %}
+      rel="stylesheet"
+      rel="preload"
+      href="{% static 'css/nice-select.css'%}"
+    />
+    <link
+      rel="stylesheet"
+      rel="preload"
+      href="{% static 'css/bootstrap.min.css'%}"
+    />
+    <link
+      rel="stylesheet"
+      rel="preload"
+      href="{% static 'css/font-awesome.min.css'%}"
+    />
+    <link
+      rel="stylesheet"
+      rel="preload"
+      href="{% static 'css/new_style.min.css'%}"
+    />
+    {% block css %} {% endblock css %}
   </head>
   <body>
-    {% include 'partes/navbar.html' %} {% block content %} {% endblock %} 
+    <div id="loading" class="container">
+      <a class="card" id="card-link" target="_blank">
+        <div class="card__header">
+          <div>
+            <img
+              class="card__header header__img skeleton"
+              id="logo-img"
+              alt=""
+            />
+          </div>
+          <h3 class="card__header header__title" id="card-title">
+            <div class="skeleton skeleton-text1"></div>
+          </h3>
+        </div>
+
+        <div class="card__body">
+          <div class="card__body body__text" id="card-details">
+            <div class="row">
+              <div class="col-12 col-md-3">
+                <div class="skeleton skeleton-text skeleton-text__body"></div>
+              </div>
+              <div class="col-12 col-md-3">
+                <div class="skeleton skeleton-text skeleton-text__body"></div>
+              </div>
+              <div class="col-12 col-md-3">
+                <div class="skeleton skeleton-text skeleton-text__body"></div>
+              </div>
+              <div class="col-12 col-md-3">
+                <div class="skeleton skeleton-text skeleton-text__body"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card__body body__img">
+            <img class="skeleton" alt="" id="cover-img" />
+          </div>
+        </div>
+
+        <div class="card__footer" id="card-footer">
+          <div class="skeleton skeleton-text skeleton-footer"></div>
+        </div>
+      </a>
+    </div>
+    <div id="body" class="d-none">
+      {% include 'partes/navbar.html' %} {% block content %} {% endblock %} 
     {% include 'partes/footer.html' %}
+    </div>
+    <script src="{% static 'js/vendor/jquery-2.2.4.min.js' %}"></script>
     <script>
-    // optimzation css loading 
-      window.addEventListener('load', () => {
-        let link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.type = 'text/css';
-        link.href = "{% static 'css/main.css'%}";
-        document.head.appendChild(link)
-        let link2 = document.createElement('link');
-        link2.rel = 'stylesheet';
-        link2.type = 'text/css';
-        link2.href = "{% static 'css/font-awesome.min.css'%}";
-        document.head.appendChild(link2)
+      // optimzation css loading
+      $(document).ready(function(){
+      const loading = $("#loading");
+      const body = $("#body");
+        loading.addClass("d-none");
+        body.removeClass("d-none");
+        $("select").niceSelect();
+        $(".s_Product_carousel").owlCarousel({
+          items: 1,
+          autoplay: true,
+          autoplayTimeout: 5000,
+          loop: true,
+          nav: false,
+          dots: true,
+        });
       })
     </script>
-    <script src="{% static 'js/vendor/jquery-2.2.4.min.js'%}"></script>
-    <script async src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-    <script src="{% static 'js/vendor/bootstrap.min.js'%}"></script>
-    <script src="{% static 'js/jquery.nice-select.min.js'%}"></script>
-    <script async src="{% static 'js/nouislider.min.js'%}"></script>
-    <script async src="{% static 'js/jquery.magnific-popup.min.js'%}"></script>
-    <script async src="{% static 'js/owl.carousel.min.js'%}"></script>
-    <script async src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-    <script
-      type="module"
-      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
-    ></script>
-    <script
-      nomodule
-      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
-    ></script>
-    {% comment %}
-    <script src="{% static 'js/script.js'%}"></script>
-    {% endcomment %} {% comment %}
-    <script src="{% static 'js/script.js'%}"></script>
-    {% endcomment %}
-
+    <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/nouislider.min.js'%}"></script>
+    <script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js'%}"></script>
     <script type="text/javascript">
-  
       var total = "{{order.get_cart_total}}";
       var user = "{{request.user}}";
       var user_id = "{{request.user.id}}";
-      var name = "{{request.user.name}}";
+      var name = user;
       var phone = "{{request.user.phone}}";
       // Function to get TOKENT
       function getToken(name) {
@@ -119,7 +150,6 @@
         // Loop through the array elements
         for (var i = 0; i < cookieArr.length; i++) {
           var cookiePair = cookieArr[i].split("=");
-
           /* Removing whitespace at the beginning of the cookie name
 		        and compare it with the given string */
           if (name == cookiePair[0].trim()) {
@@ -165,138 +195,49 @@
         });
       }
       console.log("Cart:", cart);
-      // simple code to hundler update cart whene user chose a product
-      // var updateBtns = document.getElementsByClassName("update-cart");
-      /*  for (i = 0; i < updateBtns.length; i++) {
-        updateBtns[i].addEventListener("click", function () {
-          var productId = this.dataset.product;
-          var action = this.dataset.action;
-          console.log("productId:", productId, "Action:", action);
-          console.log("USER:", user);
-          if (user == "AnonymousUser") {
-            addCookieItem(productId, action);
-            console.log("user is not login");
-          } else {
-            // for avoid duplicate request in ajax we need disable button
-            _this.attr("disabled", "disabled");
-            updateUserOrder(productId, action);
-            _this.removeAttr("disabled");
-
-            console.log("user is logged in");
-          }
-        });
-      }*/
-      // update order whene user is authenticated
-      /*  function updateUserOrder(productId, action) {
-        $.ajax({
-          type: "POST",
-          beforeSend: function (request) {
-            request.setRequestHeader("Content-Type", "application/json");
-            request.setRequestHeader("X-CSRFToken", csrftoken);
-          },
-          url: "/update_item/",
-          data: JSON.stringify({ productId: productId, action: action }),
-          processData: true,
-          success: function (msg) {
-            console.log("success" + msg);
-          },
-        });
-        // for display async in cart items without reload page
-        getCartItem();
-      }
-      // update order whene user is not authenticated
-      function addCookieItem(productId, action) {
-        console.log("User is not authenticated");
-        if (action == "add") {
-          if (cart[productId] == undefined) {
-            cart[productId] = { quantity: 1 };
-          } else {
-            cart[productId]["quantity"] += 1;
-          }
-        }
-        if (action == "remove") {
-          cart[productId]["quantity"] -= 1;
-
-          if (cart[productId]["quantity"] <= 0) {
-            console.log("Item should be deleted");
-            delete cart[productId];
-          }
-        }
-        console.log("CART:", cart);
-        document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
-        getCartItem();
-      }*/
-      // hundel checkout and order
-      /* var form = document.getElementById("form");
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        submitFormData();
-      });*/
-
-      // function swite alert to hundel beutifule alert
-      // success alert
-      function fireSweetAlert() {
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener("mouseenter", Swal.stopTimer);
-            toast.addEventListener("mouseleave", Swal.resumeTimer);
-          },
-        });
-
-        Toast.fire({
-          icon: "success",
-          title: "order sent successfully !",
-        });
-      }
-      // error alert
-      function fireSweetAlertError() {
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener("mouseenter", Swal.stopTimer);
-            toast.addEventListener("mouseleave", Swal.resumeTimer);
-          },
-        });
-        Toast.fire({
-          icon: "error",
-          title: "order has a problem !",
-        });
-      }
     </script>
     <script>
-      //ADD THIS PIECE OF CODE IN YOUR JS OR HTML PAGE UNDER SCRIPT
-
+        //ADD THIS PIECE OF CODE IN YOUR JS OR HTML PAGE UNDER SCRIPT
+      "use strict";
       $(document).ready(function () {
-        $("select").niceSelect();
-        $(".s_Product_carousel").owlCarousel({
-          items: 1,
-          autoplay: false,
-          autoplayTimeout: 5000,
-          loop: true,
-          nav: false,
-          dots: true,
+        //search .autocomplete
+       let search_nav = $("#search_nav");
+        let result_nav = $("#result_product ul");
+        search_nav.keyup(function (e) {
+          result_nav.html("");
+          let data = $(this).val();
+          if ($.trim(data).length > 0) {
+            $.ajax({
+              url: "/api/products/",
+              type: "GET",
+              data: {
+                search: data,
+              },
+              success: function (res) {
+                if(res.length>0)
+                $.each(res, function (key, value) { result_nav.append(
+                    `<li class="d-flex my-2 "><img src="${value.image}" height="30" width="30"><a style="color: black;font-weight: 500; " class="mx-2"href="/products/${value.slug}">${value.name}</a></li>`
+                  );
+                });
+                else
+                  result_nav.append(
+                    `<li class="d-flex my-2"><a style="color: black;font-weight: 500;" class="mx-2">Aucun résultat</a></li>`
+                  );
+              },
+            });
+          }
         });
-
         const tabs = document.querySelectorAll("[data-target]"),
-          tabContents = document.querySelectorAll("[data-content]");
+        tabContents = document.querySelectorAll("[data-content]");
         tabs.forEach((tab) => {
-          tab.addEventListener("click", () => {
-            const target = document.querySelector(tab.dataset.target);
-            tabContents.forEach((tc) => {
+        tab.addEventListener("click", () => {
+        const target = document.querySelector(tab.dataset.target);
+        tabContents.forEach((tc) => {
               tc.classList.remove("is-active");
             });
-            target.classList.add("is-active");
+        target.classList.add("is-active");
 
-            tabs.forEach((t) => {
+        tabs.forEach((t) => {
               t.classList.remove("is-active");
             });
             tab.classList.add("is-active");
@@ -304,7 +245,6 @@
         });
 
         $(".custom-select").niceSelect("destroy");
-
         //--------- script to hundel sidebar for mini devices---------//
         $("#sidebarCollapse").on("click", function () {
           $("#sidebar").addClass("active");
@@ -338,76 +278,41 @@
         "[data-mobile-menu-open-btn]"
       );
       const mobileMenu = document.querySelectorAll("[data-mobile-menu]");
-      const mobileMenuCloseBtn = document.querySelectorAll(
-        "[data-mobile-menu-close-btn]"
-      );
+      const mobileMenuCloseBtn = document.querySelectorAll("[data-mobile-menu-close-btn]");
       const overlay = document.querySelector("[data-overlay]");
-
       for (let i = 0; i < mobileMenuOpenBtn.length; i++) {
         // mobile menu function
         const mobileMenuCloseFunc = function () {
           mobileMenu[i].classList.remove("active");
           overlay.classList.remove("active");
         };
-
         mobileMenuOpenBtn[i].addEventListener("click", function () {
-          mobileMenu[i].classList.add("active");
+        mobileMenu[i].classList.add("active");
           overlay.classList.add("active");
         });
-
         mobileMenuCloseBtn[i].addEventListener("click", mobileMenuCloseFunc);
         overlay.addEventListener("click", mobileMenuCloseFunc);
       }
-
       // accordion variables
       const accordionBtn = document.querySelectorAll("[data-accordion-btn]");
       const accordion = document.querySelectorAll("[data-accordion]");
-
       for (let i = 0; i < accordionBtn.length; i++) {
         accordionBtn[i].addEventListener("click", function () {
           const clickedBtn =
             this.nextElementSibling.classList.contains("active");
-
           for (let i = 0; i < accordion.length; i++) {
             if (clickedBtn) break;
-
             if (accordion[i].classList.contains("active")) {
               accordion[i].classList.remove("active");
               accordionBtn[i].classList.remove("active");
             }
           }
-
           this.nextElementSibling.classList.toggle("active");
           this.classList.toggle("active");
         });
       }
     </script>
     <style>
-      
-     
-      .country_select ul.list {
-        max-height: 350px;
-        overflow-y: scroll !important;
-      }
-      .country_select ul.list::-webkit-scrollbar {
-        width: 15px;
-      }
-
-      .country_select ul.list::-webkit-scrollbar-track {
-        background: var(--white);
-        border-left: 1px solid var(--cultured);
-      }
-
-      .country_select ul.list::-webkit-scrollbar-thumb {
-        background: hsl(0, 0%, 80%);
-        border: 3px solid var(--white);
-        border-radius: 10px;
-      }
-
-      .country_select ul.list::-webkit-scrollbar-thumb:hover {
-        background: hsl(0, 0%, 70%);
-      }
-
       .filters {
         font-family: sans-serif;
       }
@@ -439,36 +344,41 @@
         display: grid;
       }
       [data-target].is-active {
-        background-color: #4042f6;
+        background-color: #ff6c00;
         color: #fff;
       }
       .skeleton {
-  animation: skeleton-loading 1s linear infinite alternate;
-}
+        animation: skeleton-loading 1s linear infinite alternate;
+      }
 
-@keyframes skeleton-loading {
-  0% {
-    background-color: hsl(200, 20%, 80%);
-  }
-  100% {
-    background-color: hsl(200, 20%, 95%);
-  }
-}
+      @keyframes skeleton-loading {
+        0% {
+          background-color: hsl(200, 20%, 80%);
+        }
+        100% {
+          background-color: hsl(200, 20%, 95%);
+        }
+      }
 
-.skeleton-text {
-  width: 100%;
-  height: 0.7rem;
-  margin-bottom: 0.5rem;
-  border-radius: 0.25rem;
-}
+      .skeleton-text1,
+      .skeleton-text {
+        width: 100%;
+        height: 1.2rem;
+        margin-bottom: 0.5rem;
+        border-radius: 0.25rem;
+      }
+      .skeleton-text1 {
+        height: 15rem;
+      }
+      .skeleton-text__body {
+        width: 75%;
+        height: 5rem;
+      }
 
-.skeleton-text__body {
-  width: 75%;
-}
-
-.skeleton-footer {
-  width: 30%;
-}
+      .skeleton-footer {
+        width: 30%;
+        height: 1rem;
+      }
     </style>
   </body>
 </html>

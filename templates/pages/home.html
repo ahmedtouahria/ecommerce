@@ -31,22 +31,25 @@
 {% endif %}
 
 
-<section class="banner my-3">
+<section class="banner my-3 ">
 
-    <div class="container">
+    <div class="container" >
 
       <div class="slider-container has-scrollbar">
 {% for img in imgs_banner %}
         <div class="slider-item skeleton">
           <img src="{{img.image.url}}" alt="women's latest fashion sale" class="banner-img">
 
-          <div class="banner-content">
+          <div class="banner-content" style="background: linear-gradient(45deg, #0200ffb0, #05e49e80);">
 
-            <p class="banner-subtitle">{{img.category}}</p>
+            <p class="banner-subtitle" style="
+            font-weight: bold;
+            color: cornsilk;
+        ">{{img.category}}</p>
 
-            <h2 class="banner-title">{{img.titel}}</h2>
+            <h2 class="banner-title" style="color: #c7ff00;">{{img.titel}}</h2>
 
-            <p class="banner-text">
+            <p class="banner-text text-light">
               Commence à partir de  <b>{{img.price}}</b> DA
             </p>
 
@@ -89,7 +92,7 @@
               <p class="category-item-amount">(53)</p>
             </div>
 
-            <a href="#" class="category-btn">Show all</a>
+            <a href="{% url 'category' cat.name %}" class="category-btn">Show all</a>
 
           </div>
 
@@ -257,25 +260,25 @@
   
       <div class="showcase-container">
   
-        {% for rate in top_rated %}
+        {% for product in top_rated %}
         <div class="showcase">
-          <a href="{% url 'single-product' rate.product.slug %}" class="showcase-img-box">
-               {% if rate.product.image %}
-            <img src="{{rate.product.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
+          <a href="{% url 'single-product' product.slug %}" class="showcase-img-box">
+               {% if product.image %}
+            <img src="{{product.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
             {% endif %}
           </a>
 
           <div class="showcase-content">
 
             <a href="#">
-              <h4 class="showcase-title">{{rate.product.name}}</h4>
+              <h4 class="showcase-title">{{product.name}}</h4>
             </a>
 
-            <a href="#" class="showcase-category">{{rate.product.cateogry}}</a>
+            <a href="#" class="showcase-category">{{product.cateogry}}</a>
 
             <div class="price-box">
-              <p class="price">{{rate.product.price}}DA</p>
-              <del>{{rate.product.price}}DA</del>
+              <p class="price">{{product.price}}DA</p>
+              <del>{{product.price}}DA</del>
             </div>
 
           </div>
@@ -359,7 +362,7 @@
             <del>{{affaire.product.price}}DA</del>
           </div>
 
-          <button class="add-cart-btn">Ajouter au panier</button>
+          <a href="{% url 'single-product' affaire.product.slug  %}" class="add-cart-btn">Acheter maintenant</a>
 
 
           <div class="countdown-box">

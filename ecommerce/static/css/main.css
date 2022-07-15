@@ -4092,9 +4092,7 @@ label {
         border-top: 0px; }
 
 .review_item {
-  margin-bottom: 15px; 
-  overflow: hidden;
-}
+  margin-bottom: 15px; }
   .review_item:last-child {
     margin-bottom: 0px; }
   .review_item .media {
@@ -4128,14 +4126,14 @@ label {
         position: absolute;
         right: 0px;
         top: 14px;
-        @include transition; }
+        @icnlude transition; }
         .review_item .media .media-body .reply_btn:hover {
           background: #ffba00;
           border-color: #ffba00;
           color: #fff; }
   .review_item p {
-    margin: 0;
-    padding-left: 50px; }
+    padding-top: 10px;
+    margin-bottom: 0px; }
   .review_item.reply {
     padding-left: 28px; }
 

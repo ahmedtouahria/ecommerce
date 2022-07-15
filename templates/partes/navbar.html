@@ -57,25 +57,26 @@
 
   <div class="header-main">
     <div class="container">
-      <a href="#" class="header-logo">
-        {% comment %}
+      <a href="{% url 'index' %}" class="header-logo " style="color: #000;font-weight: bold;font-family: cursive;">
         <img
-          src="{% static 'img/fav.png' %}"
+          src="/media/{{config.LOGO}}"
           alt="Anon's logo"
-          width="120"
-          height="36"
-        />
-        {% endcomment %} Ahmed shop
-      </a>
+          width="35"
+          height="35"
+        /></a>
 
       <div class="header-search-container">
         <input
+        id="search_nav"
           type="search"
           name="search"
           class="search-field w-75"
           placeholder="Entrez le nom de votre produit..."
         />
-
+        <div id="result_product"  style="position: absolute;background-color: white !important;z-index: 2;width: 75%;padding: 5px;">
+          <ul>
+          </ul>
+        </div>
         <button class="search-btn">
           <i class="fa fa-search" aria-hidden="true"></i>
         </button>
@@ -312,7 +313,8 @@
       <h2 class="menu-title">Mr Shoopping</h2>
 
       <button class="menu-close-btn" data-mobile-menu-close-btn>
-        <ion-icon name="close-outline"></ion-icon>
+        <i class="fa fa-times" aria-hidden="true"></i>
+
       </button>
     </div>
 
@@ -325,8 +327,9 @@
             Mon compte</p>
 
           <div>
-            <ion-icon name="add-outline" class="add-icon"></ion-icon>
-            <ion-icon name="remove-outline" class="remove-icon"></ion-icon>
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            <i class="fa fa-times" aria-hidden="true"></i>
+
           </div>
         </button>
 
@@ -367,8 +370,8 @@
           <p class="menu-title">Jewelry</p>
 
           <div>
-            <ion-icon name="add-outline" class="add-icon"></ion-icon>
-            <ion-icon name="remove-outline" class="remove-icon"></ion-icon>
+            <i class="fa fa-plus add-icon"  aria-hidden="true" ></i>
+            <i class="fa fa-times remove-icon"  aria-hidden="true"></i>
           </div>
         </button>
 
@@ -396,8 +399,8 @@
           <p class="menu-title">Perfume</p>
 
           <div>
-            <ion-icon name="add-outline" class="add-icon"></ion-icon>
-            <ion-icon name="remove-outline" class="remove-icon"></ion-icon>
+            <i class="fa fa-plus add-icon"  aria-hidden="true" ></i>
+            <i class="fa fa-times remove-icon"  aria-hidden="true"></i>
           </div>
         </button>
 
@@ -449,7 +452,8 @@
       <ul class="menu-social-container">
         <li>
           <a href="#" class="social-link">
-            <ion-icon name="logo-facebook"></ion-icon>
+            <i class="fa fa-facebook-official" aria-hidden="true"></i>
+
           </a>
         </li>
 
@@ -589,8 +593,8 @@
             </div>
 
             <div class="price-box">
-              <del>${{product.price}}</del>
-              <p class="price">${{product.price}}</p>
+              <del>{{product.price}} DA</del>
+              <p class="price">{{product.price}} DA</p>
             </div>
           </div>
         </div>

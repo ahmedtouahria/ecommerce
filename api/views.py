@@ -2,17 +2,15 @@ from collections import OrderedDict
 import json
 from django.conf import settings
 from django.shortcuts import redirect
-from rest_framework import viewsets
 import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from ecommerce.settings import BASE_URL_YALIDIN
 from shopping.models import Customer, Order, Product, Rating
 from shopping.views import cookieCart
 from django.http import JsonResponse
 from .serializers import *
-
+from constance import config
 from django.contrib import messages
 
 # Get cartItem number 
@@ -26,14 +24,10 @@ def cartitem(request):
             order.save()
         else:
             order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        items = order.orderitem_set.all()
         cartItem = order.get_cart_items
     else:
         cookieData = cookieCart(request)
-        items = cookieData['items']
-        order = cookieData['order']
         cartItem = cookieData['cartItem']
-        print("order", order)
     return cartItem
 
 # end point to show cartItem
@@ -44,20 +38,16 @@ class cartitemApi(APIView):
 
 # end point to search product Ascyn
 
-def search_products(request):
-    search_data = request.GET.get('search_data', None)
-    products_filtred = Product.objects.filter(name__icontains=search_data)
-    data = products_filtred.values()
-    return JsonResponse(list(data), safe=False)
+
 
 # end point for rating product
 @api_view(['POST'])
 def rating_product(request):
     if request.method == 'POST':
-        user_id = int(request.data['user_id'])
-        product_id = int(request.data['product_id'])
-        stars = int(request.data['stars'])
-        content = request.data['content']
+        user_id = request.data.get("user_id",None)
+        product_id = request.data.get("product_id",None)
+        stars = request.data.get("stars",4)
+        content = request.data.get("content")
         try:
             user = Customer.objects.get(id=user_id)
             product = Product.objects.get(id=product_id)
@@ -74,8 +64,8 @@ def rating_product(request):
 
 @api_view(['GET'])
 def get_wilaya(request):
-    headers = {"X-API-ID": settings.ID_API_YALIDIN,"X-API-TOKEN": settings.TOKEN_API_YALIDIN }
-    response = requests.get(settings.BASE_URL_YALIDIN+"wilayas/", headers=headers)
+    headers = {"X-API-ID": config.ID_API_YALIDIN,"X-API-TOKEN": config.TOKEN_API_YALIDIN }
+    response = requests.get(config.BASE_URL_YALIDIN+"wilayas/", headers=headers)
     wilayas = response.json()
     result = wilayas.get('data',None)
     return Response(result)
@@ -83,9 +73,9 @@ def get_wilaya(request):
 
 @api_view(['GET'])
 def get_cokmmuns_true(request):
-    headers = {"X-API-ID": settings.ID_API_YALIDIN,"X-API-TOKEN": settings.TOKEN_API_YALIDIN }
-    response = requests.get(settings.BASE_URL_YALIDIN+"communes/?has_stop_desk=true", headers=headers)
-    response_delevery = requests.get(settings.BASE_URL_YALIDIN+"deliveryfees/", headers=headers)
+    headers = {"X-API-ID": config.ID_API_YALIDIN,"X-API-TOKEN": config.TOKEN_API_YALIDIN }
+    response = requests.get(config.BASE_URL_YALIDIN+"communes/?has_stop_desk=true", headers=headers)
+    response_delevery = requests.get(config.BASE_URL_YALIDIN+"deliveryfees/", headers=headers)
     communs = response.json()
     deliveryfees = response_delevery.json()
     result = communs.get('data',None)
@@ -94,11 +84,10 @@ def get_cokmmuns_true(request):
     return Response({"communs": result, "deliveryfees": result_2})
 @api_view(['GET'])
 def get_cokmmuns(request,pk):
-    headers = {"X-API-ID": settings.ID_API_YALIDIN,"X-API-TOKEN": settings.TOKEN_API_YALIDIN }
-    response = requests.get(f"{settings.BASE_URL_YALIDIN}communes/?page={pk}", headers=headers)
+    headers = {"X-API-ID": config.ID_API_YALIDIN,"X-API-TOKEN": config.TOKEN_API_YALIDIN }
+    response = requests.get(f"{config.BASE_URL_YALIDIN}communes/?page={pk}", headers=headers)
     communs = response.json()
     result = communs.get('data',None)
-
     return Response({"communs": result})
 
 
@@ -162,8 +151,8 @@ def send_order(request):
                     ("product_list", str(product_list)),
                     ("price", int(order_obj.get_cart_total)),
                     ("freeshipping", freeshipping), ("is_stopdesk", shipping_obj.is_stopdesk), ("has_exchange", has_exchange), ("product_to_collect", str(product_list))])),])
-            url = settings.BASE_URL_YALIDIN+"parcels/"
-            headers = {"X-API-ID": settings.ID_API_YALIDIN,"X-API-TOKEN": settings.TOKEN_API_YALIDIN, "Content-Type": "application/json"}
+            url = config.BASE_URL_YALIDIN+"parcels/"
+            headers = {"X-API-ID": config.ID_API_YALIDIN,"X-API-TOKEN": config.TOKEN_API_YALIDIN, "Content-Type": "application/json"}
             if not order_obj.edited:
                 response = requests.post(url=url, headers=headers, data=json.dumps((data)))
                 my_response=response.json()
@@ -201,3 +190,13 @@ def edit_parcel(request):
         request.session["order_changed_id"]=order
         print(request.session["order_changed_id"])
     return Response({"success":"true"})
+from rest_framework import generics,serializers,filters
+class ProductsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'name','description','slug','image']
+class ProductList(generics.ListCreateAPIView):
+    serializer_class =ProductsSerializer
+    search_fields = ['name','description']
+    filter_backends = (filters.SearchFilter,)
+    queryset = Product.objects.all()

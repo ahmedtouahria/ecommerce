@@ -1,12 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block css %}
-
-<link
-rel="stylesheet"
-rel="preload"
-href="{% static 'css/owl.carousel.css'%}"
-/>
 <link
 rel="stylesheet"
 rel="preload"
@@ -14,42 +8,45 @@ href="{% static 'css/nouislider.min.css'%}"
 />
 <link
 rel="stylesheet"
+href="{% static 'css/owl.carousel.min.css'%}"
+/>
+
+<link
+rel="stylesheet"
 rel="preload"
-href="{% static 'css/ion.rangeSlider.css'%}"
+href="{% static 'css/ion.rangeSlider.min.css'%}"
 />
 <link
 rel="stylesheet"
 rel="preload"
-href="{% static 'css/ion.rangeSlider.skinFlat.css'%}"
+href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
 />
+
 {% endblock css %}
 
 {% block content %}
-
 <div class="product_image_area mb-5">
     <div class="container">
         <div class="row s_product_inner">
             <div class="col-lg-6">
-              
-                <div class="s_Product_carousel">
-                    <div class="single-prd-item">
-                        <img class="img-fluid" src="{{product.image.url}}" alt="">
-                    </div>
-                    {% if product_imgs %}
-                    {% for img in product_imgs %}
-                    <div class="single-prd-item">
-                      <img class="img-fluid" src="{{img.image.url}}" alt="">
-                    </div>
-                    {% endfor %}
-                    {% else %}
-                    <div class="single-prd-item">
-
+              <div class="s_Product_carousel">
+                <div class="single-prd-item">
                     <img class="img-fluid" src="{{product.image.url}}" alt="">
-                  </div>
-
-                    {% endif %}
-
                 </div>
+                {% if product_imgs %}
+                {% for img in product_imgs %}
+                <div class="single-prd-item">
+                  <img class="img-fluid" src="{{img.image.url}}" alt="">
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="single-prd-item">
+                <img class="img-fluid" src="{{product.image.url}}" alt="">
+              </div>
+
+                {% endif %}
+
+            </div>
             </div>
             <div class="col-lg-5 offset-lg-1">
                 <div class="s_product_text">
@@ -67,6 +64,10 @@ href="{% static 'css/ion.rangeSlider.skinFlat.css'%}"
                             <i class="fa fa-star text-warning"></i>
                         </div>
                     </ul>
+                    <div class="card_area d-flex align-items-center justify-content-start my-3">                      
+                      <a class="icon_btn" id="copy"><i class="fa fa-share"></i></a>
+                      <a class="icon_btn" href="#"><i class="fa fa-heart"></i></a>
+                  </div>
                     <p>{{product.description}}</p>
    
                     {% if variants %}
@@ -91,12 +92,15 @@ href="{% static 'css/ion.rangeSlider.skinFlat.css'%}"
                       </div>
                       {% endif %}
                     <div class="card_area d-flex align-items-center">
-                        <a id="add_to_cart" class="primary-btn" data-action="add" data-product="{{product.id}}" href="#">Ajouter au panier</a>
-                        
-                        <a class="icon_btn" id="copy"><i class="fa fa-share"></i></a>
-                        <a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
+                        <a id="add_to_cart" style="
+                        font-size: 14px;
+                        padding: 0 10px;
+                        text-transform: capitalize;" class="primary-btn" data-action="add" data-product="{{product.id}}" href="#">Acheter maintenant</a>
+                        <a  class="primary-btn"  href="#"><i class="fa fa-cart-plus " aria-hidden="true"></i>
+                        </a>
                     </div>
-                    
+       
+                  
                   </form>
                 </div>
             </div>
@@ -132,7 +136,12 @@ href="{% static 'css/ion.rangeSlider.skinFlat.css'%}"
                                 <div class="media">
                                     <div class="d-flex">
                                         <img
+                                        {% if rate.user.image %}
+                                        src="{{rate.user.image.url}}"
+                                        {% else %}
                                         src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"
+                                        {% endif %}
+                                        
                                         class="rounded-circle"
                                         height="35"
                                         alt="Avatar"
@@ -140,7 +149,7 @@ href="{% static 'css/ion.rangeSlider.skinFlat.css'%}"
                                       />
                                     </div>
                                     <div class="media-body">
-                                        <h4 class="fw-bold">{{rate.get_user_name}}</h4>
+                                        <h4 class="fw-bolder" style="font-weight:bold;margin:0">{{rate.get_user_name}}</h4>
                                         {% if rate.stars == 5 %}
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
@@ -152,23 +161,35 @@ href="{% static 'css/ion.rangeSlider.skinFlat.css'%}"
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
+                                        <i class="fa fa-star text-secondary"></i>
+
                                         {% elif rate.stars == 3 %}
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
+                                        <i class="fa fa-star text-secondary"></i>
+                                        <i class="fa fa-star text-secondary"></i>
+
                                         {% elif rate.stars == 2 %}
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
+                                        <i class="fa fa-star text-secondary"></i>
+                                        <i class="fa fa-star text-secondary"></i>
+                                        <i class="fa fa-star text-secondary"></i>
+
                                         {% elif rate.stars == 1 %}
                                         <i class="fa fa-star"></i>
-                                        {% else %}
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star text-secondary"></i>
+                                        <i class="fa fa-star text-secondary"></i>
+                                        <i class="fa fa-star text-secondary"></i>
+                                        <i class="fa fa-star text-secondary"></i>
 
+                                        {% else %}
+                                        <i class="fa fa-star text-secondary"></i>
+                                        <i class="fa fa-star text-secondary"></i>
+                                        <i class="fa fa-star text-secondary"></i>
+                                        <i class="fa fa-star text-secondary"></i>
+                                        <i class="fa fa-star text-secondary"></i>
                                         {% endif %}
                                       
                                     </div>
@@ -176,6 +197,8 @@ href="{% static 'css/ion.rangeSlider.skinFlat.css'%}"
                                 <p>{{rate.content}}</p>
                             </div>
                             {% endfor %}
+                    <hr>
+
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -193,36 +216,17 @@ href="{% static 'css/ion.rangeSlider.skinFlat.css'%}"
                                 <input value="1" type="radio" name="rating" id="rating-1">
                                 <label data-rate="1" data-product="{{product.id}}" for="rating-1"></label>
                                   </div>
-                            <p>votreNote:</p>
-              
-                            <p>exceptionnelle</p>
+
                             <form class="row contact_form" method="post" >
                                 {% csrf_token %}
-                                {% if not user.is_authenticated %}
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="name" name="name" placeholder="Your Full name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Full name'">
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address'">
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="number" name="number" placeholder="Phone Number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Phone Number'">
-                                    </div>
-                                </div>
-
-                                {% endif %}
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <textarea class="form-control" name="content" id="content" rows="1" placeholder="Review" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Review'"></textarea></textarea>
                                     </div>
                                 </div>
-                 
                             </form>
+                 <button class="primary-btn" id="add_comment">ajouté</button>
+
                         </div>
                     </div>
                 </div>
@@ -232,7 +236,7 @@ href="{% static 'css/ion.rangeSlider.skinFlat.css'%}"
 </section>
 <div class="product-main container py-5">
 
-    <h2 class="title">New Products</h2>
+    <h2 class="title">Naviguez aussi !</h2>
   
     <div class="product-grid">
   {% for product in products  %}
@@ -343,7 +347,6 @@ href="{% static 'css/ion.rangeSlider.skinFlat.css'%}"
 
     </script>
   <style>
-    
 .color_input {
   display: none;
 }
@@ -533,7 +536,6 @@ else{
 			  element.textContent = '';
 			}, 2000);
 		  }
-
               /* -----script to meal rating-------*/
               function rate_user() {
                 // place rate user number in localStorage (cookies)
@@ -544,10 +546,11 @@ else{
                 var content = $("#content").val();
                 var stars = rate;
                 var product_id = $(".rating label").data('product');
+                console.log(stars)
                 let data = {
                   user_id: user_id,
                   product_id: product_id,
-                  stars: stars,
+                  stars: rate,
                   content: content,
                 };
                 if (user == "AnonymousUser") {
@@ -570,6 +573,8 @@ else{
               $(".rating label").on("click",function(){
                 console.log(this.dataset.rate)
                 document.cookie = "rate="+this.dataset.rate+"; SameSite=None; Secure";
+                console.log(document.cookie)
+
      
               })
              $("textarea").keyup(function(e){
@@ -578,23 +583,29 @@ else{
                   rate_user()
                 }
             });
+            $("#add_comment").click(function () {
+              rate_user()
+            })
+  $(".red").click(function(event){
+    $(".red").removeClass("red_radio_style");
+    $(this).addClass("red_radio_style");
+});
       
               /* ----- end script to meal rating-------*/
     </script>
 <style>
+
+  .red_radio_style{
+    border: 5px solid #ff6c00 !important;
+    border-radius: 50%!important;
+    opacity: 0.5!important;
+  }
   * { box-sizing: border-box; }
-  .rating {
-  display: flex;
-  width: 75%;
-  justify-content: center;
-  overflow: hidden;
-  flex-direction: row-reverse;
-  position: relative;
-    }
+
 
     .rating {
       display: flex;
-      justify-content: center;
+      justify-content: flex-end;
       overflow: hidden;
       flex-direction: row-reverse;
       position: relative;

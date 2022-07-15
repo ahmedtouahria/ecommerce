@@ -9,11 +9,13 @@ import requests
 from shopping.models import *
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Count, Max
+from django.db.models import Count, Max,Sum
 from datetime import date, timedelta
 from django.utils import timezone
-
+from constance import config
+from django.utils.translation import gettext_lazy as _
 from shopping.utils import recommendation
+
 
 # Create your views here.
 ''' Nous avons deux cas ici
@@ -69,7 +71,6 @@ def guestOrder(request, data):
     phone = data['form']['phone']
     cookieData = cookieCart(request)
     items = cookieData['items']
-    print("items", items)
     customer, created = Customer.objects.get_or_create(phone=phone, )
     customer.name = name
     customer.save()
@@ -114,13 +115,13 @@ def index(request):
         cartItem = order.get_cart_items
     else:
         cookieData = cookieCart(request)
-        items = cookieData['items']
-        order = cookieData['order']
+        items    = cookieData['items']
+        order    = cookieData['order']
         cartItem = cookieData['cartItem']
     d = date.today()-timedelta(days=7)
     order_items = Product.objects.all().order_by("-count_sould")[:7]
-    top_rated = Rating.objects.annotate(
-        rating_count=Max("stars")).order_by("-rating_count")
+    top_rated = Product.objects.annotate(rating_count=Sum("rating__stars")).order_by("-rating_count")
+    print(top_rated)
     toast = ToastMessage.objects.all().last()
     affaire = Affaire.objects.all()
     context = {
@@ -136,7 +137,7 @@ def index(request):
         "items": items,
         "order": order,
         "cartItem": cartItem,
-        "titel": "Accueil",
+        "titel": "Accueil",'config': config
     }
     return render(request, 'pages/home.html', context)
 # products views
@@ -164,30 +165,31 @@ def products(request):
     order_items = Product.objects.all().order_by("-count_sould")[:7]
 
     products = Product.objects.filter(quantity__gt=0)
-    paginator = Paginator(products, 8)
+    paginator = Paginator(products,8)
     page_number = request.GET.get("page", 1)
     page_products_display = paginator.get_page(page_number)
     context = {
         "trending": order_items[:5],
         "products": page_products_display,
         "category": Category.objects.all(),
+        "categorys": CategorySub.objects.all(),
         "order": order,
         "cartItem": cartItem,
         "paginator": paginator,
         "page": page_products_display,
         "page_number": int(page_number),
-        "titel": "produits",
+        "titel": "produits",'config': config
     }
     return render(request, 'pages/products.html', context)
 
-# la page d'un seule produit
+# category page 
 def categorys(request,cat):
     category=CategorySub.objects.filter(name=cat).first()
     products=Product.objects.filter(category=category)
     other_products=Product.objects.filter(category__category=category.category,)
 
     context={"products":products,
-        "category": Category.objects.all(),
+        "category": Category.objects.all(),'config': config,
         "other_products":other_products
     }
     return render(request,"pages/category.html",context)
@@ -230,7 +232,7 @@ def product(request, pk):
         "order": order,
         "cartItem": cartItem,
         "product_imgs": ProductImage.objects.filter(product=product_id),
-        "titel": str(product_id.name).replace(" ", "-").lower(),
+        "titel": str(product_id.name).replace(" ", "-").lower(),'config': config
 
     }
     return render(request, 'pages/single-product.html', context)
@@ -281,7 +283,7 @@ def productWithCode(request, pk, *args, **kwargs):
         "order": order,
         "cartItem": cartItem,
         "product_imgs": ProductImage.objects.filter(product=product_id),
-        "titel": str(product_id.name).replace(" ", "-").lower(),
+        "titel": str(product_id.name).replace(" ", "-").lower(),'config': config
     }
     return render(request, 'pages/single-product.html', context)
 
@@ -296,23 +298,22 @@ def register(request):
     if request.user.is_authenticated:
         return redirect('index')
     if request.method == "POST":
-        name = request.POST['username']
+        email = request.POST['email']
         phone = request.POST['phone']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
        # print(name,phone,password1,password2)
-        if len(name) > 5 and len(phone) == 10 and len(password1) >= 8 and password1 == password2:
-            list_users = Customer.objects.filter(name=name)
+        if len(phone) == 10 and len(password1) >= 8 and password1 == password2:
+            list_users = Customer.objects.filter(email=email)
             if list_users.count() < 1:
-                user = Customer.objects.create(
-                    name=name, phone=phone, password=password1)
-                login(request, user)
+                user = Customer.objects.create(email=email, phone=phone, password=password1)
+                login(request, user,backend='django.contrib.auth.backends.ModelBackend')
                 messages.success(request, "register user successfully")
                 return redirect('index')
         messages.error(
-            request, "Unsuccessful registration. Invalid information.")
+            request, _("Unsuccessful registration. Invalid information."))
 
-    return render(request, 'dashboard/pages/sign-up.html')
+    return render(request, 'account/signup.html')
 # login Customer views
 
 # la page d'authentication (Login)
@@ -322,29 +323,28 @@ def login_customer(request):
     if request.user.is_authenticated:
         return redirect('index')
     if request.method == 'POST':
-        phone = request.POST['phone']
+        email = request.POST['email']
         password = request.POST['password']
-        if len(phone) == 10 and len(password) > 8:
-            user = authenticate(phone=phone, password=password)
-
+        if  len(password) > 3:
+            user = authenticate(email=email, password=password)
             if user is not None:
                 login(request, user)
                 if user.admin:
-                    return redirect('/admin/')
+                    return redirect('/dashboard/')
                 messages.info(
-                    request, f"You are now logged in as {user.name}.")
+                    request, f"_(Vous êtes maintenant connecté comme) {user.name}.")
                 return redirect('index')
             else:
-                messages.error(request, "Invalid username or password.")
+                messages.error(request, _("Invalid username or password."))
         else:
-            messages.error(request, "Invalid username or password.")
-    return render(request, 'dashboard/pages/login.html')
+            messages.error(request, _("Invalid username or password."))
+    return render(request, 'account/login.html')
 
 
 @login_required(login_url='login')
 def logout_request(request):
     logout(request)
-    messages.info(request, "You have successfully logged out.")
+    messages.info(request, _("You have successfully logged out."))
     return redirect("index")
 
 
@@ -368,6 +368,12 @@ def profile(request):
             customer=customer, complete=False)
         items = order.orderitem_set.all()
         cartItem = order.get_cart_items
+    if request.method == "POST":
+        print(request.POST)
+        name=request.POST.get("name")
+        phone=request.POST.get("phone")
+        print(name,phone)
+        customer=Customer.objects.filter(email=user.email).update(name=name,phone=phone)
         # print(items)
     else:
         cookieData = cookieCart(request)
@@ -388,7 +394,7 @@ def profile(request):
         "category": Category.objects.all(),
 
         "order": order,
-        "cartItem": cartItem,
+        "cartItem": cartItem,'config': config
 
     }
     return render(request, "pages/myprofile.html", context)
@@ -412,7 +418,7 @@ def profile_orders(request):
 
         "page": page_products_display,
         "page_number": int(page_number),
-        "paginator": paginator,
+        "paginator": paginator,'config': config
 
     }
     return render(request, 'pages/profile_orders.html', context)
@@ -422,10 +428,10 @@ def profile_orders(request):
 def myorders(request, pk):
     user = request.user
     order = Order.objects.filter(transaction_id=pk).first()
-    headers = {"X-API-ID": settings.ID_API_YALIDIN,
-               "X-API-TOKEN": settings.TOKEN_API_YALIDIN}
+    headers = {"X-API-ID": config.ID_API_YALIDIN,
+               "X-API-TOKEN": config.TOKEN_API_YALIDIN}
     response = requests.get(
-        f"{settings.BASE_URL_YALIDIN}parcels/{order.transaction_id}", headers=headers)
+        f"{config.BASE_URL_YALIDIN}parcels/{order.transaction_id}", headers=headers)
     parcel = response.json()
     print(parcel)
     total_data = parcel.get("total_data", None)
@@ -450,7 +456,7 @@ def myorders(request, pk):
         "order_items": order_items,
         "titel": "Mes commandes",
         "last_status": last_status,
-        "category": Category.objects.all(),
+        "category": Category.objects.all(),'config': config
 
     }
     return render(request, 'pages/profile_myorder.html', context)
@@ -485,7 +491,7 @@ def card(request):
         "order": order,
         "cartItem": cartItem,
         "titel": "panier",
-        "category": Category.objects.all(),
+        "category": Category.objects.all(),'config': config
 
 
     }
@@ -522,7 +528,7 @@ def checkout(request):
         "cartItem": cartItem,
         "category": Category.objects.all(),
 
-        "titel": "vérifier"
+        "titel": "vérifier",'config': config
     }
     return render(request, 'pages/checkout.html', context)
 
@@ -630,7 +636,7 @@ def processOrder(request):
                 state=data['shipping']['state'],
                 zipcode=data['shipping']['zipcode'],
                 is_stopdesk=stop_disk
-            )
+            )   
     else:
         redirect("login")
     return JsonResponse('Payment submitted..', safe=False)
