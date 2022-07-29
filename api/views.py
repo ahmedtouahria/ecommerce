@@ -1,6 +1,5 @@
 from collections import OrderedDict
 import json
-from django.conf import settings
 from django.shortcuts import redirect
 import requests
 from rest_framework.views import APIView
@@ -8,10 +7,15 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from shopping.models import Customer, Order, Product, Rating
 from shopping.views import cookieCart
-from django.http import JsonResponse
 from .serializers import *
 from constance import config
 from django.contrib import messages
+from io import BytesIO
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.views import View
+from xhtml2pdf import pisa
+
 
 # Get cartItem number 
 def cartitem(request):
@@ -200,3 +204,20 @@ class ProductList(generics.ListCreateAPIView):
     search_fields = ['name','description']
     filter_backends = (filters.SearchFilter,)
     queryset = Product.objects.all()
+
+from django.template.loader import render_to_string
+import datetime
+@api_view(['GET'])
+def generate_pdf(request):
+    orders_id=request.query_params.get('orders_id').split(',')
+    orders_arr= []
+    for order in orders_id:
+        get_order = Order.objects.filter(id=order).first()
+        orders_arr.append(get_order)
+    template_path = 'pages/pdf_template.html'
+    response = HttpResponse(content_type='application/pdf')
+    filename=f'{datetime.date.today()}commande.pdf'
+    response['Content-Disposition'] = f'attachment; filename={filename}'
+    html = render_to_string(template_path, {'orders_arr': orders_arr})
+    pisaStatus = pisa.CreatePDF(html, dest=response)
+    return response 

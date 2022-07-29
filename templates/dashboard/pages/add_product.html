@@ -19,20 +19,28 @@
       <option>{{cat.name}}</option>
       {% endfor %}
     </select>
-    <input
-      required
-      class="form-control mb-4"
-      type="number"
-      name="price1"
-      placeholder="prix d'achat"
-    />
-    <input
-      required
-      class="form-control mb-4"
-      type="number"
-      name="price2"
-      placeholder="prix de vente"
-    />
+
+
+    <div class="row">
+      <div class="col-6">
+        <input
+        required
+        class="form-control mb-4"
+        type="number"
+        name="price1"
+        placeholder="prix d'achat"
+      />
+      </div>
+      <div class="col-6">
+        <input
+        required
+        class="form-control mb-4"
+        type="number"
+        name="price2"
+        placeholder="prix de vente"
+      />
+      </div>
+    </div>
     <input
       required
       class="form-control mb-4"
@@ -46,12 +54,25 @@
       name="description"
       placeholder="la description"
     />
-    <input
-    required
-    class="form-control mb-4 w-50"
-    name="etagere"
-    placeholder="étagére"
-  />
+    <div class="row">
+      <div class="col-6">
+        <input
+        required
+        class="form-control mb-4"
+        name="etagere"
+        placeholder="étagére"
+      />
+      </div>
+      <div class="col-6">
+        <input
+        required
+        class="form-control mb-4"
+        name="reference"
+        placeholder="reference"
+      />
+      </div>
+    </div>
+
     <div class="upload__box">
       <div class="upload__btn-box">
         <label class="upload__btn">

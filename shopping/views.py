@@ -163,8 +163,12 @@ def products(request):
         order = cookieData['order']
         cartItem = cookieData['cartItem']
     order_items = Product.objects.all().order_by("-count_sould")[:7]
-
-    products = Product.objects.filter(quantity__gt=0)
+    if request.method == "GET":
+        category_data = request.GET.get('category','')
+        price_data = request.GET.get('price',0)
+        products = Product.objects.filter(Q(quantity__gt=0) & Q(price__gt=price_data) & Q(category__name__icontains=category_data))
+    else:
+        products = Product.objects.filter(quantity__gt=0)
     paginator = Paginator(products,8)
     page_number = request.GET.get("page", 1)
     page_products_display = paginator.get_page(page_number)
@@ -241,13 +245,9 @@ def product(request, pk):
 
 def productWithCode(request, pk, *args, **kwargs):
     code = str(kwargs.get('ref_code'))
-   # client_ip=get_client_ip(request)
     try:
         customer = Customer.objects.get(code=code)
         request.session['ref_customer'] = customer.id
-
-        # request.session['client_ip'] = get_client_ip(request)
-        # print("customer_ref", request.session['ref_customer'])
     except:
         request.session['ref_customer'] = None
         print("customer_ref", request.session['ref_customer'])

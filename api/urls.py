@@ -11,4 +11,6 @@ urlpatterns = [
     path("send_order/", send_order,name="send_order"),
     path("products/", ProductList.as_view()),
     path("edit_order/", edit_parcel,name="edite_order"),
+    path('pdf_view/', generate_pdf, name="pdf_view"),
+
     ]

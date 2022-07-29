@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load static %}
 
 {% block content_dashboard %}
 <div class="container-fluid py-4">
@@ -137,12 +138,18 @@
         {% endif %}
       </ul>
     </nav>
-   
     <div class="row">
       <div class="col-12">
         <div class="card mb-4">
           <div class="card-header pb-0">
-            <h6>Tous les commandes confirmé</h6>
+            <div class="row">
+              <div class="col-11">
+                <h6>Tous les commandes confirmé</h6>
+              </div>
+              <div class="col-1">
+                <div class="btn btn-primary" id="export_pdf"><i class="fa fa-file-export"></i></div>
+              </div>
+            </div>
           </div>
           <div class="card-body px-0 pt-0 pb-2">
             <div class="table-responsive p-0">
@@ -153,24 +160,20 @@
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Phone</th>
                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
-                    <th class="text-secondary opacity-7"></th>
+                    <th class="text-secondary opacity-7">export</th>
                   </tr>
                 </thead>
                 <tbody>
                     {% for order in orders  %}
                     {% if  order.confirmed %}
-
                   <tr>
                     <td>
                       <div class="d-flex px-2 py-1">
                         <div>
                             {% if order.customer.image %}
                           <img src="{{order.customer.image.url}}" class="avatar avatar-sm me-3" alt="user1">
-
                           {% else %}
                           <img src="https://cdn-icons-png.flaticon.com/512/236/236831.png" class="avatar avatar-sm me-3" alt="user1">
-
-
                             {% endif %}
                         </div>
                         <a  href="{% url 'order_detail' order.transaction_id %}" class="d-flex flex-column justify-content-center">
@@ -196,9 +199,11 @@
                       <span class="text-secondary text-xs font-weight-bold">{{order.date_ordered}}</span>
                     </td>
                     <td class="align-middle">
-                      <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                        Edit
-                      </a>
+                   <form class="form-check">
+                     <input class="form-check-input mt-3 export_check" type="checkbox" value="{{order.id}}">
+                   </form>
+                   <div class="form-check">
+                   </div>
                     </td>
                   </tr>
         {% endif %}
@@ -212,4 +217,31 @@
       </div>
     </div>
   </div>
+<script src="{% static 'js/vendor/jquery-2.2.4.min.js'%}"></script>
+  <script>
+    "use strict;"
+    let export_pdf = document.getElementById('export_pdf');
+    let orders = document.getElementsByClassName('export_check');
+    var order_array= new Set();
+    for (let order = 0; order < orders.length; order++) {
+    orders[order].addEventListener('change',()=>{
+    if (orders[order].checked) order_array.add(orders[order].value);
+    else order_array.delete(orders[order].value);
+  })}
+  export_pdf.addEventListener("click",()=>{
+  let data_data = {"orders_id" :  Array.from(order_array).toString()};
+  $.ajax({
+  url: '/api/pdf_view/',
+  data: data_data,
+  success: function(data) {
+    var blob=new Blob([data]);
+    var link=document.createElement('a');
+    link.href=window.URL.createObjectURL(blob);
+    link.download='commande.pdf';
+    link.click();
+  }
+
+});
+  })
+  </script>
 {% endblock content_dashboard %}

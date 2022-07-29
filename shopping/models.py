@@ -156,6 +156,7 @@ class Product(models.Model):
     barcode_num = models.CharField(max_length=13, null=True, blank=True)
     count_sould = models.PositiveIntegerField(default=0)
     etage = models.CharField(max_length=50, null=True)
+    reference = models.CharField(max_length=50 , blank=True, null=True)
     class Meta:
         ordering = ['-id']
     # override for save methde

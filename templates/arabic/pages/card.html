@@ -1,19 +1,21 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'arabic/base.html' %} 
+
+{% block content %}
 
 <section class="cart_area">
   <div class="container">
 
-    <h2 class="pb-4">Votre commande</h2>
+    <h2 class="pb-4">طلبيتك</h2>
     
     <div class="cart_inner">
       <div class="table-responsive">
         <table class="table">
           <thead>
             <tr>
-              <th scope="col">Produit</th>
-              <th scope="col">Prix</th>
-              <th scope="col">Quantité</th>
-              <th scope="col">Totale</th>
+              <th scope="col">المنتج</th>
+              <th scope="col">السعر</th>
+              <th scope="col">الكمية</th>
+              <th scope="col">المجموع</th>
             </tr>
           </thead>
           <tbody>
@@ -73,14 +75,14 @@
             <tr>
               <td>
 
-                <h5>Total</h5>
+                <h5>المجموع</h5>
 
               </td>
               <td></td>
               <td>
               </td>
               <td>
-                <strong class="text-info">{{order.get_cart_total}}DA</strong>
+                <strong class="text-info">{{order.get_cart_total}}دج</strong>
               </td>
             </tr>
             {% if items %}
@@ -94,7 +96,7 @@
           </tbody>
         </table>
         <div class="checkout_btn_inner d-flex w-100">
-          <a class="primary-btn" href="{% url 'checkout' %}">Passer à la caisse</a>
+          <a class="primary-btn" href="{% url 'checkout' %}">تأكيد الطلبية</a>
           
         </div>
       </div>

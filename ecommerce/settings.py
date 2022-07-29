@@ -158,28 +158,8 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-SOCIAL_AUTH_FACEBOOK_KEY = '555839889591329'  # App ID
-SOCIAL_AUTH_FACEBOOK_SECRET = 'fc9452a738571beab5e75bf550c8d4a8'
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '29609871729-p38280llfq9r2h8jq7jnsrqninstrmg2.apps.googleusercontent.com'  # App ID
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 SITE_ID = 1
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
-        'APP': {
-            'client_id': '29609871729-p38280llfq9r2h8jq7jnsrqninstrmg2.apps.googleusercontent.com',
-            'secret': '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',
-            'key': '',
-            
-        },
-                'SCOPE': [
-            'profile',
-            'email',
-        ],
-    }
-}
+
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
