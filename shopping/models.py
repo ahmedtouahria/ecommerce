@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import RegexValidator
-from django.core.validators import MinLengthValidator
-from .utils import generate_barcode, generate_random_code, generate_transform_id, random_with_N_digits
+from .utils import generate_barcode, generate_random_code, generate_transform_id
 import random
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone

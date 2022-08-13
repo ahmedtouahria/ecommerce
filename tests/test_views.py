@@ -18,9 +18,3 @@ class TestViews(TestCase):
         response = client.get(self.products_url)
         self.assertEqual(response.status_code,200)
         self.assertTemplateUsed(response,"pages/products.html")
-
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-
-class Example(StaticLiveServerTestCase):
-    def test_example(self):
-        subprocess.check_call(["curl", self.live_server_url])

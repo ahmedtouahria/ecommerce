@@ -203,7 +203,7 @@
         //search .autocomplete
        let search_nav = $("#search_nav"); // for keyup event
         let result_nav = $("#result_product ul"); // for append result 
-        let result_product = $("#result_product") // for shadow style 
+        let result_product = $("#result_product"); // for shadow style 
         /* KEYUP EVENT */
         search_nav.keyup(function (e) {
           result_nav.html("");
@@ -217,7 +217,7 @@
               },
               success: function (res) {
                 // ADD boxshadow style
-                result_product.addClass('shadow-sm p-3 mb-5 bg-white rounded');
+                result_product.addClass('shadow-sm p-3 mb-5 bg-white rounded').removeClass('d-none');
                 if(res.length>0){
                 $.each(res, function (key, value) { result_nav.append(
                     `<li class="d-flex my-2 "><img src="${value.image}" height="30" width="30"><a style="color: black;font-weight: 500; " class="mx-2"href="/products/${value.slug}">${value.name}</a></li>`
@@ -232,7 +232,7 @@
           }
           // REMOVE boxshadow style
           else
-          result_product.removeClass('shadow-sm p-3 mb-5 bg-white rounded');
+          result_product.removeClass('shadow-sm p-3 mb-5 bg-white rounded').addClass('d-none');
 
         });
         const tabs = document.querySelectorAll("[data-target]"),

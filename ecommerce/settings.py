@@ -21,6 +21,7 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     #'django.contrib.admin',
+    'admin_ui.apps.SimpleApp',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -33,24 +34,96 @@ INSTALLED_APPS = [
        'allauth.socialaccount.providers.facebook',
      'social_django',
     'rest_framework',
-    'admin_interface', 
     'colorfield', 
     'django.contrib.admin',
     'constance',
     'constance.backends.database',
     'shopping',
+    'user_visit',
 
 ]
 CONSTANCE_ADDITIONAL_FIELDS = {
-    'image_field': ['django.forms.ImageField', {}]
+    'image_field': ['django.forms.ImageField', {}],
+    'api_field': ['django.forms.JSONField', {
+    }],
 }
 CONSTANCE_CONFIG = {
     'LOGO': ("logo.png", 'Logo du site Web',"image_field"),
     'ID_API_YALIDIN': ("", 'id de votre compte yalidin'), 
    'TOKEN_API_YALIDIN': ("", 'token de votre compte yalidin'),
    'BASE_URL_YALIDIN': ("https://api.yalidine.app/v1/", 'token de votre compte yalidin'), 
-
+    'Google_analytics_id': ('12345678', "l'identifiant de la vue analytics"),
+    'Google_analytics_tag': ('UA-xxxxxxxx-1', "Tag de la balise"),
+    'Google_analytics_credentials': ('{json}', "Votre clés d'API", 'api_field'),
 }
+
+# Admin Ui configs
+
+SIMPLEUI_CONFIG = {
+    'system_keep':False,
+    'menus': [
+    {
+        'app': 'auth',
+        'name': 'Permissions',
+        'icon': 'fas fa-user-shield',
+        'models': [{
+            'name': 'Utilisateurs',
+            'icon': 'fa fa-user-plus',
+            'url': 'auth/user/'
+        },
+        {
+            'name': 'Groupes',
+            'icon': 'fa fa-user-lock',
+            'url': 'auth/group/'
+        },
+        {
+            'name': 'Visites',
+            'icon': 'fa fa-eye',
+            'url': 'user_visit/uservisit/'
+        },
+        ]
+    },
+
+    {
+        'app': 'shopping',
+        'name': 'Commentaires',
+        'icon': 'fas fa-comment',
+        'url': 'news/comment/'
+    },
+
+    {
+        'app': 'constance',
+        'name': 'Configurations',
+        'icon': 'fas fa-cog',
+        'url': 'constance/config/'
+    },
+        {
+        'app': 'shopping',
+        'name': 'Catégories',
+        'icon': 'fas fa-newspaper',
+        'url': 'shopping/categorysub/'
+    },
+
+    {
+        'app': 'news',
+        'name': 'Urgents',
+        'icon': 'fas fa-notification',
+        'url': 'news/summary/'
+    },
+    ]
+}
+
+SIMPLEUI_HOME_INFO = False
+SIMPLEUI_HOME_QUICK = False
+SIMPLEUI_HOME_ACTION = False
+SIMPLEUI_HOME_QUICK = False
+SIMPLEUI_ANALYSIS = True
+SIMPLEUI_HOME_TITLE = 'El Hayet'
+# SIMPLEUI_LOGO = '/media/img/logo.png'
+SIMPLEUI_DEFAULT_ICON = True
+SIMPLEUI_DEFAULT_ICON = True
+SIMPLEUI_DEFAULT_THEME = "creators.css"
+
 SESSION_COOKIE_AGE=60*60*24
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -61,7 +134,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',  # <-- Here
+    'social_django.middleware.SocialAuthExceptionMiddleware', 
+    'user_visit.middleware.UserVisitMiddleware',
+    
+     # <-- Here
 
 ]
 
