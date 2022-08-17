@@ -14,7 +14,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["51.178.86.91",'127.0.0.1','ayacollection.store']
+ALLOWED_HOSTS = ["51.178.86.91",'127.0.0.1','.ayacollection.store']
 
 
 # Application definition
