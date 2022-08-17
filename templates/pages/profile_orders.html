@@ -3,8 +3,8 @@
 {% block profile %}
 <div class="card">
 <h3 class="p-2">Mes commandes</h3>
-
-    <table class="table ">
+<div class=" table-responsive">
+      <table class="table">
         <thead class="thead-dark mx-2">
           <tr>
             <th scope="col">commande 
@@ -24,7 +24,8 @@
           </tr>
     {% endfor %}
         </tbody>
-      </table>
+      </table></div>
+
       <div class="pagination my-3 mx-auto">
         {% if page.has_previous %}
         <a href="?page={{page.previous_page_number}}"  class="prev-arrow"
