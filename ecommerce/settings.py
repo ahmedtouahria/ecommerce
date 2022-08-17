@@ -66,11 +66,7 @@ SIMPLEUI_CONFIG = {
         'app': 'auth',
         'name': 'Permissions',
         'icon': 'fas fa-user-shield',
-        'models': [{
-            'name': 'Utilisateurs',
-            'icon': 'fa fa-user-plus',
-            'url': 'auth/user/'
-        },
+        'models': [
         {
             'name': 'Groupes',
             'icon': 'fa fa-user-lock',
@@ -81,35 +77,49 @@ SIMPLEUI_CONFIG = {
             'icon': 'fa fa-eye',
             'url': 'user_visit/uservisit/'
         },
+        ],
+
+    },
+
+    {
+        'app': 'shopping',
+        'name': 'My website',
+        'icon': 'fas fa-chrome',
+        'models':[
+        {
+            'name': 'Utilisateurs',
+            'icon': 'fa fa-user-plus',
+            'url': 'shopping/customer'
+        },
+        {
+            'name': 'Banner',
+            'icon': 'fa fa-file-image',
+            'url': 'shopping/imagebanner/'
+        },
+        {
+            'name': 'Category',
+            'icon': 'fa fa-square',
+            'url': 'shopping/category'
+        },
+                {
+            'name': 'Category Sub',
+            'icon': 'fa fa-th-large',
+            'url': 'shopping/categorysub'
+        },
+    {
+            'name': 'Commandes',
+            'icon': 'fa fa-shopping-cart',
+            'url': 'shopping/shippingaddress'
+        },
+            {
+            'name': 'Affaire',
+            'icon': 'fa fa-bell',
+            'url': 'shopping/affaire'
+        },
+
         ]
     },
 
-    {
-        'app': 'shopping',
-        'name': 'Commentaires',
-        'icon': 'fas fa-comment',
-        'url': 'news/comment/'
-    },
-
-    {
-        'app': 'constance',
-        'name': 'Configurations',
-        'icon': 'fas fa-cog',
-        'url': 'constance/config/'
-    },
-        {
-        'app': 'shopping',
-        'name': 'Catégories',
-        'icon': 'fas fa-newspaper',
-        'url': 'shopping/categorysub/'
-    },
-
-    {
-        'app': 'news',
-        'name': 'Urgents',
-        'icon': 'fas fa-notification',
-        'url': 'news/summary/'
-    },
     ]
 }
 

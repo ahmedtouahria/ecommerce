@@ -96,7 +96,4 @@ admin.site.register(ProductImage)
 admin.site.register(Conversion)
 
 admin.site.register(CategorySub, Category_sub_admin)
-
-
-admin.site.unregister(Group)
 admin.site.register(Rating, RatingAdmin)
