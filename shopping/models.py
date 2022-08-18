@@ -51,7 +51,7 @@ class Customer(AbstractBaseUser, PermissionsMixin):
         regex=r'^\+?1?\d{9,14}$', message="Phone number must be entered in the format: '+999999999'. Up to 14 digits allowed.")
     phone = models.CharField(validators=[phone_regex], max_length=14,null=True,blank=True)
     name=models.CharField(max_length=50,null=True,blank=True)
-    image = models.ImageField(upload_to='media/customers/')
+    image = models.ImageField(upload_to='customers/')
     code = models.CharField(max_length=12)
     point = models.IntegerField(default=0)
     profits = models.FloatField(default=0)
@@ -107,14 +107,14 @@ class Customer(AbstractBaseUser, PermissionsMixin):
 class ImageBanner(models.Model):
     price = models.FloatField("Prix promotion", null=True)
     titel = models.CharField(("Titre de banner"), max_length=50, null=True)
-    image = models.ImageField(upload_to='media/banners/')
+    image = models.ImageField(upload_to='banners/')
     category = models.CharField(
         ("categorie de produit"), max_length=50, null=True)
 
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
-    image = models.ImageField(upload_to='media/category/', null=True)
+    image = models.ImageField(upload_to='category/', null=True)
 
     def __str__(self):
         return self.name
@@ -125,7 +125,7 @@ class CategorySub(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name='sub_cat')
-    image = models.FileField(upload_to='media/category_sub/', null=True)
+    image = models.FileField(upload_to='category_sub/', null=True)
 
     def __str__(self):
         return self.name
@@ -150,7 +150,7 @@ class Product(models.Model):
     description = models.CharField(max_length=300)
     quantity = models.IntegerField(default=1)
     status = models.CharField(max_length=200, blank=True, null=True)
-    image = models.ImageField(upload_to='media/products/')
+    image = models.ImageField(upload_to='products/')
     available = models.BooleanField(default=True)
     barcode_num = models.CharField(max_length=13, null=True, blank=True)
     count_sould = models.PositiveIntegerField(default=0)
@@ -213,7 +213,7 @@ class Variant(models.Model):
         return super().save(*args, **kwargs)
 class ProductImage(models.Model):
     product = models.ForeignKey("shopping.Product", on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='media/products/')
+    image = models.ImageField(upload_to='products/')
     def __str__(self):
         return self.product.name
 
