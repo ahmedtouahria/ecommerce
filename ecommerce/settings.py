@@ -181,17 +181,20 @@ AUTH_USER_MODEL='shopping.Customer'
 from dj_database_url import parse as dburl
 
 default_dburl = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
-DATABASES = {
-                'default': config('DATABASE_URL', default=default_dburl, cast=dburl),
-            }
-
-""" DATABASES = {
+DATABASES =  {
+    
+        'default': config('DATABASE_URL', default=default_dburl, cast=dburl),
+            } if DEBUG else {
     'default': {
-        'ENGINE': 'djongo',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'ecommerce',
+        'USER': 'ahmed',
+        'PASSWORD': 'SUDOahmed2001',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
- """
+
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
