@@ -137,6 +137,7 @@ SIMPLEUI_DEFAULT_THEME = "creators.css"
 SESSION_COOKIE_AGE=60*60*24
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
      'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -150,6 +151,23 @@ MIDDLEWARE = [
      # <-- Here
 
 ]
+
+# security.W016
+CSRF_COOKIE_SECURE = True
+
+# security.W012
+SESSION_COOKIE_SECURE = True
+
+# security.W008
+SECURE_SSL_REDIRECT = True
+
+# security.W004
+SECURE_HSTS_SECONDS = 31536000 # One year in seconds
+
+# Another security settings
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
 
 ROOT_URLCONF = 'ecommerce.urls'
 
@@ -230,7 +248,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT=os.path.join(BASE_DIR,'static')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_DIRS = [os.path.join(BASE_DIR,'ecommerce/static')]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/') # 'data' is my media folder
