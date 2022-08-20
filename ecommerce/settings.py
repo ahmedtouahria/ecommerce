@@ -91,6 +91,12 @@ SIMPLEUI_CONFIG = {
             'icon': 'fa fa-user-plus',
             'url': 'shopping/customer'
         },
+    {
+        'app': 'constance',
+        'name': 'Configurations',
+        'icon': 'fas fa-cog',
+        'url': 'constance/config/'
+    },
         {
             'name': 'Banner',
             'icon': 'fa fa-file-image',
