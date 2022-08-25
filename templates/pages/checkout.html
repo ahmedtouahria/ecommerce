@@ -114,7 +114,7 @@
               class="banner-btn   my-4"
               type="submit"
             >
-              filter 
+              commander
             </button>
               </div>
             </form>
@@ -488,13 +488,11 @@
         .then((response) => response.json())
         .then((data) => {
           console.log("Success:", data);
-          fireSweetAlert();
           cart = {};
           document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
           window.location.href = "{% url 'products' %}";
         })
         .catch((error) => {
-          fireSweetAlertError();
           console.error("Error:", error);
         });
     }

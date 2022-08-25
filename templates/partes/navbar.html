@@ -57,30 +57,32 @@
 
   <div class="header-main">
     <div class="container">
-      <a href="{% url 'index' %}" class="header-logo " style="color: #000;font-weight: bold;font-family: cursive;">
-        <img
-          src="/media/{{config.LOGO}}"
-          alt="Anon's logo"
-          width="35"
-          height="35"
-        /></a>
-
-      <div class="header-search-container">
-        <input
-        id="search_nav"
-          type="search"
-          name="search"
-          class="search-field w-75"
-          placeholder="Entrez le nom de votre produit..."
-        />
-        <div id="result_product" class="d-none bg-white"  style="position: absolute;z-index: 2;width: 75%;padding: 5px;">
-          <ul>
-          </ul>
-        </div>
-        <button class="search-btn">
-          <i class="fa fa-search" aria-hidden="true"></i>
-        </button>
+      <div class="row">
+        <div class="col-2"> <a href="{% url 'index' %}" class=" header-logo " style="color: #000;font-weight: bold;font-family: cursive;">
+          <img
+            src="/media/{{config.LOGO}}"
+            alt="Anon's logo"
+            width="35"
+            height="35"
+          /></a></div>
+       
+  <div class="col-10">
+    <div class="header-search-container w-100">
+          <input
+          id="search_nav"
+            type="search"
+            name="search"
+            class="search-field w-100"
+            placeholder="Entrez le nom de votre produit..."
+          />
+          <div id="result_product" class="d-none bg-white"  style="position: absolute;z-index: 2;width: 100%;padding: 5px;max-height: 320px;overflow: auto;">
+            <ul>
+            </ul>
+          </div>
+        </div></div>
+        
       </div>
+  
 
       <div class="header-user-actions">
         {% comment %} {% endcomment %} {% if user.is_authenticated %}
@@ -184,99 +186,10 @@
         </li>
 
         <li class="menu-category">
-          <a href="#" class="menu-title">Men's</a>
-
-          <ul class="dropdown-list">
-            <li class="dropdown-item">
-              <a href="#">Shirt</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Shorts & Jeans</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Safety Shoes</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Wallet</a>
-            </li>
-          </ul>
+          <a href="#" class="menu-title">affiliate</a>
         </li>
-
         <li class="menu-category">
-          <a href="#" class="menu-title">aux femmes</a>
-
-          <ul class="dropdown-list">
-            <li class="dropdown-item">
-              <a href="#">Dress & Frock</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Earrings</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Necklace</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Makeup Kit</a>
-            </li>
-          </ul>
-        </li>
-
-        <li class="menu-category">
-          <a href="#" class="menu-title">Jewelry</a>
-
-          <ul class="dropdown-list">
-            <li class="dropdown-item">
-              <a href="#">Earrings</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Couple Rings</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Necklace</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Bracelets</a>
-            </li>
-          </ul>
-        </li>
-
-        <li class="menu-category">
-          <a href="#" class="menu-title">Perfume</a>
-
-          <ul class="dropdown-list">
-            <li class="dropdown-item">
-              <a href="#">Clothes Perfume</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Deodorant</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Flower Fragrance</a>
-            </li>
-
-            <li class="dropdown-item">
-              <a href="#">Air Freshener</a>
-            </li>
-          </ul>
-        </li>
-
-        <li class="menu-category">
-          <a href="#" class="menu-title">Blog</a>
-        </li>
-
-        <li class="menu-category">
-          <a href="#" class="menu-title">Hot Offers</a>
+          <a href="#" class="menu-title">about</a>
         </li>
       </ul>
     </div>
@@ -360,70 +273,20 @@
       </li>
       {% else %}
       <li class="menu-category">
-        <a href="{% url 'login' %}" class="menu-title"><i class="fa fa-sign-in mx-2 text-warning" aria-hidden="true"></i>connection</a>
+        <a href="{% url 'login' %}" class="menu-title font-weight-bold"><i class="fa fa-sign-in mx-2 font-size-5 text-warning" aria-hidden="true"></i>Connection</a>
       </li>
       {% endif %}
 
       <li class="menu-category">
         <button class="accordion-menu" data-accordion-btn>
-          <p class="menu-title">Jewelry</p>
-
+          <p class="menu-title font-weight-bold"> <i class="fa fa-usd text-warning mx-2 font-size-5"  aria-hidden="true" ></i>Affiliate </p>
           <div>
-            <i class="fa fa-plus add-icon"  aria-hidden="true" ></i>
-            <i class="fa fa-times remove-icon"  aria-hidden="true"></i>
           </div>
         </button>
-
-        <ul class="submenu-category-list" data-accordion>
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Earrings</a>
-          </li>
-
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Couple Rings</a>
-          </li>
-
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Necklace</a>
-          </li>
-
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Bracelets</a>
-          </li>
-        </ul>
-      </li>
-
-      <li class="menu-category">
-        <button class="accordion-menu" data-accordion-btn>
-          <p class="menu-title">Perfume</p>
-
-          <div>
-            <i class="fa fa-plus add-icon"  aria-hidden="true" ></i>
-            <i class="fa fa-times remove-icon"  aria-hidden="true"></i>
-          </div>
-        </button>
-
-        <ul class="submenu-category-list" data-accordion>
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Clothes Perfume</a>
-          </li>
-
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Deodorant</a>
-          </li>
-
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Flower Fragrance</a>
-          </li>
-
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Air Freshener</a>
-          </li>
-        </ul>
       </li>
       {% if user.is_authenticated %}
       <li class="menu-category">
-        <a href="{% url 'logout_request' %}" class="menu-title"><i class="fa fa-sign-out mx-2 text-warning" aria-hidden="true"></i>déconnecté</a>
+        <a href="{% url 'logout_request' %}" class="menu-title"><i class="fa fa-sign-out mx-2 text-warning" aria-hidden="true"></i>Déconnecté</a>
       </li>
       {% endif %}
     </ul>

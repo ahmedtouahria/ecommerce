@@ -12,9 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #SECRET_KEY = 'django-insecure-!y(2&*e_z+i+2h7_a)9)frlb^*^bun5$adalf0pp938+zd8wv1'
 SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["51.178.86.91",'127.0.0.1','.ayacollection.store']
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -55,6 +55,12 @@ CONSTANCE_CONFIG = {
     'Google_analytics_id': ('12345678', "l'identifiant de la vue analytics"),
     'Google_analytics_tag': ('UA-xxxxxxxx-1', "Tag de la balise"),
     'Google_analytics_credentials': ('{json}', "Votre clés d'API", 'api_field'),
+    'ABOUT':('about','about your website'),
+    'FACEBOOK_URL':('','URL de votre page Facebook'),
+    'INSTAGRAM_URL':('','URL de votre page Instagram'),
+    'LINKEDIN_URL':('','URL de votre page Linked in'),
+    'WHATSAPP_NUMBER':('',' votre Numéro whatsapp'),
+    'CONTACT_NUMBER':('',' votre Numéro contact'),
 }
 
 # Admin Ui configs
@@ -84,7 +90,7 @@ SIMPLEUI_CONFIG = {
     {
         'app': 'shopping',
         'name': 'My website',
-        'icon': 'fas fa-chrome',
+        'icon': 'fas fa-server',
         'models':[
         {
             'name': 'Utilisateurs',
@@ -122,10 +128,25 @@ SIMPLEUI_CONFIG = {
             'icon': 'fa fa-bell',
             'url': 'shopping/affaire'
         },
-
+            {
+            'name': 'Produits',
+            'icon': 'fa fa-female',
+            'url': 'shopping/product'
+        },
         ]
     },
-
+    {
+        'app': 'shopping',
+        'name': 'My Tokens',
+        'icon': 'fas fa-key',
+        'models':[
+        {
+            'name': 'Tokens',
+            'icon': 'fa fa-key',
+            'url': 'socialaccount/socialapp/'
+        },
+        ]
+    },
     ]
 }
 
@@ -145,12 +166,10 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware', 
     'user_visit.middleware.UserVisitMiddleware',
     
@@ -159,21 +178,7 @@ MIDDLEWARE = [
 ]
 
 # security.W016
-CSRF_COOKIE_SECURE = True
 
-# security.W012
-SESSION_COOKIE_SECURE = True
-
-# security.W008
-SECURE_SSL_REDIRECT = True
-
-# security.W004
-SECURE_HSTS_SECONDS = 31536000 # One year in seconds
-
-# Another security settings
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
 
 ROOT_URLCONF = 'ecommerce.urls'
 

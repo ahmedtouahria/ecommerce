@@ -71,7 +71,10 @@ def guestOrder(request, data):
     phone = data['form']['phone']
     cookieData = cookieCart(request)
     items = cookieData['items']
-    customer, created = Customer.objects.get_or_create(phone=phone, )
+    try:
+        customer, created = Customer.objects.get_or_create(phone=phone )
+    except:
+        customer=Customer.objects.filter(phone=phone)[0]
     customer.name = name
     customer.save()
     order = Order.objects.create(
@@ -211,7 +214,6 @@ def product(request, pk):
             customer=customer, complete=False)
         items = order.orderitem_set.all()
         cartItem = order.get_cart_items
-        print(items)
     else:
         cookieData = cookieCart(request)
         items = cookieData['items']
@@ -252,7 +254,6 @@ def productWithCode(request, pk, *args, **kwargs):
         request.session['ref_customer'] = None
         print("customer_ref", request.session['ref_customer'])
 
-    print("code : ", code)
     if request.user.is_authenticated:
         customer = request.user
         order, created = Order.objects.get_or_create(
@@ -310,8 +311,8 @@ def register(request):
                 login(request, user,backend='django.contrib.auth.backends.ModelBackend')
                 messages.success(request, "register user successfully")
                 return redirect('index')
-        messages.error(
-            request, _("Unsuccessful registration. Invalid information."))
+        else:
+            messages.error(request, _("Unsuccessful registration. Invalid information."))
 
     return render(request, 'account/signup.html')
 # login Customer views
@@ -331,8 +332,7 @@ def login_customer(request):
                 login(request, user)
                 if user.admin:
                     return redirect('/dashboard/')
-                messages.info(
-                    request, f"_(Vous êtes maintenant connecté comme) {user.name}.")
+                messages.info(request, f"_(Vous êtes maintenant connecté comme) {user.name}.")
                 return redirect('index')
             else:
                 messages.error(request, _("Invalid username or password."))

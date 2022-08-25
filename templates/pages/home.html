@@ -139,8 +139,14 @@
             <a href="#" class="showcase-category">{{product.cateogry}}</a>
 
             <div class="price-box">
-              <p class="price">${{product.price}}</p>
-              <del>${{product.price}}</del>
+                                  {% if product.price_promo %}
+                    <p class="price">{{product.price_promo}} DA</p>
+                    <del>{{product.price}} DA</del>
+                    {% else %}
+                    <p class="price">{{product.price}} DA</p>
+                    {% endif %}
+              
+              
             </div>
 
           </div>
@@ -168,8 +174,14 @@
             <a href="#" class="showcase-category">{{product.cateogry}}</a>
 
             <div class="price-box">
-              <p class="price">${{product.price}}</p>
-              <del>${{product.price}}</del>
+                                  {% if product.price_promo %}
+                    <p class="price">{{product.price_promo}} DA</p>
+                    <del>{{product.price}} DA</del>
+                    {% else %}
+                    <p class="price">{{product.price}} DA</p>
+                    {% endif %}
+              
+              
             </div>
 
           </div>
@@ -207,8 +219,12 @@
             <a href="#" class="showcase-category">{{trend.cateogry}}</a>
 
             <div class="price-box">
-              <p class="price">{{trend.price}} DA</p>
+              {% if trend.price_promo %}
+              <p class="price">{{trend.price_promo}} DA</p>
               <del>{{trend.price}} DA</del>
+              {% else %}
+              <p class="price">{{trend.price}} DA</p>
+              {% endif %}
             </div>
 
           </div>
@@ -237,8 +253,12 @@
             <a href="#" class="showcase-category">{{trend.cateogry}}</a>
 
             <div class="price-box">
-              <p class="price">{{trend.price}} DA</p>
+              {% if trend.price_promo %}
+              <p class="price">{{trend.price_promo}} DA</p>
               <del>{{trend.price}} DA</del>
+              {% else %}
+              <p class="price">{{trend.price}} DA</p>
+              {% endif %}
             </div>
 
           </div>
@@ -277,8 +297,12 @@
             <a href="#" class="showcase-category">{{product.cateogry}}</a>
 
             <div class="price-box">
-              <p class="price">{{product.price}}DA</p>
-              <del>{{product.price}}DA</del>
+                    {% if product.price_promo %}
+                    <p class="price">{{product.price_promo}} DA</p>
+                    <del>{{product.price}} DA</del>
+                    {% else %}
+                    <p class="price">{{product.price}} DA</p>
+                    {% endif %}
             </div>
 
           </div>
@@ -307,8 +331,12 @@
             <a href="#" class="showcase-category">{{product.cateogry}}</a>
 
             <div class="price-box">
-              <p class="price">${{product.price}}</p>
-              <del>${{product.price}}</del>
+              {% if product.price_promo %}
+              <p class="price">{{product.price_promo}} DA</p>
+              <del>{{product.price}} DA</del>
+              {% else %}
+              <p class="price">{{product.price}} DA</p>
+              {% endif %}
             </div>
 
           </div>
@@ -328,6 +356,7 @@
 
   <div class="showcase-wrapper has-scrollbar">
 {% for affaire in affaires %}
+{% if affaire.get_time.days >= 0 and affaire.get_time.hours >= 0 and affaire.get_time.minuts >= 0 %}
     <div class="showcase-container">
 
       <div class="showcase">
@@ -356,12 +385,15 @@
           </p>
 
           <div class="price-box">
-            <p class="price">{{affaire.product.price}}DA</p>
-
-            <del>{{affaire.product.price}}DA</del>
+            {% if product.price_promo %}
+            <p class="price">{{affaire.product.price_promo}} DA</p>
+            <del>{{affaire.product.price}} DA</del>
+            {% else %}
+            <p class="price">{{affaire.product.price}} DA</p>
+            {% endif %}
           </div>
 
-          <a href="{% url 'single-product' affaire.product.slug  %}" class="add-cart-btn">Acheter maintenant</a>
+          <a href="{% url 'single-product' affaire.product.slug  %}" class="add-cart-btn w-50 justify-content-center">Acheter maintenant</a>
 
 
           <div class="countdown-box">
@@ -404,6 +436,7 @@
       </div>
 
     </div>
+    {% endif %}
 {% endfor %}
   </div>
 
@@ -421,9 +454,6 @@
             <div class="col-lg-6 text-center">
                 <div class="section-title">
                     <h1>Derniers produits</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                        dolore
-                        magna aliqua.</p>
                 </div>
             </div>
         </div>
@@ -527,8 +557,14 @@
                   </div>
           
                   <div class="price-box">
-                    <p class="price">${{product.price}}</p>
+                  {% if product.price_promo %}
+                    <p class="price">${{product.price_promo}}</p>
                     <del>${{product.price}}</del>
+                    {% else %}
+                    <p class="price">${{product.price}}</p>
+                    {% endif %}
+                    
+
                   </div>
           
                 </div>
@@ -665,8 +701,14 @@
                   </div>
           
                   <div class="price-box">
-                    <p class="price">${{product.price}}</p>
+                                        {% if product.price_promo %}
+                    <p class="price">${{product.price_promo}}</p>
                     <del>${{product.price}}</del>
+                    {% else %}
+                    <p class="price">${{product.price}}</p>
+                    {% endif %}
+                    
+                    
                   </div>
           
                 </div>

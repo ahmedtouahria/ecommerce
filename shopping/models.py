@@ -49,7 +49,7 @@ class Customer(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=254, unique=True)
     phone_regex = RegexValidator(
         regex=r'^\+?1?\d{9,14}$', message="Phone number must be entered in the format: '+999999999'. Up to 14 digits allowed.")
-    phone = models.CharField(validators=[phone_regex], max_length=14,null=True,blank=True)
+    phone = models.CharField(validators=[phone_regex], max_length=14,null=True,blank=True,)
     name=models.CharField(max_length=50,null=True,blank=True)
     image = models.ImageField(upload_to='customers/')
     code = models.CharField(max_length=12)
@@ -273,7 +273,9 @@ class Order(models.Model):
         max_length=100, choices=STATUS, default='Ordered')
     confirmed = models.BooleanField(default=False)
     edited = models.BooleanField(default=False)
-
+    def get_date_french(self):
+        months_french = ("Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre")
+        return f" {self.date_ordered.day} {months_french[self.date_ordered.month-1]} {self.date_ordered.year} "
     def customer_number(self):
         return self.customer.phone
 

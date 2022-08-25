@@ -3,7 +3,7 @@
 {% block profile %}
 <div class="card">
 <h3 class="p-2">Mes commandes</h3>
-<div class=" table-responsive">
+{% comment %} <div class=" table-responsive">
       <table class="table">
         <thead class="thead-dark mx-2">
           <tr>
@@ -24,18 +24,42 @@
           </tr>
     {% endfor %}
         </tbody>
-      </table></div>
-
+      </table>
+    
+    </div> {% endcomment %}
+    <div class="tale_card">
+      <table class="responsive-table">
+      <!-- Responsive Table Header Section -->
+      <thead class="responsive-table__head">
+        <tr class="responsive-table__row">
+          <th class="responsive-table__head__title responsive-table__head__title--name">commande</th>
+          <th class="responsive-table__head__title responsive-table__head__title--status">Status</th>
+          <th class="responsive-table__head__title responsive-table__head__title--types">type</th>
+          <th class="responsive-table__head__title responsive-table__head__title--update">la date</th>
+        </tr>
+      </thead>
+      <!-- Responsive Table Body Section -->
+      <tbody class="responsive-table__body">
+        {% for order in orders %}
+        <tr class="responsive-table__row">
+          <td class="responsive-table__body__text responsive-table__body__text--name">
+           <a href="{% url 'myorders' order.transaction_id %}">#{{order.id}}</a> 
+          </td>
+          <td class="responsive-table__body__text responsive-table__body__text--status">{{order.status}}</td>
+          <td class="responsive-table__body__text responsive-table__body__text--types">{{order.complete}}</td>
+          <td class="responsive-table__body__text responsive-table__body__text--update">{{order.get_date_french}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    
       <div class="pagination my-3 mx-auto">
         {% if page.has_previous %}
         <a href="?page={{page.previous_page_number}}"  class="prev-arrow"
         ><i class="fa fa-long-arrow-left" aria-hidden="true"></i
       ></a>
         {% endif %}
-  
-        {% for i in paginator.page_range  %}
-        <a href="?page={{i}}" class="{% if i == page_number %}active{% endif %} mx-1 ">{{i}}</a>
-        {% endfor %}
         {% if page.has_next %}
   
         <a href="?page={{page.next_page_number}}" class="next-arrow"
@@ -45,6 +69,165 @@
   
       </div>
     </div>
-
+    <style>
+      .tale_card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #141a4e;
+        background-color: #f2f6f9;
+     }
+     /* Page Wrapper/Container Style */
+     /* Responsive Table Style */
+      .responsive-table {
+        background-color: #fefefe;
+        border-collapse: collapse;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.02);
+        width: 100%;
+        overflow: hidden;
+     }
+      .responsive-table__row {
+        display: grid;
+        border-bottom: 1px solid #edeef2;
+        padding: 0 1.5rem;
+     }
+      @media (min-width: 768px) {
+        .responsive-table__row {
+          grid-template-columns: 2fr 1fr 2fr 2fr 1fr;
+       }
+     }
+      @media (min-width: 768px) and (max-width: 991px) {
+        .responsive-table__row {
+          grid-template-columns: 1fr 2fr 1fr;
+       }
+     }
+      .responsive-table__row th, .responsive-table__row td {
+        padding: 1rem;
+     }
+      .responsive-table__head {
+        background-color: #e1e8f2;
+     }
+      @media (max-width: 991px) {
+        .responsive-table__head {
+          display: none;
+       }
+     }
+      .responsive-table__head__title {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        text-transform: capitalize;
+     }
+      .responsive-table__body .responsive-table__row {
+        transition: 0.1s linear;
+        transition-property: color, background;
+     }
+      .responsive-table__body .responsive-table__row:last-child {
+        border-bottom: none;
+     }
+      .responsive-table__body .responsive-table__row:hover {
+        color: #fff;
+        background:linear-gradient(90deg,#ff6c00 0%,#ffba00 100%);
+     }
+      .responsive-table__body__text {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+     }
+      .responsive-table__body__text::before {
+        margin-right: 1rem;
+        font-weight: 600;
+        text-transform: capitalize;
+     }
+      @media (max-width: 991px) {
+        .responsive-table__body__text::before {
+          content: attr(data-title)" : ";
+         ;
+       }
+     }
+      @media (max-width: 400px) {
+        .responsive-table__body__text::before {
+          width: 100%;
+          margin-bottom: 1rem;
+       }
+     }
+      .responsive-table__body__text--name {
+        font-weight: 600;
+     }
+      @media (min-width: 768px) {
+        .responsive-table__body__text--name::before {
+          display: none;
+       }
+     }
+      @media (min-width: 768px) and (max-width: 991px) {
+        .responsive-table__body__text--name {
+          grid-column: 0.5;
+          flex-direction: column;
+       }
+     }
+      @media (min-width: 768px) and (max-width: 991px) {
+        .responsive-table__body__text--status, .responsive-table__body__text--types, .responsive-table__body__text--update {
+          grid-column: 0.6666666667;
+       }
+     }
+      @media (min-width: 768px) and (max-width: 991px) {
+        .responsive-table__body__text--country {
+          grid-column: -3;
+       }
+     }
+      @media (min-width: 768px) and (max-width: 991px) {
+        .responsive-table__body__text--name, .responsive-table__body__text--country {
+          grid-row: 2;
+       }
+     }
+     
+    </style>
+    <script>
+      /* Please ❤ this if you like it! 😊 */
+    "use strict";
+    // Select thead titles from Dom
+    const headTitleName = document.querySelector(
+      ".responsive-table__head__title--name"
+    );
+    const headTitleStatus = document.querySelector(
+      ".responsive-table__head__title--status"
+    );
+    const headTitleTypes = document.querySelector(
+      ".responsive-table__head__title--types"
+    );
+    const headTitleUpdate = document.querySelector(
+      ".responsive-table__head__title--update"
+    );
+    // Select tbody text from Dom
+    const bodyTextName = document.querySelectorAll(
+      ".responsive-table__body__text--name"
+    );
+    const bodyTextStatus = document.querySelectorAll(
+      ".responsive-table__body__text--status"
+    );
+    const bodyTextTypes = document.querySelectorAll(
+      ".responsive-table__body__text--types"
+    );
+    const bodyTextUpdate = document.querySelectorAll(
+      ".responsive-table__body__text--update"
+    );
+    
+    // Select all tbody table row from Dom
+    const totalTableBodyRow = document.querySelectorAll(
+      ".responsive-table__body .responsive-table__row"
+    );
+    
+    // Get thead titles and append those into tbody table data items as a "data-title" attribute
+    for (let i = 0; i < totalTableBodyRow.length; i++) {
+      bodyTextName[i].setAttribute("data-title", headTitleName.innerText);
+      bodyTextStatus[i].setAttribute("data-title", headTitleStatus.innerText);
+      bodyTextTypes[i].setAttribute("data-title", headTitleTypes.innerText);
+      bodyTextUpdate[i].setAttribute("data-title", headTitleUpdate.innerText);
+    }
+    
+    </script>
+    
+    
 {% endblock profile %}
 
