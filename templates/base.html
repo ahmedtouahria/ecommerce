@@ -19,7 +19,7 @@
     <!-- meta character set -->
     <meta charset="UTF-8" />
     <!-- Site Title -->
-    <title>Ahmed Shop | {{titel}}</title>
+    <title>{{config.SITE_NAME}} | {{titel}}</title>
     <!--===============================CSS============================================= -->
 
 
@@ -51,6 +51,7 @@
     {% include 'partes/footer.html' %}
     </div>
     <script src="{% static 'js/vendor/jquery-2.2.4.min.js' %}"></script>
+    
     <script>
       // optimzation css loading
       $(document).ready(function(){

@@ -313,8 +313,11 @@ def register(request):
                 return redirect('index')
         else:
             messages.error(request, _("Unsuccessful registration. Invalid information."))
+    context={
+        'config': config,
 
-    return render(request, 'account/signup.html')
+        }
+    return render(request, 'account/signup.html',context)
 # login Customer views
 
 # la page d'authentication (Login)
@@ -338,7 +341,11 @@ def login_customer(request):
                 messages.error(request, _("Invalid username or password."))
         else:
             messages.error(request, _("Invalid username or password."))
-    return render(request, 'account/login.html')
+    context={
+        'config': config,
+
+        }
+    return render(request, 'account/login.html',context)
 
 
 @login_required(login_url='login')
@@ -491,7 +498,8 @@ def card(request):
         "order": order,
         "cartItem": cartItem,
         "titel": "panier",
-        "category": Category.objects.all(),'config': config
+        "category": Category.objects.all(),
+        'config': config
 
 
     }
@@ -527,8 +535,8 @@ def checkout(request):
         "order": order,
         "cartItem": cartItem,
         "category": Category.objects.all(),
-
-        "titel": "vérifier",'config': config
+        "titel": "vérifier",
+        'config': config,
     }
     return render(request, 'pages/checkout.html', context)
 
@@ -582,7 +590,7 @@ def updateItem(request):
 def processOrder(request):
     data = json.loads(request.body)
     print(data)
-    stop_disk = data.get("stop_desk", False)
+    stop_disk = data['stop_disk']
     # get order if user is authenticated
     if request.user.is_authenticated:
         customer = request.user
@@ -606,37 +614,50 @@ def processOrder(request):
             order.save()
             shipping=ShippingAddress.objects.filter(order=order)
             '''============ if edited parcel ================ '''
-            if shipping.count() >0:
+            if ShippingAddress.objects.filter(order=order).count() >0:
                 '''===== make order -> edited for "patch" request not "post" to "YALIDIN" ========'''
                 order.edited=True
                 order.save()
                 '''=====we need update shipping address========'''
-                shipping.update(
+                shipping_address=shipping.update(
                 customer=customer,
                 order=order,
                 name=data['form']['name'],
                 phone=data['form']['phone'],
-                address=data['shipping']['address'],
+                address=None if stop_disk else data['shipping']['address'],
                 city=data['shipping']['city'],
                 state=data['shipping']['state'],
-                zipcode=data['shipping']['zipcode'],
+                zipcode=None if stop_disk else data['shipping']['zipcode'],
                 is_stopdesk=stop_disk
             )
                 ''' ======== change session value to parcel =========='''
                 request.session["order_changed_id"]=None
             #========= if create new parcel ================
             else:
-                ShippingAddress.objects.create(
+                shipping_address=ShippingAddress.objects.create(
                 customer=customer,
                 order=order,
                 name=data['form']['name'],
                 phone=data['form']['phone'],
-                address=data['shipping']['address'],
+                address=None if stop_disk else data['shipping']['address'],
                 city=data['shipping']['city'],
                 state=data['shipping']['state'],
-                zipcode=data['shipping']['zipcode'],
+                zipcode=None if stop_disk else data['shipping']['zipcode'],
                 is_stopdesk=stop_disk
             )   
+            request.session["shipping_address"]=shipping_address.id
     else:
         redirect("login")
     return JsonResponse('Payment submitted..', safe=False)
+def success_order(request):
+    shipping_id=request.session.get("shipping_address",None)
+    if shipping_id is not None:
+        try:
+            shipping_address=ShippingAddress.objects.get(id=shipping_id)
+        except :
+            shipping_address=None
+    else:
+        return redirect('products')
+
+    context={"config":config,"titel":"success","shipping_address":shipping_address}
+    return render(request,"pages/success_order.html",context)

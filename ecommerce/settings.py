@@ -48,6 +48,9 @@ CONSTANCE_ADDITIONAL_FIELDS = {
     }],
 }
 CONSTANCE_CONFIG = {
+    'SITE_NAME': ("Aya Collection", 'le nom de site Web'),
+    'PRIMARY_COLOR': ("orange", 'le colour primaire de site Web'),
+    'PROMO_LIVRASTION': (False, 'le description de livration gratuit '),
     'LOGO': ("logo.png", 'Logo du site Web',"image_field"),
     'ID_API_YALIDIN': ("", 'id de votre compte yalidin'), 
    'TOKEN_API_YALIDIN': ("", 'token de votre compte yalidin'),
@@ -58,7 +61,6 @@ CONSTANCE_CONFIG = {
     'ABOUT':('about','about your website'),
     'FACEBOOK_URL':('','URL de votre page Facebook'),
     'INSTAGRAM_URL':('','URL de votre page Instagram'),
-    'LINKEDIN_URL':('','URL de votre page Linked in'),
     'WHATSAPP_NUMBER':('',' votre Numéro whatsapp'),
     'CONTACT_NUMBER':('',' votre Numéro contact'),
 }
@@ -267,15 +269,22 @@ MEDIA_URL = '/media/'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'social_core.backends.facebook.FacebookOAuth2',
-    'social_core.backends.google.GoogleOAuth2',
      'allauth.account.auth_backends.AuthenticationBackend',
 )
+SOCIALACCOUNT_PROVIDERS = \
+    {'facebook':
+       {'METHOD': 'oauth2',
+        'SCOPE': ['email','public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': lambda request: 'kr_KR',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v2.4'}}
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-SITE_ID = 1
+SITE_ID = 'localhost'
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 

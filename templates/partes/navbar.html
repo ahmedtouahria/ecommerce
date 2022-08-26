@@ -15,36 +15,26 @@
     <div class="container">
       <ul class="header-social-container">
         <li>
-          <a href="#" class="social-link">
-            <ion-icon name="logo-facebook"></ion-icon>
+          <a href="{{config.FACEBOOK_URL}}" target='blank' class="social-link">
+            <i class="fa fa-facebook mx-1" ></i>
           </a>
         </li>
-
         <li>
-          <a href="#" class="social-link">
-            <ion-icon name="logo-twitter"></ion-icon>
-          </a>
-        </li>
-
-        <li>
-          <a href="#" class="social-link">
-            <ion-icon name="logo-instagram"></ion-icon>
-          </a>
-        </li>
-
-        <li>
-          <a href="#" class="social-link">
-            <ion-icon name="logo-linkedin"></ion-icon>
+          <a href="{{config.INSTAGRAM_URL}}" target='blank' class="social-link">
+            <i class="fa fa-instagram mx-1"></i>
           </a>
         </li>
       </ul>
-
-      <div class="header-alert-news">
-        <p>
-          <b>Livraison gratuite</b>
-          Cette semaine commande sur - 550  DA
-        </p>
-      </div>
+{% if config.PROMO_LIVRASTION %}
+<div class="header-alert-news">
+  <p>
+    <b>Livraison gratuite</b>
+    Cette semaine commande !!
+  </p>
+</div>
+{% else %}
+{% endif %}
+     
 
       <div class="header-top-actions">
         <select name="language">
@@ -222,7 +212,7 @@
 
   <nav class="mobile-navigation-menu has-scrollbar" data-mobile-menu>
     <div class="menu-top">
-      <h2 class="menu-title">Mr Shoopping</h2>
+      <h2 class="menu-title">{{config.SITE_NAME}}</h2>
 
       <button class="menu-close-btn" data-mobile-menu-close-btn>
         <i class="fa fa-times" aria-hidden="true"></i>
@@ -235,12 +225,12 @@
       {% if user.is_authenticated %}
       <li class="menu-category">
         <button class="accordion-menu" data-accordion-btn>
-          <p class="menu-title">
+          <p class="menu-title font-weight-bold">
             Mon compte</p>
 
           <div>
-            <i class="fa fa-plus" aria-hidden="true"></i>
-            <i class="fa fa-times" aria-hidden="true"></i>
+            <i class="fa fa-plus add-icon text-secondary" aria-hidden="true"></i>
+            <i class="fa fa-times remove-icon text-secondary" aria-hidden="true"></i>
 
           </div>
         </button>
@@ -297,7 +287,12 @@
           <button class="accordion-menu" data-accordion-btn>
             <p class="menu-title">langue</p>
 
-            <ion-icon name="caret-back-outline" class="caret-back"></ion-icon>
+            <i class="caret-back-outline" class="caret-back"></i>
+            <div>
+              <i class="fa fa-plus add-icon text-secondary" aria-hidden="true"></i>
+              <i class="fa fa-times remove-icon text-secondary" aria-hidden="true"></i>
+  
+            </div>
           </button>
 
           <ul class="submenu-category-list" data-accordion>
@@ -310,33 +305,31 @@
           </ul>
         </li>
       </ul>
-
+<hr>
       <ul class="menu-social-container">
         <li>
           <a href="#" class="social-link">
-            <i class="fa fa-facebook-official" aria-hidden="true"></i>
+            <i class="fa fa-facebook-official" style="color:rgb(9, 73, 211)" aria-hidden="true"></i>
 
           </a>
         </li>
 
         <li>
           <a href="#" class="social-link">
-            <ion-icon name="logo-twitter"></ion-icon>
+            <i class="fa fa-instagram" style="color:rgb(40, 1, 125)"></i>
           </a>
         </li>
 
         <li>
           <a href="#" class="social-link">
-            <ion-icon name="logo-instagram"></ion-icon>
-          </a>
-        </li>
-
-        <li>
-          <a href="#" class="social-link">
-            <ion-icon name="logo-linkedin"></ion-icon>
+            <i class="fa fa-whatsapp text-success"></i>
           </a>
         </li>
       </ul>
+      <hr>
+      <div>
+        Welcome to <span class="font-weight-bold" style="color: {{config.PRIMARY_COLOR}};">{{config.SITE_NAME}}</span> 
+      </div>
     </div>
   </nav>
 </header>
@@ -346,7 +339,7 @@
       <h2 class="sidebar-title">Catégorie</h2>
 
       <button class="sidebar-close-btn" data-mobile-menu-close-btn>
-        <ion-icon name="close-outline"></ion-icon>
+        <i class="close-outline"></i>
       </button>
     </div>
 
@@ -366,8 +359,8 @@
           </div>
 
           <div>
-            <ion-icon name="add-outline" class="add-icon"></ion-icon>
-            <ion-icon name="remove-outline" class="remove-icon"></ion-icon>
+            <i class="add-outline" class="add-icon"></i>
+            <i class="remove-outline" class="remove-icon"></i>
           </div>
         </button>
 
