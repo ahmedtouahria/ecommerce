@@ -107,8 +107,12 @@
                 </div>
         
                 <div class="price-box">
-                  <p class="price">{{product.price}}DA</p>
-                  <del>{{product.price}}DA</del>
+                  {% if product.price_promo %}
+                  <p class="price">{{product.price_promo}} DA</p>
+                  <del>{{product.price}} DA</del>
+                  {% else %}
+                  <p class="price">{{product.price}} DA</p>
+                  {% endif %}
                 </div>
         
               </div>

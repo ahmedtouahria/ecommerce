@@ -93,9 +93,8 @@
                 {% for item in items %}
                 <li>
                   <a href="{% url 'single-product' item.product.id  %}"
-                    >{{item.product.name}} <strong class="mx-2 text-info">(x{{item.quantity}})</strong> 
-                    <span class="last">{{item.get_total}}DA</span></a
-                  >
+                    >{{item.product.name | slice:':25'}} <strong class="mx-2 text-info">(x{{item.quantity}})</strong> 
+                    <span class="last">{{item.get_total}}DA</span></a>
                 </li>
                 {% endfor %}
               </ul>
@@ -110,13 +109,7 @@
                   <a href="#">Total avec expédition<span id="total_1">{{order.get_cart_total}}DA</span></a>
                 </li>
               </ul>
- 
-              <div class="creat_account">
-                <input type="checkbox" id="f-option4" name="selector" />
-                <label for="f-option4">I’ve read and accept the </label>
-                <a href="#">terms & conditions*</a>
-              </div>
-              <a class="primary-btn" href="#">Proceed to Paypal</a>
+
             </div>
           </div>
         </div>
@@ -230,9 +223,8 @@
                 {% for item in items %}
                 <li>
                   <a href="{% url 'single-product' item.product.id  %}"
-                    >{{item.product.name}} <strong class="mx-2 text-info">(x{{item.quantity}})</strong> 
-                    <span class="last">{{item.get_total}}DA</span></a
-                  >
+                    >{{item.product.name | slice:':25'}} <strong class="mx-2 text-info">(x{{item.quantity}})</strong> 
+                    <span class="last">{{item.get_total}}DA</span></a>
                 </li>
                 {% endfor %}
               </ul>
@@ -247,13 +239,6 @@
                   <a href="#">Total avec expédition<span id="total_2">{{order.get_cart_total}}DA</span></a>
                 </li>
               </ul>
- 
-              <div class="creat_account">
-                <input type="checkbox" id="f-option4" name="selector" />
-                <label for="f-option4">I’ve read and accept the </label>
-                <a href="#">terms & conditions*</a>
-              </div>
-              <a class="primary-btn" href="#">Proceed to Paypal</a>
             </div>
           </div>
         </div>

@@ -5,24 +5,7 @@
 <div class="container my-4">
   <div class="row ">
     <div class="col-12">
-      <div class="filter-bar d-flex flex-wrap align-items-center">
-        <div style="width: 100%">
-          <form class="d-flex " style="margin-top: 10px">
-            {% csrf_token %}
-          </form>
-        </div>
-        <div class="sorting">
-          <select>
-            {% for cat in categorys %}
-            <option value="{{cat.name}}">{{cat.name}}</option>
-            {% endfor %}
-          </select>
-        </div>
 
-     
-             </div>
-      
-      <!-- End Filter Bar -->
       <!-- Start Best Seller -->
       <section class="lattest-product-area category-list ">
         <div class="row">
@@ -64,7 +47,7 @@
               class="banner-btn   my-4"
               type="submit"
             >
-              filter 
+              filtre 
             </button>
           </form>
           </div></div>
@@ -154,18 +137,16 @@
                   <i class="fa fa-star text-secondary"></i>
                   <i class="fa fa-star text-secondary"></i>
                   <i class="fa fa-star text-secondary"></i>
-                  {% else %}
-                  <i class="fa fa-star text-secondary"></i>
-                  <i class="fa fa-star text-secondary"></i>
-                  <i class="fa fa-star text-secondary"></i>
-                  <i class="fa fa-star text-secondary"></i>
-                  <i class="fa fa-star text-secondary"></i>
                   {% endif %}
                 </div>
         
                 <div class="price-box">
-                  <p class="price">{{product.price}}DA</p>
-                  <del>{{product.price}}DA</del>
+                  {% if product.price_promo %}
+                  <p class="price">{{product.price_promo}} DA</p>
+                  <del>{{product.price}} DA</del>
+                  {% else %}
+                  <p class="price">{{product.price}} DA</p>
+                  {% endif %}
                 </div>
         
               </div>
@@ -293,18 +274,16 @@
           <i class="fa fa-star"></i>
           <i class="fa fa-star"></i>
           <i class="fa fa-star"></i>
-          {% else %}
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
           {% endif %}
         </div>
 
         <div class="price-box">
-          <p class="price">${{product.price}}</p>
-          <del>${{product.price}}</del>
+          {% if product.price_promo %}
+          <p class="price">{{product.price_promo}} DA</p>
+          <del>{{product.price}} DA</del>
+          {% else %}
+          <p class="price">{{product.price}} DA</p>
+          {% endif %}
         </div>
 
       </div>

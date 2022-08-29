@@ -14,7 +14,7 @@ from datetime import date, timedelta
 from django.utils import timezone
 from constance import config
 from django.utils.translation import gettext_lazy as _
-from shopping.utils import recommendation
+from shopping.utils import recommendation, visited
 
 
 # Create your views here.
@@ -126,13 +126,15 @@ def index(request):
     top_rated = Product.objects.annotate(rating_count=Sum("rating__stars")).order_by("-rating_count")
     print(top_rated)
     toast = ToastMessage.objects.all().last()
-    affaire = Affaire.objects.all()
+    affaires = Affaire.objects.all()
+    sections = Section.objects.all()
     context = {
+        "sections":sections,
         "new_arrival": Product.objects.all().reverse()[:5],
         "trending": order_items[:5],
         "top_rated": top_rated[:5],
         "toast": toast,
-        "affaires": affaire,
+        "affaires": affaires,
         "category_sub": CategorySub.objects.all(),
         "category": Category.objects.all(),
         "imgs_banner": ImageBanner.objects.all()[:3],
@@ -172,7 +174,7 @@ def products(request):
         products = Product.objects.filter(Q(quantity__gt=0) & Q(price__gt=price_data) & Q(category__name__icontains=category_data))
     else:
         products = Product.objects.filter(quantity__gt=0)
-    paginator = Paginator(products,8)
+    paginator = Paginator(products,40)
     page_number = request.GET.get("page", 1)
     page_products_display = paginator.get_page(page_number)
     context = {
@@ -219,20 +221,20 @@ def product(request, pk):
         items = cookieData['items']
         order = cookieData['order']
         cartItem = cookieData['cartItem']
+    ref_visitor = request.session.get('ref_visitor')
     try:
         product_id = Product.objects.get(slug=pk)
+        visited(request,ref_visitor,product_id)
     except Product.DoesNotExist:
         product_id = None
         return redirect('products')
     order_items = Product.objects.all().order_by("-count_sould")[:7]
-
     context = {
         "products": Product.objects.filter(category=product_id.category),
         "ratings": Rating.objects.filter(product=product_id),
         "variants": Variant.objects.filter(product=product_id),
         "trending": order_items[:5],
         "category": Category.objects.all(),
-
         "stars": product_id.avg_rating,
         "product": product_id,
         "order": order,
@@ -266,8 +268,10 @@ def productWithCode(request, pk, *args, **kwargs):
         items = cookieData['items']
         order = cookieData['order']
         cartItem = cookieData['cartItem']
+    ref_visitor = request.session.get('ref_visitor')
     try:
         product_id = Product.objects.get(slug=pk)
+        visited(request,ref_visitor,product_id)
     except Product.DoesNotExist:
         product_id = None
         return redirect('products')
@@ -280,7 +284,6 @@ def productWithCode(request, pk, *args, **kwargs):
         "stars": product_id.avg_rating,
         "product": product_id,
         "category": Category.objects.all(),
-
         "order": order,
         "cartItem": cartItem,
         "product_imgs": ProductImage.objects.filter(product=product_id),
@@ -441,7 +444,7 @@ def myorders(request, pk):
         f"{config.BASE_URL_YALIDIN}parcels/{order.transaction_id}", headers=headers)
     parcel = response.json()
     print(parcel)
-    total_data = parcel.get("total_data", None)
+    total_data = parcel.get("total_data", 0)
     if total_data > 0:
         transaction_id = parcel.get('data', None)
         last_status = transaction_id[0]
@@ -630,6 +633,7 @@ def processOrder(request):
                 zipcode=None if stop_disk else data['shipping']['zipcode'],
                 is_stopdesk=stop_disk
             )
+                request.session["shipping_address"]=shipping_address
                 ''' ======== change session value to parcel =========='''
                 request.session["order_changed_id"]=None
             #========= if create new parcel ================
@@ -645,7 +649,8 @@ def processOrder(request):
                 zipcode=None if stop_disk else data['shipping']['zipcode'],
                 is_stopdesk=stop_disk
             )   
-            request.session["shipping_address"]=shipping_address.id
+                #for success order page 
+                request.session["shipping_address"]=shipping_address.id
     else:
         redirect("login")
     return JsonResponse('Payment submitted..', safe=False)
@@ -661,3 +666,10 @@ def success_order(request):
 
     context={"config":config,"titel":"success","shipping_address":shipping_address}
     return render(request,"pages/success_order.html",context)
+
+
+def about(request):
+    context={
+        "config":config
+    }
+    return render(request,'pages/about.html',context)

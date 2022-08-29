@@ -18,6 +18,8 @@ path('update_item/',updateItem, name="update_item"),
 path('process_order/', processOrder),
 path('checkout/success/', success_order, name="success_order"),
 path('checkout',checkout,name='checkout'),
+path('about',about,name='about'),
+
 path('getwilaya',get_wilaya,name='get_wilaya'),
 
 ]

@@ -120,16 +120,6 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
             <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
                 <div class="row">
                     <div class="col-lg-6 mb-5">
-                        <div class="row total_rate">
-                            <div class="col-12">
-                                <div class="box_total">
-                                    <h5>Globalement</h5>
-                                    <h4>{{product.avg_rating}}</h4>
-                                    <h6>({{product.no_of_ratings}} Commentaires)</h6>
-                                </div>
-                            </div>
-                     
-                        </div>
                         <div class="review_list my-3">
                             {% for rate in ratings %}
                             <div class="review_item">
@@ -390,7 +380,7 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
   <script src="{% static 'js/vendor/jquery-2.2.4.min.js'%}"></script>
 
 <script type="text/javascript">
-    var code_url="http://127.0.0.1:8000/products/{{product.slug}}/{{request.user.code}}";
+    var code_url="{{config.SITE_URL}}/products/{{product.slug}}/{{request.user.code}}";
     var copy=document.getElementById('copy');
    var form_order_item = document.getElementById("form_order_item");
    var add_to_cart = document.getElementById("add_to_cart");

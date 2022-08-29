@@ -33,7 +33,7 @@ class ProductAdmin(admin.ModelAdmin):
     model = Product
     list_display = ('name', 'price', 'category', 'available', 'avg_rating')
     search_fields = ('category', 'name')
-    readonly_fields = ('barcode_num', 'profit')
+    readonly_fields = ('barcode_num', 'profit','num_views')
     actions = ['set_product_avaiable', ]
     '''  def set_product_avaiable(self,request,queryset):
         queryset.update(available=True)
@@ -87,7 +87,7 @@ admin.site.register(OrderItem, OrderItemAdmin)
 admin.site.register(ShippingAddress, ShippingAddressAdmin)
 admin.site.register(Favorite, FavoritectAdmin)
 admin.site.register(ImageBanner, BannerImage)
-admin.site.register(Variant)
+admin.site.register(Section)
 
 admin.site.register(ToastMessage)
 admin.site.register(Affaire)

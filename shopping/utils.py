@@ -41,3 +41,10 @@ def random_with_N_digits(n):
     range_end = (10**n)-1
     return random.randint(range_start, range_end)
 
+def visited(request,ref_visitor,instance):
+    if ref_visitor !=instance.id:
+        instance.num_views+=1
+        instance.save()
+        request.session["ref_visitor"]=instance.id
+    else:
+        print("ref_visitor")

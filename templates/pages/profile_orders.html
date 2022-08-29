@@ -34,7 +34,8 @@
         <tr class="responsive-table__row">
           <th class="responsive-table__head__title responsive-table__head__title--name">commande</th>
           <th class="responsive-table__head__title responsive-table__head__title--status">Status</th>
-          <th class="responsive-table__head__title responsive-table__head__title--types">type</th>
+          <th class="responsive-table__head__title responsive-table__head__title--types">code
+          </th>
           <th class="responsive-table__head__title responsive-table__head__title--update">la date</th>
         </tr>
       </thead>
@@ -46,7 +47,7 @@
            <a href="{% url 'myorders' order.transaction_id %}">#{{order.id}}</a> 
           </td>
           <td class="responsive-table__body__text responsive-table__body__text--status">{{order.status}}</td>
-          <td class="responsive-table__body__text responsive-table__body__text--types">{{order.complete}}</td>
+          <td class="responsive-table__body__text responsive-table__body__text--types">{{order.transaction_id}}</td>
           <td class="responsive-table__body__text responsive-table__body__text--update">{{order.get_date_french}}</td>
         </tr>
         {% endfor %}

@@ -5,14 +5,6 @@
 <div class="card">
 
     <h4 class="p-2 text-info mx-auto">commande N- {{order.transaction_id}}</h4>
-    {% if messages %}
-{% for msg in messages %}
-<div class="alert alert-primary mx-2" role="alert">
-  <strong>{{msg}}</strong> <a href="#" class="alert-link">Cliquez ici <i class="fa fa-external-link mx-2" aria-hidden="true"></i></a>
-</div>
-{% endfor %}
-{% endif %}
-
     <section class="cart_area py-1">
         <div class="container">
           <div class="cart_inner">
@@ -33,15 +25,15 @@
                     <td>
                       <div class="media">
                         <div class="media-body">
-                          <p>{{item.product.name}}</p>
+                          <img src="{{item.product.image.url}}" width="50" />
                         </div>
                       </div>
                     </td>
                     <td>
-                      <h5>${{item.product.price}}</h5>
+                      <h5>{{item.product.price}} DA</h5>
                     </td>
                     <td>
-                      <div class="product_count">
+                      <div class="product_count px-0">
                         <input
                           readonly
                           type="text"
@@ -50,24 +42,13 @@
                           maxlength="2"
                           value="{{item.quantity}}"
                           title="Quantity:"
-                          class="input-text qty"
+                          class="input-text qty "
+                          style="width:75px !important"
                         />
-                        <button
-                          class="increase items-count"
-                          type="button"
-                        >
-                          <i class="fa fa-chevron-up"></i>
-                        </button>
-                        <button
-                          class="reduced items-count"
-                          type="button"
-                        >
-                          <i class="fa fa-chevron-down" type="button"></i>
-                        </button>
                       </div>
                     </td>
                     <td>
-                      <h5>${{item.get_total}}</h5>
+                      <h5>{{item.get_total}} DA</h5>
                     </td>
                   </tr>
                   {% endfor %}
@@ -79,7 +60,7 @@
                       <h5>Subtotal</h5>
                     </td>
                     <td>
-                      <h5>${{order.get_cart_total}}</h5>
+                      <h5>{{order.get_cart_total}} DA</h5>
                     </td>
                   </tr>
                 </tbody>
@@ -117,7 +98,7 @@
         </div>
         <div class="order-tracking">
           <span class="is-complete"></span>
-          <p>Delivered<br><span></span></p>
+          <p>Livré<br><span></span></p>
         </div>
       </div>
     </div>

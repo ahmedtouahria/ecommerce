@@ -6,8 +6,8 @@ import random
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from django.utils.text import slugify
-from colorfield.fields import ColorField
 from django.utils.translation import gettext_lazy as _
+from django_resized import ResizedImageField
 
 # get image path for regi
 # ster files
@@ -107,14 +107,14 @@ class Customer(AbstractBaseUser, PermissionsMixin):
 class ImageBanner(models.Model):
     price = models.FloatField("Prix promotion", null=True)
     titel = models.CharField(("Titre de banner"), max_length=50, null=True)
-    image = models.ImageField(upload_to='banners/')
+    image =ResizedImageField(force_format="WEBP",quality=75,upload_to='banners/')
     category = models.CharField(
         ("categorie de produit"), max_length=50, null=True)
 
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
-    image = models.ImageField(upload_to='category/', null=True)
+    image = ResizedImageField(force_format="WEBP",quality=75,upload_to='category/', null=True)
 
     def __str__(self):
         return self.name
@@ -145,17 +145,19 @@ class Product(models.Model):
         verbose_name="prix d'achat", null=True, blank=True)
     price = models.FloatField(
         verbose_name="prix de vent", null=True, blank=True)
+    date_add = models.DateTimeField(auto_now_add=True,null=True)
     price_promo = models.FloatField(verbose_name="prix de promotion", null=True, blank=True)
     profit = models.FloatField(null=True, blank=True)
     description = models.CharField(max_length=300)
     quantity = models.IntegerField(default=1)
     status = models.CharField(max_length=200, blank=True, null=True)
-    image = models.ImageField(upload_to='products/')
+    image = ResizedImageField(force_format="WEBP",quality=75,upload_to='products/')
     available = models.BooleanField(default=True)
     barcode_num = models.CharField(max_length=13, null=True, blank=True)
     count_sould = models.PositiveIntegerField(default=0)
     etage = models.CharField(max_length=50, null=True)
     reference = models.CharField(max_length=50 , blank=True, null=True)
+    num_views = models.IntegerField("les vues",default=0)
     class Meta:
         ordering = ['-id']
     # override for save methde
@@ -257,10 +259,10 @@ class Affaire(models.Model):
 
 class Order(models.Model):
     STATUS = [
-        ('Ordered', 'Ordered'),
-        ('Processed', 'Processed'),
-        ('Shipped', 'Shipped'),
-        ('Delivered', 'Delivered'),
+        ('Ordered', 'Commandé'),
+        ('Processed', 'Traité'),
+        ('Shipped', 'Expédié'),
+        ('Delivered', 'Livré'),
     ]
     customer = models.ForeignKey(
         "shopping.Customer", on_delete=models.SET_NULL, null=True, blank=True)
@@ -304,7 +306,9 @@ class Order(models.Model):
         orderitems = self.orderitem_set.all()
         total = sum([item.quantity for item in orderitems])
         return total
-
+    @property
+    def get_customer_phone(self):
+        return ShippingAddress.objects.filter(order=self).last().phone
 
 class Rating(models.Model):
     user = models.ForeignKey(
@@ -343,7 +347,7 @@ class OrderItem(models.Model):
 class ShippingAddress(models.Model):
     customer = models.ForeignKey(
         "shopping.Customer", on_delete=models.SET_NULL, null=True)
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    order = models.OneToOneField(Order, on_delete=models.SET_NULL, null=True,related_name='order')
     name = models.CharField(max_length=50, null=True)
     phone = models.CharField(max_length=14, null=True)
     address = models.CharField(max_length=200, null=True)
@@ -372,3 +376,10 @@ class Conversion(models.Model):
     receveur = models.ForeignKey(
         Customer, on_delete=models.CASCADE, related_name='converte')
     money = models.FloatField()
+class Section(models.Model):
+    category=models.ForeignKey("shopping.CategorySub",on_delete=models.CASCADE)
+    def products(self):
+        return Product.objects.filter(category=self).order_by('-date_add')[:12]
+    def __str__(self):
+        return self.category.name
+    

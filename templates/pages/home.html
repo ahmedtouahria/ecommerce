@@ -385,7 +385,7 @@
           </p>
 
           <div class="price-box">
-            {% if product.price_promo %}
+            {% if affaire.product.price_promo %}
             <p class="price">{{affaire.product.price_promo}} DA</p>
             <del>{{affaire.product.price}} DA</del>
             {% else %}
@@ -558,10 +558,10 @@
           
                   <div class="price-box">
                   {% if product.price_promo %}
-                    <p class="price">${{product.price_promo}}</p>
-                    <del>${{product.price}}</del>
+                    <p class="price"> {{product.price_promo}} DA</p>
+                    <del> {{product.price}} DA</del>
                     {% else %}
-                    <p class="price">${{product.price}}</p>
+                    <p class="price"> {{product.price}} DA</p>
                     {% endif %}
                     
 
@@ -588,23 +588,15 @@
 <!-- End brand Area -->
 
 <!-- Start related-product Area -->
+{% for section in sections %}
 <section class="related-product-area section_gap_bottom">
   <div class="single-product-slider">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-6 text-center">
-                <div class="section-title">
-                    <h1>Derniers produits</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                        dolore
-                        magna aliqua.</p>
-                </div>
-            </div>
-        </div>
+
         <section class="lattest-product-area category-list">
           <div class="product-main container pt-5">
   
-            <h2 class="title">Nouveaux produits</h2>
+            <h2 class="title">{{section.category.name}}</h2>
           
             <div class="product-grid" id="list_product">
           {% for product in products  %}
@@ -702,10 +694,10 @@
           
                   <div class="price-box">
                                         {% if product.price_promo %}
-                    <p class="price">${{product.price_promo}}</p>
-                    <del>${{product.price}}</del>
+                    <p class="price"> {{product.price_promo}} DA</p>
+                    <del>{{product.price}} DA</del>
                     {% else %}
-                    <p class="price">${{product.price}}</p>
+                    <p class="price">{{product.price}} DA</p>
                     {% endif %}
                     
                     
@@ -722,5 +714,5 @@
     </div>
 </div>
 </section>
-
+{% endfor %}
 {% endblock %}

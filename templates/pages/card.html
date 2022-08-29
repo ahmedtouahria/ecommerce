@@ -22,10 +22,9 @@
               <td>
                 <div class="media">
                   <div class="media-body">
-                    <p>
-                      {{item.product.name | slice:":15"}} - {% if item.color and item.size %} {{item.color}}
-                      - {{item.size}} {% elif item.color and not item.size %} {{item.color}} {% elif not item.color and  item.size%} {{item.size}}{% endif %}
-                    </p>
+                    <div class="media-body">
+                      <img src="{{item.product.image.url}}" width="50" />
+                    </div>
                   </div>
                 </div>
               </td>
@@ -93,10 +92,12 @@
             </tr>{% endif %}
           </tbody>
         </table>
-        <div class="checkout_btn_inner d-flex w-100">
-          <a class="primary-btn" href="{% url 'checkout' %}">Continuez</a>
-          
+        {% if order.get_cart_total %}
+          <div class="checkout_btn_inner d-flex w-100">
+        <a class="primary-btn" href="{% url 'checkout' %}"><i class="fa fa-shopping-cart mx-1"></i>Continuez <i class="fa fa-fas fa-arrow-right mx-1"></i> </a>  
         </div>
+        {% endif %}
+
       </div>
     </div>
   </div>

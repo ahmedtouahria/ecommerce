@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Welcome to Python Guides</title>
+    <title>commande</title>
     <link
       rel="stylesheet"
       rel="preload"
@@ -42,7 +42,7 @@
           <td width="10%">#{{order.id}}</td>
           <td width="20%">{{order.customer.name}} 
             <hr>
-            {{order.customer.phone}}
+            {{order.get_customer_phone}}
           </td>
           <td>
             <table width="100%" border="0.8" >
@@ -59,6 +59,7 @@
                         <span style="margin:5px; border-radius:50%">
                         <img src="{{item.product.image.path}}" style="border-radius:50%;margin:5px;" width="50px" height="50px" class="img-fluid rounded-top" alt=""/>
                         </span>
+                        <span>---</span>
                         {{item.product.name}}</td>
                     <td width="20%">{{item.quantity}}</td>
                     <td width="20%">{{item.product.reference}}</td>
@@ -73,8 +74,9 @@
         {% endfor %}
       </tbody>
     </table>
-
-    <p><strong>Totale: {{contrat.total_price}} DA</strong></p>
+    <br>
+    <hr>
+    Aya collection 2022
     <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
   </body>
 </html>

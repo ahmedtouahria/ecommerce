@@ -14,8 +14,10 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
-
+if DEBUG:
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = [".ayacollection.store"]
 
 # Application definition
 
@@ -49,6 +51,10 @@ CONSTANCE_ADDITIONAL_FIELDS = {
 }
 CONSTANCE_CONFIG = {
     'SITE_NAME': ("Aya Collection", 'le nom de site Web'),
+    'SITE_URL': ("http://localhost:8000", 'le lien de site Web'),
+    'SITE_MAIL': ("ahmed@gmail.com", 'mail de site Web'),
+    'address': ("alger 16000 albiar", 'address'),
+
     'PRIMARY_COLOR': ("orange", 'le colour primaire de site Web'),
     'PROMO_LIVRASTION': (False, 'le description de livration gratuit '),
     'LOGO': ("logo.png", 'Logo du site Web',"image_field"),
@@ -63,6 +69,8 @@ CONSTANCE_CONFIG = {
     'INSTAGRAM_URL':('','URL de votre page Instagram'),
     'WHATSAPP_NUMBER':('',' votre Numéro whatsapp'),
     'CONTACT_NUMBER':('',' votre Numéro contact'),
+    'CONTACT_NUMBER2':('',' votre Numéro contact'),
+
 }
 
 # Admin Ui configs
@@ -134,6 +142,11 @@ SIMPLEUI_CONFIG = {
             'name': 'Produits',
             'icon': 'fa fa-female',
             'url': 'shopping/product'
+        },
+         {
+            'name': 'Section Accueille',
+            'icon': 'fa fa-tasks',
+            'url': 'shopping/section'
         },
         ]
     },
@@ -218,9 +231,9 @@ DATABASES =  {
             } if DEBUG else {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ecommerce',
-        'USER': 'ahmed',
-        'PASSWORD': 'SUDOahmed2001',
+        'NAME': config("DB_NAME"),
+        'USER': config("DB_USER"),
+        'PASSWORD': config("DB_PASSWORD"),
         'HOST': 'localhost',
         'PORT': '5432',
     }
