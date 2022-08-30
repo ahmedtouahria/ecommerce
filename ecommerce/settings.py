@@ -45,7 +45,7 @@ INSTALLED_APPS = [
 
 ]
 CONSTANCE_ADDITIONAL_FIELDS = {
-    'image_field': ['django.forms.ImageField', {}],
+    'image_field': ['django.forms.FileField', {}],
     'api_field': ['django.forms.JSONField', {
     }],
 }
@@ -276,7 +276,7 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 STATIC_ROOT=os.path.join(BASE_DIR,'static/')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-STATICFILES_DIRS = [os.path.join(BASE_DIR,'ecommerce/static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR,'root/static')]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/') # 'data' is my media folder
 MEDIA_URL = '/media/'
 
