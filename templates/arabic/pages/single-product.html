@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'arabic/base.html' %}
 {% load static %}
 {% block css %}
 <link
@@ -28,7 +28,7 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
 <div class="product_image_area mb-5">
     <div class="container">
         <div class="row s_product_inner">
-            <div class="col-lg-6">
+            <div class="col-lg-6" dir="ltr">
               <div class="s_Product_carousel">
                 <div class="single-prd-item">
                     <img class="img-fluid" src="{{product.image.url}}" alt="">
@@ -47,15 +47,14 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
                 {% endif %}
 
             </div>
-            </div>
+          </div>
             <div class="col-lg-5 offset-lg-1">
-                <div class="s_product_text">
-                    <h3>{{product.name}}</h3>
-                    <h2>{{product.price}} DA </h2>
+                <div class="s_product_text" style="text-align:initial;">
+                    <h3>{{product.name_ar}}</h3>
+                    <h2>{{product.price}} دج </h2>
                    
                     <ul class="list">
-                        <li><a class="active" href="#"><span>Catégorie</span> : {{product.category | capfirst}}</a></li>
-                        <li><a href="#"><span>Disponibilité</span> : In Stock</a></li>
+                        <li><a class="active" href="#"><span>التصنيف</span> : {{product.category.name_ar}}</a></li>
                         <div class="media-body">
                             <i class="fa fa-star text-warning"></i>
                             <i class="fa fa-star text-warning"></i>
@@ -68,14 +67,14 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
                       <a class="icon_btn" id="copy"><i class="fa fa-share"></i></a>
                       <a class="icon_btn" href="#"><i class="fa fa-heart"></i></a>
                   </div>
-                    <p>{{product.description}}</p>
+                    <p>{{product.description_ar}}</p>
    
                     {% if variants %}
                     <form  method="post" id="form_order_item">
                       {% csrf_token %}
                     <div class="row my-3 mx-2">
                         <div class='col-3'>
-                        <label class="pt-2" for="qty">Taille:</label>
+                        <label class="pt-2" for="qty">القياس:</label>
                         </div>
                         <div class='col-9'>
                             <select name="size" id="size_var" class=" mx-2">
@@ -84,7 +83,7 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
                       </div>
                       <div class="row my-3 mx-2">
                         <div class='col-3'>
-                        <label class="pt-2" for="qty">Couleurs:</label>
+                        <label class="pt-2" for="qty">الألوان:</label>
                         </div>
                         <div class='col-9' id="color_container">
           
@@ -95,7 +94,7 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
                         <a id="add_to_cart" style="
                         font-size: 14px;
                         padding: 0 10px;
-                        text-transform: capitalize;" class="primary-btn add_to_cart" data-action="add" data-product="{{product.id}}" href="{% url 'card' %}">Acheter maintenant</a>
+                        text-transform: capitalize;" class="primary-btn add_to_cart" data-action="add" data-product="{{product.id}}" href="{% url 'card' %}">الشراء الأن</a>
                       <a  class="primary-btn add_to_cart" data-action="add" data-product="{{product.id}}"  href="#"><i class="fa fa-cart-plus " aria-hidden="true"></i>
                         </a>
                     </div>
@@ -113,23 +112,13 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
-                 aria-selected="false">commentaires</a>
+                 aria-selected="false">التعليقات</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
                 <div class="row">
                     <div class="col-lg-6 mb-5">
-                        <div class="row total_rate">
-                            <div class="col-12">
-                                <div class="box_total">
-                                    <h5>Globalement</h5>
-                                    <h4>{{product.avg_rating}}</h4>
-                                    <h6>({{product.no_of_ratings}} Commentaires)</h6>
-                                </div>
-                            </div>
-                     
-                        </div>
                         <div class="review_list my-3">
                             {% for rate in ratings %}
                             <div class="review_item">
@@ -148,7 +137,7 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
                                         loading="lazy"
                                       />
                                     </div>
-                                    <div class="media-body">
+                                    <div class="media-body mx-4" style="text-align:initial;">
                                         <h4 class="fw-bolder" style="font-weight:bold;margin:0">{{rate.get_user_name}}</h4>
                                         {% if rate.stars == 5 %}
                                         <i class="fa fa-star"></i>
@@ -203,7 +192,7 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
                     </div>
                     <div class="col-lg-6">
                         <div class="review_box">
-                            <h4>Ajouter un commentaire</h4>
+                            <h4 style="text-align:initial;">إضافة تعليق</h4>
                             <div class="rating" >
                                 <input value="5" type="radio" name="rating" id="rating-5">
                                 <label data-rate="5" data-product="{{product.id}}" for="rating-5"></label>
@@ -221,11 +210,11 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
                                 {% csrf_token %}
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <textarea class="form-control" name="content" id="content" rows="1" placeholder="Review" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Review'"></textarea></textarea>
+                                        <textarea class="form-control" name="content" id="content" rows="1" placeholder="تعليق" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Review'"></textarea></textarea>
                                     </div>
                                 </div>
                             </form>
-                 <button class="primary-btn" id="add_comment">ajouté</button>
+                 <button class="primary-btn" id="add_comment">تعليق</button>
 
                         </div>
                     </div>
@@ -236,7 +225,7 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
 </section>
 <div class="product-main container py-5">
 
-    <h2 class="title">Naviguez aussi !</h2>
+    <h2 class="title" style="text-align:initial;">منتجات قد تعجبك</h2>
   
     <div class="product-grid">
   {% for product in products  %}
@@ -257,36 +246,14 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
           {% endif %}
           ">{{product.status}}</p>
     {% endif %}
-  
-          <div class="showcase-actions">
-  
-            <button class="btn-action">
-              <ion-icon name="heart-outline"></ion-icon>
-            </button>
-  
-            <button class="btn-action">
-              <ion-icon name="eye-outline"></ion-icon>
-            </button>
-  
-            <button class="btn-action">
-              <ion-icon name="repeat-outline"></ion-icon>
-            </button>
-  
-            <button class="btn-action update-cart"  data-action="add"
-            data-product="{{product.id}}">
-              <ion-icon name="bag-add-outline"></ion-icon>
-            </button>
-  
-          </div>
-  
         </div>
   
         <div class="showcase-content">
   
-          <a href="#" class="showcase-category">{{product.category}}</a>
+          <a href="#" style="text-align:initial;" class="showcase-category">{{product.category.name_ar}}</a>
   
           <a href="{% url 'single-product' product.id %}">
-            <h3 class="showcase-title">{{product.name}}</h3>
+            <h3 style="text-align:initial;" class="showcase-title">{{product.name_ar}}</h3>
           </a>
   
           <div class="showcase-rating">
@@ -390,7 +357,7 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
   <script src="{% static 'js/vendor/jquery-2.2.4.min.js'%}"></script>
 
 <script type="text/javascript">
-    var code_url="http://127.0.0.1:8000/products/{{product.slug}}/{{request.user.code}}";
+    var code_url="{{config.SITE_URL}}/products/{{product.slug}}/{{request.user.code}}";
     var copy=document.getElementById('copy');
    var form_order_item = document.getElementById("form_order_item");
    var add_to_cart = document.getElementById("add_to_cart");

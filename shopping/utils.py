@@ -1,7 +1,7 @@
-import json
 import uuid
 import random
-
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth.decorators import user_passes_test
 '''
 We need generate a random code for any user to subscribe
 '''
@@ -48,3 +48,13 @@ def visited(request,ref_visitor,instance):
         request.session["ref_visitor"]=instance.id
     else:
         print("ref_visitor")
+
+def superuser_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url=None):
+    actual_decorator = user_passes_test(
+        lambda u: u.is_superuser or u.is_admin,
+        login_url=login_url,
+        redirect_field_name=redirect_field_name,
+    )
+    if function:
+        return actual_decorator(function)
+    return function

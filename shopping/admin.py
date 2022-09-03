@@ -5,22 +5,6 @@ from .models import *
 # Register your models here.
 
 
-class UserAdmin(BaseUserAdmin):
-    model = Customer
-#####################################################################
-    list_display = ('email', 'phone', 'name', 'point')
-    list_filter = ('staff', 'active', 'admin', )
-    fieldsets = ((None, {'fields': ('name','email', 'phone', 'point', 'code', 'profits', 'password',
-                 'image')}), ('Permissions', {'fields': ('active', 'staff', 'admin')}), )
-    readonly_fields = ('code', 'profits', 'point')
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('name', 'phone', 'password1', 'password2')}
-         ),
-    )
-    search_fields = ('phone', 'name')
-    ordering = ('name',)
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -79,7 +63,7 @@ class Category_sub_admin(admin.ModelAdmin):
     model = CategorySub
 
 
-admin.site.register(Customer, UserAdmin)
+admin.site.register(Customer)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Order, OrderAdmin)

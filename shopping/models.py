@@ -114,6 +114,7 @@ class ImageBanner(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
+    name_ar = models.CharField(max_length=200,null=True)
     image = ResizedImageField(force_format="WEBP",quality=75,upload_to='category/', null=True)
 
     def __str__(self):
@@ -123,6 +124,7 @@ class Category(models.Model):
 
 class CategorySub(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
+    name_ar = models.CharField(max_length=200, null=True, blank=True)
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name='sub_cat')
     image = models.FileField(upload_to='category_sub/', null=True)
@@ -138,6 +140,7 @@ class CategorySub(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=200, unique=True)
+    name_ar = models.CharField(max_length=200, unique=True,null=True)
     slug = models.SlugField(blank=True, null=True)
     category = models.ForeignKey(
         "shopping.CategorySub", on_delete=models.PROTECT, null=True, blank=True)
@@ -149,6 +152,7 @@ class Product(models.Model):
     price_promo = models.FloatField(verbose_name="prix de promotion", null=True, blank=True)
     profit = models.FloatField(null=True, blank=True)
     description = models.CharField(max_length=300)
+    description_ar = models.CharField(max_length=300,null=True)
     quantity = models.IntegerField(default=1)
     status = models.CharField(max_length=200, blank=True, null=True)
     image = ResizedImageField(force_format="WEBP",quality=75,upload_to='products/')
@@ -264,6 +268,12 @@ class Order(models.Model):
         ('Shipped', 'Expédié'),
         ('Delivered', 'Livré'),
     ]
+    STATUS_AR = [
+        ('Ordered', 'استقبال'),
+        ('Processed', 'معالجة'),
+        ('Shipped', 'يتم الشحن'),
+        ('Delivered', 'تم الشحن'),
+    ]
     customer = models.ForeignKey(
         "shopping.Customer", on_delete=models.SET_NULL, null=True, blank=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
@@ -273,10 +283,15 @@ class Order(models.Model):
         Customer, on_delete=models.SET_NULL, null=True, related_name="recommended_by")
     status = models.CharField(
         max_length=100, choices=STATUS, default='Ordered')
+    status_ar = models.CharField(
+        max_length=100, choices=STATUS_AR, default='Ordered')
     confirmed = models.BooleanField(default=False)
     edited = models.BooleanField(default=False)
     def get_date_french(self):
         months_french = ("Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre")
+        return f" {self.date_ordered.day} {months_french[self.date_ordered.month-1]} {self.date_ordered.year} "
+    def get_date_arabic(self):
+        months_french = ("جانفي"," فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر")
         return f" {self.date_ordered.day} {months_french[self.date_ordered.month-1]} {self.date_ordered.year} "
     def customer_number(self):
         return self.customer.phone

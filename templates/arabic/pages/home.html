@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'arabic/base.html' %}
 {% load static %}
 {% block content %}
 {% if toast %}
@@ -22,7 +22,7 @@
     </p>
 
     <p class="toast-meta">
-      <time datetime="PT2M">2 Minutes</time> ago
+      <time دجtetime="PT2M">2 Minutes</time> ago
     </p>
 
   </div>
@@ -38,7 +38,7 @@
       <div class="slider-container has-scrollbar">
 {% for img in imgs_banner %}
         <div class="slider-item skeleton">
-          <img src="{{img.image.url}}" alt="women's latest fashion sale" class="banner-img">
+          <img src="{{img.image.url}}" alt="ecommerce , ayacollection " class="banner-img">
 
           <div class="banner-content" style="background: linear-gradient(45deg, #0200ffb0, #05e49e80);">
 
@@ -50,10 +50,10 @@
             <h2 class="banner-title" style="color: #c7ff00;">{{img.titel}}</h2>
 
             <p class="banner-text text-light">
-              Commence à partir de  <b>{{img.price}}</b> DA
+              إبتداءا من <b>{{img.price}}</b> دج
             </p>
 
-            <a href="{% url 'products' %}" class="banner-btn">Shop now</a>
+            <a href="{% url 'products' %}" class="banner-btn">تسوق الأن</a>
 
           </div>
 
@@ -87,12 +87,11 @@
           <div class="category-content-box">
 
             <div class="category-content-flex">
-              <h3 class="category-item-title">{{cat.name | capfirst}}</h3>
+              <h3 class="category-item-title">{{cat.name_ar | capfirst}}</h3>
 
-              <p class="category-item-amount">(53)</p>
             </div>
 
-            <a href="{% url 'category' cat.name %}" class="category-btn">Show all</a>
+            <a href="{% url 'category' cat.name %}" class="category-btn float-right">رؤية المزيد</a>
 
           </div>
 
@@ -116,8 +115,9 @@
 <div class="product-minimal">
 
   <div class="product-showcase">
-
-    <h2 class="title">Nouvelles Arrivées</h2>
+<div class="d-flex">
+  <h2 class="title">المنتجات القادمة</h2>
+</div>
 
     <div class="showcase-wrapper has-scrollbar">
 
@@ -133,14 +133,20 @@
           <div class="showcase-content">
 
             <a href="#">
-              <h4 class="showcase-title">{{product.name}}</h4>
+              <h4 class="showcase-title " style="text-align:initial;overflow:revert !important">{{product.name_ar}}</h4>
             </a>
 
-            <a href="#" class="showcase-category">{{product.cateogry}}</a>
+            <a href="#" class="showcase-category" style="text-align:initial">{{product.cateogry.name_ar}}</a>
 
             <div class="price-box">
-              <p class="price">${{product.price}}</p>
-              <del>${{product.price}}</del>
+                                  {% if product.price_promo %}
+                    <p class="price">  {{product.price_promo}} دج</p>
+                    <del>  {{product.price}} دج</del>
+                    {% else %}
+                    <p class="price">  {{product.price}} دج</p>
+                    {% endif %}
+              
+              
             </div>
 
           </div>
@@ -162,14 +168,20 @@
           <div class="showcase-content">
 
             <a href="#">
-              <h4 class="showcase-title">{{product.name}}</h4>
+              <h4 class="showcase-title"  style="text-align:initial;overflow:revert !important">{{product.name_ar}}</h4>
             </a>
 
-            <a href="#" class="showcase-category">{{product.cateogry}}</a>
+            <a href="#" class="showcase-category" style="text-align:initial">{{product.cateogry.name_ar}}</a>
 
             <div class="price-box">
-              <p class="price">${{product.price}}</p>
-              <del>${{product.price}}</del>
+                                  {% if product.price_promo %}
+                    <p class="price">{{product.price_promo}} دج</p>
+                    <del>{{product.price}} دج</del>
+                    {% else %}
+                    <p class="price">{{product.price}} دج</p>
+                    {% endif %}
+              
+              
             </div>
 
           </div>
@@ -184,8 +196,10 @@
 
   <div class="product-showcase">
   
-    <h2 class="title">Tendance<i class="fa fa-line-chart mx-2 text-info" ></i></h2> 
-  
+    
+    <div class="d-flex">
+      <h2 class="title">الشائعة<i class="fa fa-line-chart mx-2 text-info" ></i></h2> 
+    </div>
     <div class="showcase-wrapper  has-scrollbar">
   
       <div class="showcase-container">
@@ -201,14 +215,18 @@
           <div class="showcase-content">
 
             <a href="#">
-              <h4 class="showcase-title">{{trend.name}}</h4>
+              <h4 class="showcase-title" style="text-align:initial;overflow:revert !important">{{trend.name_ar}}</h4>
             </a>
 
-            <a href="#" class="showcase-category">{{trend.cateogry}}</a>
+            <a href="#" class="showcase-category" style="text-align:initial">{{trend.cateogry.name_ar}}</a>
 
             <div class="price-box">
-              <p class="price">{{trend.price}} DA</p>
-              <del>{{trend.price}} DA</del>
+              {% if trend.price_promo %}
+              <p class="price">{{trend.price_promo}} دج</p>
+              <del>{{trend.price}} دج</del>
+              {% else %}
+              <p class="price">{{trend.price}} دج</p>
+              {% endif %}
             </div>
 
           </div>
@@ -231,14 +249,18 @@
           <div class="showcase-content">
 
             <a href="#">
-              <h4 class="showcase-title">{{trend.name}}</h4>
+              <h4 class="showcase-title" style="text-align:initial;overflow:revert !important">{{trend.name_ar}}</h4>
             </a>
 
-            <a href="#" class="showcase-category">{{trend.cateogry}}</a>
+            <a href="#" class="showcase-category" style="text-align:initial">{{trend.cateogry.name_ar}}</a>
 
             <div class="price-box">
-              <p class="price">{{trend.price}} DA</p>
-              <del>{{trend.price}} DA</del>
+              {% if trend.price_promo %}
+              <p class="price">{{trend.price_promo}} دج</p>
+              <del>{{trend.price}} دج</del>
+              {% else %}
+              <p class="price">{{trend.price}} دج</p>
+              {% endif %}
             </div>
 
           </div>
@@ -254,8 +276,10 @@
 
   <div class="product-showcase">
   
-    <h2 class="title">meilleure cote <i class="fa fa-star text-warning"></i></h2>
-  
+    
+    <div class="d-flex">
+      <h2 class="title">الأفضل تقييما <i class="fa fa-star text-warning"></i></h2>
+    </div>
     <div class="showcase-wrapper  has-scrollbar">
   
       <div class="showcase-container">
@@ -271,14 +295,18 @@
           <div class="showcase-content">
 
             <a href="#">
-              <h4 class="showcase-title">{{product.name}}</h4>
+              <h4 class="showcase-title" style="text-align:initial;overflow:revert !important">{{product.name_ar}}</h4>
             </a>
 
-            <a href="#" class="showcase-category">{{product.cateogry}}</a>
+            <a href="#" class="showcase-category" style="text-align:initial">{{product.cateogry.name_ar}}</a>
 
             <div class="price-box">
-              <p class="price">{{product.price}}DA</p>
-              <del>{{product.price}}DA</del>
+                    {% if product.price_promo %}
+                    <p class="price">{{product.price_promo}} دج</p>
+                    <del>{{product.price}} دج</del>
+                    {% else %}
+                    <p class="price">{{product.price}} دج</p>
+                    {% endif %}
             </div>
 
           </div>
@@ -301,14 +329,18 @@
           <div class="showcase-content">
 
             <a href="#">
-              <h4 class="showcase-title">{{product.name}}</h4>
+              <h4 class="showcase-title" style="text-align:initial;overflow:revert !important">{{product.name_ar}}</h4>
             </a>
 
-            <a href="#" class="showcase-category">{{product.cateogry}}</a>
+            <a href="#" class="showcase-category" style="text-align:initial">{{product.cateogry.name_ar}}</a>
 
             <div class="price-box">
-              <p class="price">${{product.price}}</p>
-              <del>${{product.price}}</del>
+              {% if product.price_promo %}
+              <p class="price">{{product.price_promo}} دج</p>
+              <del>{{product.price}} دج</del>
+              {% else %}
+              <p class="price">{{product.price}} دج</p>
+              {% endif %}
             </div>
 
           </div>
@@ -324,10 +356,12 @@
 </div>
 <div class="product-featured">
 
-  <h2 class="title">L'affaire d'aujourd'hui</h2>
-
+  <div class="d-flex">
+    <h2 class="title">عروض اليوم </h2>
+  </div>
   <div class="showcase-wrapper has-scrollbar">
 {% for affaire in affaires %}
+{% if affaire.get_time.days >= 0 and affaire.get_time.hours >= 0 and affaire.get_time.minuts >= 0 %}
     <div class="showcase-container">
 
       <div class="showcase">
@@ -347,28 +381,30 @@
             <ion-icon name="star-outline"></ion-icon>
             <ion-icon name="star-outline"></ion-icon>
           </div>
-
           <a href="#">
-            <h3 class="showcase-title">{{affaire.product.name}}</h3>
+            <h3 class="showcase-title" style="text-align:initial;overflow:revert !important">{{affaire.product.name_ar}}</h3>
           </a>
 
-          <p class="showcase-desc">
-           {{affaire.product.description}}
+          <p class="showcase-desc" style="text-align:initial">
+           {{affaire.product.description_ar}}
           </p>
 
           <div class="price-box">
-            <p class="price">{{affaire.product.price}}DA</p>
-
-            <del>{{affaire.product.price}}DA</del>
+            {% if affaire.product.price_promo %}
+            <p class="price">{{affaire.product.price_promo}} دج</p>
+            <del>{{affaire.product.price}} دج</del>
+            {% else %}
+            <p class="price">{{affaire.product.price}} دج</p>
+            {% endif %}
           </div>
 
-          <a href="{% url 'single-product' affaire.product.slug  %}" class="add-cart-btn">Acheter maintenant</a>
+          <a href="{% url 'single-product' affaire.product.slug  %}" class="add-cart-btn w-25" style="text-align:initial">الشراء الأن</a>
 
 
           <div class="countdown-box">
 
-            <p class="countdown-desc">
-              Dépêchez-vous!Offre se termine par:
+            <p class="countdown-desc" style="text-align:initial">
+              العرض ينتهي قبل :
             </p>
 
             <div class="countdown">
@@ -377,23 +413,23 @@
 
                 <p class="display-number">{{affaire.get_time.days}}</p>
 
-                <p class="display-text">Journées</p>
+                <p class="display-text">يوم</p>
 
               </div>
 
               <div class="countdown-content">
                 <p class="display-number">{{affaire.get_time.hours}}</p>
-                <p class="display-text">Heures</p>
+                <p class="display-text">ساعة</p>
               </div>
 
               <div class="countdown-content">
                 <p class="display-number">{{affaire.get_time.minuts}}</p>
-                <p class="display-text">min</p>
+                <p class="display-text">دقيقة</p>
               </div>
 
               <div class="countdown-content">
                 <p class="display-number">{{affaire.get_time.seconds}}</p>
-                <p class="display-text">Seconde</p>
+                <p class="display-text">ثانية</p>
               </div>
 
             </div>
@@ -405,6 +441,7 @@
       </div>
 
     </div>
+    {% endif %}
 {% endfor %}
   </div>
 
@@ -418,20 +455,10 @@
 <section class="related-product-area section_gap_bottom">
   <div class="single-product-slider">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-6 text-center">
-                <div class="section-title">
-                    <h1>Derniers produits</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                        dolore
-                        magna aliqua.</p>
-                </div>
-            </div>
-        </div>
         <section class="lattest-product-area category-list">
           <div class="product-main container pt-5">
   
-            <h2 class="title">Nouveaux produits</h2>
+            <h2 class="title" style="text-align:initial">الجديد</h2>
           
             <div class="product-grid" id="list_product">
           {% for product in products  %}
@@ -451,37 +478,12 @@
                   angle black
                   {% endif %}
                   ">{{product.status}}</p>
-            {% endif %}
-          
-                  <div class="showcase-actions">
-          
-                    <button class="btn-action">
-                      <ion-icon name="heart-outline"></ion-icon>
-                    </button>
-          
-                    <button class="btn-action">
-                      <ion-icon name="eye-outline"></ion-icon>
-                    </button>
-          
-                    <button class="btn-action">
-                      <ion-icon name="repeat-outline"></ion-icon>
-                    </button>
-          
-                    <button class="btn-action update-cart"  data-action="add"
-                    data-product="{{product.id}}">
-                      <ion-icon name="bag-add-outline"></ion-icon>
-                    </button>
-          
-                  </div>
-          
+            {% endif %}          
                 </div>
-          
                 <div class="showcase-content">
-          
-                  <a href="#" class="showcase-category">{{product.category}}</a>
-          
+                  <a href="#" class="showcase-category" style="text-align:initial">{{product.category.name_ar}}</a>
                   <a href="{% url 'single-product' product.id %}">
-                    <h3 class="showcase-title">{{product.name}}</h3>
+                    <h3 class="showcase-title" style="text-align:initial">{{product.name_ar}}</h3>
                   </a>
           
                   <div class="showcase-rating">
@@ -528,8 +530,14 @@
                   </div>
           
                   <div class="price-box">
-                    <p class="price">${{product.price}}</p>
-                    <del>${{product.price}}</del>
+                  {% if product.price_promo %}
+                    <p class="price"> {{product.price_promo}} دج</p>
+                    <del> {{product.price}} دج</del>
+                    {% else %}
+                    <p class="price"> {{product.price}} دج</p>
+                    {% endif %}
+                    
+
                   </div>
           
                 </div>
@@ -553,23 +561,15 @@
 <!-- End brand Area -->
 
 <!-- Start related-product Area -->
+{% for section in sections %}
 <section class="related-product-area section_gap_bottom">
   <div class="single-product-slider">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-6 text-center">
-                <div class="section-title">
-                    <h1>Derniers produits</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                        dolore
-                        magna aliqua.</p>
-                </div>
-            </div>
-        </div>
+
         <section class="lattest-product-area category-list">
           <div class="product-main container pt-5">
   
-            <h2 class="title">Nouveaux produits</h2>
+            <h2 class="title" style="text-align:initial">{{section.category.name_ar}}</h2>
           
             <div class="product-grid" id="list_product">
           {% for product in products  %}
@@ -605,8 +605,8 @@
                       <ion-icon name="repeat-outline"></ion-icon>
                     </button>
           
-                    <button class="btn-action update-cart"  data-action="add"
-                    data-product="{{product.id}}">
+                    <button class="btn-action upدجte-cart"  دجta-action="add"
+                    دجta-product="{{product.id}}">
                       <ion-icon name="bag-add-outline"></ion-icon>
                     </button>
           
@@ -616,10 +616,10 @@
           
                 <div class="showcase-content">
           
-                  <a href="#" class="showcase-category">{{product.category}}</a>
+                  <a href="#" class="showcase-category" style="text-align:initial">{{product.category.name_ar}}</a>
           
                   <a href="{% url 'single-product' product.id %}">
-                    <h3 class="showcase-title">{{product.name}}</h3>
+                    <h3 class="showcase-title" style="text-align:initial">{{product.name_ar}}</h3>
                   </a>
           
                   <div class="showcase-rating">
@@ -666,8 +666,14 @@
                   </div>
           
                   <div class="price-box">
-                    <p class="price">${{product.price}}</p>
-                    <del>${{product.price}}</del>
+                                        {% if product.price_promo %}
+                    <p class="price"> {{product.price_promo}} دج</p>
+                    <del>{{product.price}} دج</del>
+                    {% else %}
+                    <p class="price">{{product.price}} دج</p>
+                    {% endif %}
+                    
+                    
                   </div>
           
                 </div>
@@ -681,5 +687,5 @@
     </div>
 </div>
 </section>
-
+{% endfor %}
 {% endblock %}

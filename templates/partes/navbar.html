@@ -48,7 +48,7 @@
   <div class="header-main">
     <div class="container">
       <div class="row">
-        <div class="col-2"> <a href="{% url 'index' %}" class=" header-logo " style="color: #000;font-weight: bold;font-family: cursive;">
+        <div class="col-2"> <a href="{% url 'index' lang="fr" %}" class=" header-logo " style="color: #000;font-weight: bold;font-family: cursive;">
           <img
             src="/media/{{config.LOGO}}"
             alt="Anon's logo"
@@ -195,7 +195,7 @@
       <span class="count cartItem">{{cartItem}}</span>
     </a>
 
-    <a href="{% url 'index' %}" class="action-btn ">
+    <a href="{% url 'index' lang="fr" %}" class="action-btn ">
       <i class="fa fa-home" aria-hidden="true"></i>
     </a>
 

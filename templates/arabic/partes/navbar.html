@@ -15,36 +15,26 @@
     <div class="container">
       <ul class="header-social-container">
         <li>
-          <a href="#" class="social-link">
-            <ion-icon name="logo-facebook"></ion-icon>
+          <a href="{{config.FACEBOOK_URL}}" target='blank' class="social-link">
+            <i class="fa fa-facebook mx-1" ></i>
           </a>
         </li>
-
         <li>
-          <a href="#" class="social-link">
-            <ion-icon name="logo-twitter"></ion-icon>
-          </a>
-        </li>
-
-        <li>
-          <a href="#" class="social-link">
-            <ion-icon name="logo-instagram"></ion-icon>
-          </a>
-        </li>
-
-        <li>
-          <a href="#" class="social-link">
-            <ion-icon name="logo-linkedin"></ion-icon>
+          <a href="{{config.INSTAGRAM_URL}}" target='blank' class="social-link">
+            <i class="fa fa-instagram mx-1"></i>
           </a>
         </li>
       </ul>
-
-      <div class="header-alert-news">
-        <p>
-          <b>Livraison gratuite</b>
-          Cette semaine commande sur - 550  DA
-        </p>
-      </div>
+{% if config.PROMO_LIVRASTION %}
+<div class="header-alert-news">
+  <p>
+    <b>توصيل مجاني</b>
+    لطبيات هذا الأسبوع !!
+  </p>
+</div>
+{% else %}
+{% endif %}
+     
 
       <div class="header-top-actions">
         <select name="language">
@@ -57,30 +47,32 @@
 
   <div class="header-main">
     <div class="container">
-      <a href="{% url 'index' %}" class="header-logo " style="color: #000;font-weight: bold;font-family: cursive;">
-        <img
-          src="/media/{{config.LOGO}}"
-          alt="Anon's logo"
-          width="35"
-          height="35"
-        /></a>
-
-      <div class="header-search-container">
-        <input
-        id="search_nav"
-          type="search"
-          name="search"
-          class="search-field w-75 "
-          placeholder="Entrez le nom de votre produit..."
-        />
-        <div id="result_product"   style="position: absolute;background-color: white !important;z-index: 2;width: 75%;padding: 5px;">
-          <ul>
-          </ul>
-        </div>
-        <button class="search-btn">
-          <i class="fa fa-search" aria-hidden="true"></i>
-        </button>
+      <div class="row">
+        <div class="col-2"> <a href="{% url 'index' lang="ar" %}" class=" header-logo " style="color: #000;font-weight: bold;font-family: cursive;">
+          <img
+            src="/media/{{config.LOGO}}"
+            alt="Anon's logo"
+            width="35"
+            height="35"
+          /></a></div>
+       
+  <div class="col-10">
+    <div class="header-search-container w-100">
+          <input
+          id="search_nav"
+            type="search"
+            name="search"
+            class="search-field w-100"
+            placeholder="أدخل اسم منتج..."
+          />
+          <div id="result_product" class="d-none bg-white"  style="position: absolute;z-index: 2;width: 100%;padding: 5px;max-height: 320px;overflow: auto;">
+            <ul>
+            </ul>
+          </div>
+        </div></div>
+        
       </div>
+  
 
       <div class="header-user-actions">
         {% comment %} {% endcomment %} {% if user.is_authenticated %}
@@ -156,17 +148,16 @@
         </li>
 
         <li class="menu-category">
-          <a href="{% url 'products' %}" class="menu-title">فئات</a>
-
+          <a href="{% url 'products' %}" class="menu-title">المنتجات</a>
           <div class="dropdown-panel" id="dropdown_panel">
          {% for cat in category %}
-            <ul class="dropdown-panel-list">
+            <ul class="dropdown-panel-list text-right">
               <li class="menu-title">
-                <a href="#">{{cat.name}}</a>
+                <a href="#">{{cat.name_ar}}</a>
               </li>
               {% for item in cat.category_sub.all %}
               <li class="panel-list-item">
-                <a href="{% url 'category' item.name %}">{{item.name}}</a>
+                <a href="{% url 'category' item.name %}">{{item.name_ar}}</a>
               </li>
               {% endfor %}
               <li class="panel-list-item">
@@ -184,7 +175,12 @@
           </div>
         </li>
 
-
+        <li class="menu-category">
+          <a href="#" class="menu-title">تسويق العمولة</a>
+        </li>
+        <li class="menu-category">
+          <a href="{% url 'about' %}" class="menu-title">عنا</a>
+        </li>
       </ul>
     </div>
   </nav>
@@ -199,7 +195,7 @@
       <span class="count cartItem">{{cartItem}}</span>
     </a>
 
-    <a href="{% url 'index' %}" class="action-btn ">
+    <a href="{% url 'index' lang="ar" %}" class="action-btn ">
       <i class="fa fa-home" aria-hidden="true"></i>
     </a>
 
@@ -216,7 +212,7 @@
 
   <nav class="mobile-navigation-menu has-scrollbar" data-mobile-menu>
     <div class="menu-top">
-      <h2 class="menu-title">Mr Shoopping</h2>
+      <h2 class="menu-title">{{config.SITE_NAME}}</h2>
 
       <button class="menu-close-btn" data-mobile-menu-close-btn>
         <i class="fa fa-times" aria-hidden="true"></i>
@@ -229,18 +225,18 @@
       {% if user.is_authenticated %}
       <li class="menu-category">
         <button class="accordion-menu" data-accordion-btn>
-          <p class="menu-title">
+          <p class="menu-title font-weight-bold">
             حسابي</p>
 
           <div>
-            <i class="fa fa-plus" aria-hidden="true"></i>
-            <i class="fa fa-times" aria-hidden="true"></i>
+            <i class="fa fa-plus add-icon text-secondary" aria-hidden="true"></i>
+            <i class="fa fa-times remove-icon text-secondary" aria-hidden="true"></i>
 
           </div>
         </button>
 
-        <ul class="submenu-category-list" data-accordion>
-          <li class="submenu-category">
+        <ul class="submenu-category-list text-right " data-accordion>
+          <li class="submenu-category text-right ">
             <div class="row">
               <div class="col-2"> <a href="{% url 'profile' %}"
             ><img
@@ -250,87 +246,37 @@
               alt="Avatar"
               loading="lazy"
           /></a></div>
-              <div class="col-3"> <a href="{% url 'profile' %}" class="submenu-title">الملف الشخصي</a></div>
+              <div class="col-3"> <a href="{% url 'profile' %}" class="submenu-title font-weight-bold ">البروفيل</a></div>
             </div>
            
           </li>
           <li class="submenu-category">
-            <a href="{% url 'profile_orders' %}" class="submenu-title my-3"><i class="fa fa-shopping-bag mx-2 mr-3 text-warning" style="font-size: large;" aria-hidden="true"></i>mes commandes</a>
+            <a href="{% url 'profile_orders' %}" class="submenu-title font-weight-bold my-3"><i class="fa fa-shopping-bag mx-2 mr-3 text-warning" style="font-size: large;" aria-hidden="true"></i>طلباتي</a>
           </li>
           <li class="submenu-category">
-            <a href="#" class="submenu-title my-3"><i class="fa fa-external-link mx-2 mr-3 text-info" style="font-size: large;" aria-hidden="true"></i>recommendations</a>
+            <a href="#" class="submenu-title font-weight-bold my-3"><i class="fa fa-external-link mx-2 mr-3 text-info" style="font-size: large;" aria-hidden="true"></i>التوصيات</a>
           </li>
           <li class="submenu-category">
-            <a href="#" class="submenu-title my-3 mb-5"><i class="fa fa-gift mx-2 mr-3 text-success" style="font-size: large;" aria-hidden="true"></i>Cadeaux</a>
+            <a href="#" class="submenu-title font-weight-bold my-3 mb-5"><i class="fa fa-gift mx-2 mr-3 text-success" style="font-size: large;" aria-hidden="true"></i>الهدايا</a>
           </li>
         </ul>
       </li>
       {% else %}
       <li class="menu-category">
-        <a href="{% url 'login' %}" class="menu-title"><i class="fa fa-sign-in mx-2 text-warning" aria-hidden="true"></i>connection</a>
+        <a href="{% url 'login' %}" class="menu-title font-weight-bold"><i class="fa fa-sign-in mx-2 font-size-5 text-warning" aria-hidden="true"></i>تسجيل دخول</a>
       </li>
       {% endif %}
 
       <li class="menu-category">
         <button class="accordion-menu" data-accordion-btn>
-          <p class="menu-title">Jewelry</p>
-
+          <p class="menu-title font-weight-bold"> <i class="fa fa-usd text-warning mx-2 font-size-5"  aria-hidden="true" ></i>العمولة </p>
           <div>
-            <i class="fa fa-plus add-icon"  aria-hidden="true" ></i>
-            <i class="fa fa-times remove-icon"  aria-hidden="true"></i>
           </div>
         </button>
-
-        <ul class="submenu-category-list" data-accordion>
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Earrings</a>
-          </li>
-
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Couple Rings</a>
-          </li>
-
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Necklace</a>
-          </li>
-
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Bracelets</a>
-          </li>
-        </ul>
-      </li>
-
-      <li class="menu-category">
-        <button class="accordion-menu" data-accordion-btn>
-          <p class="menu-title">Perfume</p>
-
-          <div>
-            <i class="fa fa-plus add-icon"  aria-hidden="true" ></i>
-            <i class="fa fa-times remove-icon"  aria-hidden="true"></i>
-          </div>
-        </button>
-
-        <ul class="submenu-category-list" data-accordion>
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Clothes Perfume</a>
-          </li>
-
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Deodorant</a>
-          </li>
-
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Flower Fragrance</a>
-          </li>
-
-          <li class="submenu-category">
-            <a href="#" class="submenu-title">Air Freshener</a>
-          </li>
-        </ul>
       </li>
       {% if user.is_authenticated %}
       <li class="menu-category">
-        <a href="{% url 'logout_request' %}" class="menu-title"><i class="fa fa-sign-out mx-2 text-warning" aria-hidden="true"></i>déconnecté</a>
+        <a href="{% url 'logout_request' %}" class="menu-title text-right"><i class="fa fa-sign-out mx-2 text-warning" aria-hidden="true"></i>تسجيل الخروج</a>
       </li>
       {% endif %}
     </ul>
@@ -339,58 +285,61 @@
       <ul class="menu-category-list">
         <li class="menu-category">
           <button class="accordion-menu" data-accordion-btn>
-            <p class="menu-title">لغة</p>
+            <p class="menu-title">اللغة</p>
 
-            <ion-icon name="caret-back-outline" class="caret-back"></ion-icon>
+            <i class="caret-back-outline" class="caret-back"></i>
+            <div>
+              <i class="fa fa-plus add-icon text-secondary" aria-hidden="true"></i>
+              <i class="fa fa-times remove-icon text-secondary" aria-hidden="true"></i>
+  
+            </div>
           </button>
 
           <ul class="submenu-category-list" data-accordion>
             <li class="submenu-category">
-              <a href="#" class="submenu-title">Français</a>
+              <a href="#" class="submenu-title font-weight-bold">Français</a>
             </li>
             <li class="submenu-category">
-              <a href="#" class="submenu-title">العربية</a>
+              <a href="#" class="submenu-title font-weight-bold">العربية</a>
             </li>
           </ul>
         </li>
       </ul>
-
+<hr>
       <ul class="menu-social-container">
         <li>
           <a href="#" class="social-link">
-            <i class="fa fa-facebook-official" aria-hidden="true"></i>
+            <i class="fa fa-facebook-official" style="color:rgb(9, 73, 211)" aria-hidden="true"></i>
 
           </a>
         </li>
 
         <li>
           <a href="#" class="social-link">
-            <ion-icon name="logo-twitter"></ion-icon>
+            <i class="fa fa-instagram" style="color:rgb(40, 1, 125)"></i>
           </a>
         </li>
 
         <li>
           <a href="#" class="social-link">
-            <ion-icon name="logo-instagram"></ion-icon>
-          </a>
-        </li>
-
-        <li>
-          <a href="#" class="social-link">
-            <ion-icon name="logo-linkedin"></ion-icon>
+            <i class="fa fa-whatsapp text-success"></i>
           </a>
         </li>
       </ul>
+      <hr>
+      <div class="text-right"> مرحبا بكم عند 
+      <span class="font-weight-bold" style="color: {{config.PRIMARY_COLOR}};">{{config.SITE_NAME}}</span>  
+      </div>
     </div>
   </nav>
 </header>
 <div class="sidebar has-scrollbar" data-mobile-menu>
   <div class="sidebar-category">
     <div class="sidebar-top">
-      <h2 class="sidebar-title">Catégorie</h2>
+      <h2 class="sidebar-title">التصنيفات</h2>
 
       <button class="sidebar-close-btn" data-mobile-menu-close-btn>
-        <ion-icon name="close-outline"></ion-icon>
+        <i class="close-outline"></i>
       </button>
     </div>
 
@@ -410,15 +359,15 @@
           </div>
 
           <div>
-            <ion-icon name="add-outline" class="add-icon"></ion-icon>
-            <ion-icon name="remove-outline" class="remove-icon"></ion-icon>
+            <i class="add-outline" class="add-icon"></i>
+            <i class="remove-outline" class="remove-icon"></i>
           </div>
         </button>
 
         <ul class="sidebar-submenu-category-list" data-accordion>
           {% for c in cat.category_sub.all %}
           <li class="sidebar-submenu-category">
-            <a href="#" class="sidebar-submenu-title">
+            <a href="#" class="sidebar-submenu-title font-weight-bold">
               <p class="product-name">{{c.name}}</p>
               <img width="20"src="{{c.image.url}}" alt="">
             </a>
@@ -432,7 +381,7 @@
   </div>
 
   <div class="product-showcase">
-    <h3 class="showcase-heading">أفضل المبيعات</h3>
+    <h3 class="showcase-heading">أفضل مبيعا</h3>
 
     <div class="showcase-wrapper">
       <div class="showcase-container">
@@ -499,8 +448,8 @@
             </div>
 
             <div class="price-box">
-              <del>{{product.price}} دج</del>
-              <p class="price">{{product.price}} دج</p>
+              <del>دج {{product.price}}</del>
+              <p class="price">دج {{product.price}}</p>
             </div>
           </div>
         </div>

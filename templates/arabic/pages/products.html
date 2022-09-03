@@ -1,89 +1,60 @@
-{% extends "base.html" %}
+{% extends "arabic/base.html" %}
 {% block content %}
 {% load static %}
 
 <div class="container my-4">
   <div class="row ">
     <div class="col-12">
-      <div class="filter-bar d-flex flex-wrap align-items-center">
-        <div style="width: 100%">
-          <form class="d-flex " style="margin-top: 10px">
-            {% csrf_token %}
-          </form>
-        </div>
-        <div class="sorting">
-          <select>
-            {% for cat in categorys %}
-            <option value="{{cat.name}}">{{cat.name}}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="sorting mr-auto">
-          <select>
-            <option value="1">Show 12</option>
-            <option value="1">Show 12</option>
-            <option value="1">Show 12</option>
-          </select>
-        </div>
-      </div>
-      
-      <!-- End Filter Bar -->
+
       <!-- Start Best Seller -->
       <section class="lattest-product-area category-list ">
         <div class="row">
-          <div class="col-md-3 my-3">  <div class="sidebar-category">
-
+          <div class="col-md-3 my-3">
+          <div class="sidebar-category">
             <div class="sidebar-top">
-              <h2 class="sidebar-title">Category</h2>
-
               <button class="sidebar-close-btn" data-mobile-menu-close-btn>
                 <ion-icon name="close-outline"></ion-icon>
               </button>
             </div>
-
-            <ul class="sidebar-menu-category-list">
-              {% for cat in category %}
-              <li class="sidebar-menu-category">
-                <button class="sidebar-accordion-menu" data-accordion-btn>
-                  <div class="menu-title-flex d-flex align-items-center">
-                    <img
-                      src="{{cat.image.url}}"
-                      alt="{{cat.name}}"
-                      width="40"
-                      height="40"
-                      class="menu-title-img"
-                      style="
-    border-radius: 50%;
-"
-                    />
-                    <p class="menu-title mx-2 ">{{cat.name}}</p>
-                  </div>
-                  <div>
-                    <i class="fa fa-plus add-icon text-secondary"  aria-hidden="true"></i>
-                    <i class="fa fa-minus remove-icon text-secondary" aria-hidden="true"></i>
-
-                  </div>
-                </button>
-                <ul class="sidebar-submenu-category-list" data-accordion>
-                  {% for c in cat.category_sub.all %}
-                  <li class="sidebar-submenu-category">
-                    <a href="#" class="sidebar-submenu-title">
-                      <p class="product-name">{{c.name}}</p>
-                      <img width="28"src="{{c.image.url}}" alt="">
-                    </a>
-                  </li>
-              {% endfor %}
-        
-                </ul>
-              </li>
-              {% endfor %}  
-            </ul>
-
+              <form method="get" action="{% url 'products' %}">
+            <div class="sidebar-filter mt-50">
+              <div class="top-filter-head" style="text-align:initial">فلترة المنتجات</div>
+              <div class="common-filter" style="text-align:initial">
+                <div class="head">التصنيفات</div>
+                <form action="#">
+                  <ul>
+                    {% for cat in categorys %}
+                    <li class="filter-list"><input class="pixel-radio mx-2" type="radio" value="{{cat.name}}" id="{{cat.name}}" name="category"><label for="{{cat.name_ar}}">{{cat.name_ar}}</label></li>
+                    {% endfor %}
+                  </ul>
+              </div>
+              <div class="common-filter mt-4" dir="ltr">
+                <div class="head" style="text-align:end">السعر</div>
+                 <div class="range ">
+                <div class="sliderValue">
+                <span id="slideValue"><p>100</p></span>
+              </div>
+              <div class="field">
+              <div class="value left"> 0 دج</div>
+                <input class="range_input" id="range_input" name="price" type="range" min="0" max="10000" value="100" steps="1">
+              <div class="value right">10000 دج</div>
+              </div>
+                </div>
+            </div>
+              </div>
+              <button
+              style="width: 200px"
+              class="banner-btn   my-4"
+              type="submit"
+            >
+              فلترة <i class="fa fa-sliders"></i> 
+            </button>
+          </form>
           </div></div>
           <div class="col-md-9">
             
             <div class="product-main container pt-5">
-          <h2 class="title">Nouveaux produits</h2>
+          <h2 class="title" style="text-align:initial">المنتجات الجديدة</h2>
           <div class="product-grid" id="list_product">
         {% for product in products  %}
             <div class="showcase ">
@@ -102,36 +73,14 @@
                 {% endif %}
                 ">{{product.status}}</p>
           {% endif %}
-        
-                <div class="showcase-actions">
-        
-                  <button class="btn-action">
-                    <ion-icon name="heart-outline"></ion-icon>
-                  </button>
-        
-                  <button class="btn-action">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </button>
-        
-                  <button class="btn-action">
-                    <ion-icon name="repeat-outline"></ion-icon>
-                  </button>
-        
-                  <button class="btn-action update-cart"  data-action="add"
-                  data-product="{{product.id}}">
-                    <ion-icon name="bag-add-outline"></ion-icon>
-                  </button>
-        
-                </div>
-        
               </div>
         
               <div class="showcase-content">
         
-                <a href="{% url 'category' product.category.name %}"  style="font-weight: bold" class="showcase-category">{{product.category}}</a>
+                <a href="{% url 'category' product.category.name %}"  style="font-weight: bold;text-align:initial" class="showcase-category">{{product.category.name_ar}}</a>
         
-                <a href="{% url 'single-product' product.slug %}">
-                  <h3 style="font-weight: bold; color: rgba(27, 27, 27, 0.879)"class="showcase-title">{{product.name}}</h3>
+                <a href="{% url 'single-product' product.slug %}" style="text-align:initial">
+                  <h3 style="font-weight: bold; color: rgba(27, 27, 27, 0.879)"class="showcase-title">{{product.name_ar}}</h3>
                 </a>
         
         
@@ -166,18 +115,16 @@
                   <i class="fa fa-star text-secondary"></i>
                   <i class="fa fa-star text-secondary"></i>
                   <i class="fa fa-star text-secondary"></i>
-                  {% else %}
-                  <i class="fa fa-star text-secondary"></i>
-                  <i class="fa fa-star text-secondary"></i>
-                  <i class="fa fa-star text-secondary"></i>
-                  <i class="fa fa-star text-secondary"></i>
-                  <i class="fa fa-star text-secondary"></i>
                   {% endif %}
                 </div>
         
                 <div class="price-box">
-                  <p class="price">{{product.price}}DA</p>
-                  <del>{{product.price}}DA</del>
+                  {% if product.price_promo %}
+                  <p class="price">{{product.price_promo}} دج</p>
+                  <del>{{product.price}} دج</del>
+                  {% else %}
+                  <p class="price">{{product.price}} دج</p>
+                  {% endif %}
                 </div>
         
               </div>
@@ -194,13 +141,6 @@
       <!-- End Best Seller -->
       <!-- Start Filter Bar -->
       <div class="filter-bar d-flex flex-wrap align-items-center mt-5">
-        <div class="sorting mr-auto">
-          <select>
-            <option value="1">Show 12</option>
-            <option value="1">Show 12</option>
-            <option value="1">Show 12</option>
-          </select>
-        </div>
         <div class="pagination ">
           {% if page.has_previous %}
           <a href="?page={{page.previous_page_number}}"  class="prev-arrow"
@@ -227,7 +167,7 @@
 
 <div class="product-main container py-5">
 
-  <h2 class="title">New Products</h2>
+  <h2 class="title" style="text-align:initial">منتجات أخرى</h2>
 
   <div class="product-grid">
 {% for product in products  %}
@@ -247,35 +187,14 @@
         {% endif %}
         ">{{product.status}}</p>
   {% endif %}
-        <div class="showcase-actions">
-
-          <button class="btn-action">
-            <ion-icon name="heart-outline"></ion-icon>
-          </button>
-
-          <button class="btn-action">
-            <ion-icon name="eye-outline"></ion-icon>
-          </button>
-
-          <button class="btn-action">
-            <ion-icon name="repeat-outline"></ion-icon>
-          </button>
-
-          <button class="btn-action update-cart"  data-action="add"
-          data-product="{{product.id}}">
-            <ion-icon name="bag-add-outline"></ion-icon>
-          </button>
-
-        </div>
-
       </div>
 
       <div class="showcase-content">
 
-        <a href="{% url 'category' product.category.name %}"  style="font-weight: bold" class="showcase-category">{{product.category}}</a>
+        <a href="{% url 'category' product.category.name %}"  style="font-weight: bold;text-align:initial;" class="showcase-category">{{product.category.name_ar}}</a>
         
         <a href="{% url 'single-product' product.slug %}">
-          <h3 style="font-weight: bold; color: rgba(27, 27, 27, 0.879)"class="showcase-title">{{product.name}}</h3>
+          <h3 style="font-weight: bold; color: rgba(27, 27, 27, 0.879);text-align:initial;"class="showcase-title">{{product.name_ar}}</h3>
         </a>
 
         <div class="showcase-rating">
@@ -312,18 +231,16 @@
           <i class="fa fa-star"></i>
           <i class="fa fa-star"></i>
           <i class="fa fa-star"></i>
-          {% else %}
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
           {% endif %}
         </div>
 
         <div class="price-box">
-          <p class="price">${{product.price}}</p>
-          <del>${{product.price}}</del>
+          {% if product.price_promo %}
+          <p class="price">{{product.price_promo}} دج</p>
+          <del>{{product.price}} دج</del>
+          {% else %}
+          <p class="price">{{product.price}} دج</p>
+          {% endif %}
         </div>
 
       </div>
@@ -334,5 +251,118 @@
 
 </div>
 <!-- Start related-product Area -->
+<style>
+
+.range{
+  height: 40px;
+  width: 100%;
+  background: #fff;
+  padding: 0 100px 0 60px;
+}
+.sliderValue{
+  position: relative;
+  width: 100%;
+}
+.sliderValue span{
+  position: absolute;
+  height: 45px;
+  width: 45px;
+  transform: translateX(-70%) scale(0);
+  font-weight: 500;
+  top: -40px;
+  line-height: 50px;
+  z-index: 2;
+  color: #fff;
+  transform-origin: bottom;
+  transition: transform 0.3s ease-in-out;
+  text-align: center;
+    align-items: center;
+    place-items: center;
+}
+.sliderValue span.show{
+  transform: translateX(-50%) scale(1);
+}
+.sliderValue span:after{
+  position: absolute;
+  content: '';
+  height: 100%;
+  width: 100%;
+  background: #ffb000;
+  border: 3px solid #fff;
+  z-index: -1;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  border-bottom-left-radius: 50%;
+  box-shadow: 0px 0px 8px rgba(0,0,0,0.1);
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+}
+.field{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+}
+.field .value{
+  position: absolute;
+  font-size: 18px;
+  color: #ffb000;
+  font-weight: 600;
+}
+.field .value.left{
+  left: -45px;
+}
+.field .value.right{
+  right: -85px;
+}
+.range input{
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  background: #ddd;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  z-index: 2222;
+}
+.range input::-webkit-slider-thumb{
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: red;
+  border-radius: 50%;
+  background: #ffb000;
+  border: 1px solid #ffb000;
+  cursor: pointer;
+}
+.range input::-moz-range-thumb{
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: red;
+  border-radius: 50%;
+  background: #ffb000;
+  border: 1px solid #ffb000;
+  cursor: pointer;
+}
+.range input::-moz-range-progress{
+  background: #ffb000; /*this progress background is only shown on Firefox*/
+}
+</style>
+<script>
+  const slideValue = document.getElementById("slideValue");
+  const inputSlider = document.getElementById("range_input");
+  inputSlider.oninput = (()=>{
+    let value = inputSlider.value;
+    slideValue.textContent = value;
+    slideValue.style.left = (value/100) + "%";
+    slideValue.classList.add("show");
+  });
+  inputSlider.onblur = (()=>{
+    slideValue.classList.remove("show");
+  });
+</script>
 
 {% endblock %}
+

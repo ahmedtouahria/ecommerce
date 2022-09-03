@@ -12,12 +12,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #SECRET_KEY = 'django-insecure-!y(2&*e_z+i+2h7_a)9)frlb^*^bun5$adalf0pp938+zd8wv1'
 SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 if DEBUG:
     ALLOWED_HOSTS = ["*"]
 else:
-    ALLOWED_HOSTS = [".ayacollection.store"]
+    ALLOWED_HOSTS = [".ayacollection.store","51.178.86.91"]
 
 # Application definition
 
@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'constance.backends.database',
     'shopping',
     'user_visit',
-
 ]
 CONSTANCE_ADDITIONAL_FIELDS = {
     'image_field': ['django.forms.FileField', {}],
@@ -156,10 +155,11 @@ SIMPLEUI_CONFIG = {
         'icon': 'fas fa-key',
         'models':[
         {
-            'name': 'Tokens',
+            'name': 'keys',
             'icon': 'fa fa-key',
             'url': 'socialaccount/socialapp/'
         },
+
         ]
     },
     ]
@@ -170,11 +170,11 @@ SIMPLEUI_HOME_QUICK = False
 SIMPLEUI_HOME_ACTION = False
 SIMPLEUI_HOME_QUICK = False
 SIMPLEUI_ANALYSIS = True
-SIMPLEUI_HOME_TITLE = 'El Hayet'
+SIMPLEUI_HOME_TITLE = 'Aya Collection'
 # SIMPLEUI_LOGO = '/media/img/logo.png'
 SIMPLEUI_DEFAULT_ICON = True
 SIMPLEUI_DEFAULT_ICON = True
-SIMPLEUI_DEFAULT_THEME = "creators.css"
+SIMPLEUI_DEFAULT_THEME = "orange.css"
 
 SESSION_COOKIE_AGE=60*60*24
 MIDDLEWARE = [
@@ -276,7 +276,7 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 STATIC_ROOT=os.path.join(BASE_DIR,'static/')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-STATICFILES_DIRS = [os.path.join(BASE_DIR,'root/static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR,'ecommerce/static')]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/') # 'data' is my media folder
 MEDIA_URL = '/media/'
 
@@ -297,7 +297,7 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-SITE_ID = 'localhost'
+SITE_ID = 1
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 

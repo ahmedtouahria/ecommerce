@@ -1,17 +1,15 @@
-{% extends 'arabic/base.html' %} 
-
-{% block content %}
+{% extends 'arabic/base.html' %} {% block content %}
 
 <section class="cart_area">
   <div class="container">
 
-    <h2 class="pb-4">طلبيتك</h2>
+    <h2 class="pb-4" style="text-align:initial;">طلبيتك</h2>
     
     <div class="cart_inner">
       <div class="table-responsive">
         <table class="table">
           <thead>
-            <tr>
+            <tr style="text-align:initial;">
               <th scope="col">المنتج</th>
               <th scope="col">السعر</th>
               <th scope="col">الكمية</th>
@@ -21,21 +19,20 @@
           <tbody>
             {% for item in items %}
             <tr>
-              <td>
+              <td style="text-align:initial;">
                 <div class="media">
                   <div class="media-body">
-                    <p>
-                      {{item.product.name | slice:":15"}} - {% if item.color and item.size %} {{item.color}}
-                      - {{item.size}} {% elif item.color and not item.size %} {{item.color}} {% elif not item.color and  item.size%} {{item.size}}{% endif %}
-                    </p>
+                    <div class="media-body">
+                      <img src="{{item.product.image.url}}" width="50" />
+                    </div>
                   </div>
                 </div>
               </td>
-              <td>
-                <h5>{{item.product.price}}DA</h5>
+              <td style="text-align:initial;">
+                <h5>{{item.product.price}} دج</h5>
               </td>
-              <td>
-                <div class="product_count">
+              <td style="text-align:initial;">
+                <div class="product_count" dir="ltr">
                   <input
                     readonly
                     type="text"
@@ -67,22 +64,22 @@
                   </button>
                 </div>
               </td>
-              <td>
-                <strong class="text-info">{{item.get_total}}DA</strong>
+              <td style="text-align:initial;">
+                <strong class="text-info">{{item.get_total}} دج</strong>
               </td>
             </tr>
             {% endfor %}
             <tr>
-              <td>
+              <td style="text-align:initial;">
 
-                <h5>المجموع</h5>
+                <h5>المجموع الكلي</h5>
 
               </td>
               <td></td>
               <td>
               </td>
-              <td>
-                <strong class="text-info">{{order.get_cart_total}}دج</strong>
+              <td style="text-align:initial;">
+                <strong class="text-info">{{order.get_cart_total}} دج</strong>
               </td>
             </tr>
             {% if items %}
@@ -95,10 +92,12 @@
             </tr>{% endif %}
           </tbody>
         </table>
-        <div class="checkout_btn_inner d-flex w-100">
-          <a class="primary-btn" href="{% url 'checkout' %}">تأكيد الطلبية</a>
-          
+        {% if order.get_cart_total %}
+          <div class="checkout_btn_inner d-flex w-100">
+        <a class="primary-btn font-weight-bold" href="{% url 'checkout' %}"> إتمام  <i class="fa fa-fas fa-arrow-left mx-1"></i> </a>  
         </div>
+        {% endif %}
+
       </div>
     </div>
   </div>
