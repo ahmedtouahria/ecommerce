@@ -16,7 +16,7 @@
                 <ion-icon name="close-outline"></ion-icon>
               </button>
             </div>
-              <form method="get" action="{% url 'products' %}">
+              <form method="get" action="{% url 'products'  %}">
             <div class="sidebar-filter mt-50">
               <div class="top-filter-head">Filtres de produit</div>
               <div class="common-filter">
@@ -99,9 +99,9 @@
         
               <div class="showcase-content">
         
-                <a href="{% url 'category' product.category.name %}"  style="font-weight: bold" class="showcase-category">{{product.category}}</a>
+                <a href="{% url 'category'  cat=product.category.name %}"  style="font-weight: bold" class="showcase-category">{{product.category}}</a>
         
-                <a href="{% url 'single-product' product.slug %}">
+                <a href="{% url 'single-product'  pk=product.slug %}">
                   <h3 style="font-weight: bold; color: rgba(27, 27, 27, 0.879)"class="showcase-title">{{product.name}}</h3>
                 </a>
         
@@ -234,9 +234,9 @@
 
       <div class="showcase-content">
 
-        <a href="{% url 'category' product.category.name %}"  style="font-weight: bold" class="showcase-category">{{product.category}}</a>
+        <a href="{% url 'category'  cat=product.category.name %}"  style="font-weight: bold" class="showcase-category">{{product.category}}</a>
         
-        <a href="{% url 'single-product' product.slug %}">
+        <a href="{% url 'single-product'  pk=product.slug %}">
           <h3 style="font-weight: bold; color: rgba(27, 27, 27, 0.879)"class="showcase-title">{{product.name}}</h3>
         </a>
 

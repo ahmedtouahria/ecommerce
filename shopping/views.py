@@ -105,7 +105,7 @@ def guestOrder(request, data):
         return None, None
 
 
-def index(request,lang):
+def index(request):
     if request.user.is_authenticated:
         customer = request.user
         order_changed = request.session.get("order_changed_id", None)
@@ -144,14 +144,13 @@ def index(request,lang):
         "cartItem": cartItem,
         "titel": "Accueil",'config': config
     }
-
-    return render(request, 'arabic/pages/home.html' if lang=="ar" or lang=="" else 'pages/home.html', context)
+    return render(request, 'arabic/pages/home.html', context)
 # products views
 
 # la page des produits
 
 
-def products(request,lang):
+def products(request):
     if request.user.is_authenticated:
         customer = request.user
         order_changed = request.session.get("order_changed_id", None)
@@ -193,7 +192,7 @@ def products(request,lang):
     return render(request, 'arabic/pages/products.html', context)
 
 # category page 
-def categorys(request,cat,lang):
+def categorys(request,cat):
     category=CategorySub.objects.filter(name=cat).first()
     products=Product.objects.filter(category=category)
     other_products=Product.objects.filter(category__category=category.category,)
@@ -202,9 +201,9 @@ def categorys(request,cat,lang):
         "category": Category.objects.all(),'config': config,
         "other_products":other_products
     }
-    return render(request,"arabic/pages/category.html" if lang=="ar" or lang=="" else "pages/category.html",context)
+    return render(request,"arabic/pages/category.html",context)
 
-def product(request, pk,lang):
+def product(request, pk):
     # print("customer_ref",request.session['ref_customer'])
 
     if request.user.is_authenticated:
@@ -244,11 +243,11 @@ def product(request, pk,lang):
         "titel": str(product_id.name).replace(" ", "-").lower(),'config': config
 
     }
-    return render(request, 'arabic/pages/single-product.html' if lang=="ar" or lang=="" else 'pages/single-product.html', context)
+    return render(request, 'arabic/pages/single-product.html', context)
 # register Customer views
 
 
-def productWithCode(request,lang, pk, *args, **kwargs):
+def productWithCode(request, pk, *args, **kwargs):
     code = str(kwargs.get('ref_code'))
     try:
         customer = Customer.objects.get(code=code)
@@ -290,7 +289,7 @@ def productWithCode(request,lang, pk, *args, **kwargs):
         "product_imgs": ProductImage.objects.filter(product=product_id),
         "titel": str(product_id.name).replace(" ", "-").lower(),'config': config
     }
-    return render(request, 'arabic/pages/single-product.html'if lang=="ar" or lang=="" else 'pages/single-product.html', context)
+    return render(request, 'arabic/pages/single-product.html', context)
 
 
 ''' AUTHENTICATION LOGIC
@@ -299,7 +298,7 @@ LogIn / SignUp / Logout
 # la page d'inscription
 
 
-def register(request,lang):
+def register(request):
     if request.user.is_authenticated:
         return redirect('index')
     if request.method == "POST":
@@ -309,27 +308,25 @@ def register(request,lang):
         password2 = request.POST['password2']
        # print(name,phone,password1,password2)
         if len(phone) == 10 and len(password1) >= 8 and password1 == password2:
-            list_users = Customer.objects.filter(email=email).exists()
-            if not list_users:
+            list_users = Customer.objects.filter(email=email)
+            if list_users.count() < 1:
                 user = Customer.objects.create(email=email, phone=phone, password=password1)
                 login(request, user,backend='django.contrib.auth.backends.ModelBackend')
                 messages.success(request, "register user successfully")
                 return redirect('index')
-            else:
-                messages.error(request, "البريد الإلكتروني مسجل بالفعل")
         else:
             messages.error(request, _("Unsuccessful registration. Invalid information."))
     context={
         'config': config,
 
         }
-    return render(request, 'account/signup_ar.html'if lang=="ar" or lang=="" else'account/signup.html',context)
+    return render(request, 'account/signup_ar.html',context)
 # login Customer views
 
 # la page d'authentication (Login)
 
 
-def login_customer(request,lang):
+def login_customer(request):
     if request.user.is_authenticated:
         return redirect('index')
     if request.method == 'POST':
@@ -351,11 +348,11 @@ def login_customer(request,lang):
         'config': config,
 
         }
-    return render(request, 'account/login_ar.html'if lang=="ar" or lang=="" else'account/login.html',context)
+    return render(request, 'account/login_ar.html',context)
 
 
 @login_required(login_url='login')
-def logout_request(request,lang):
+def logout_request(request):
     logout(request)
     messages.info(request, _("You have successfully logged out."))
     return redirect("index")
@@ -369,7 +366,7 @@ Profits page Logic
 
 
 @login_required(login_url='login')
-def profile(request,lang):
+def profile(request):
     user = request.user
     if request.user.is_authenticated:
         customer = request.user
@@ -410,11 +407,11 @@ def profile(request,lang):
         "cartItem": cartItem,'config': config
 
     }
-    return render(request, "arabic/pages/myprofile.html"if lang=="ar" or lang=="" else"pages/myprofile.html", context)
+    return render(request, "arabic/pages/myprofile.html", context)
 
 
 @login_required(login_url='login')
-def profile_orders(request,lang):
+def profile_orders(request):
     user = request.user
     orders = Order.objects.filter(
         customer=user, complete=True).order_by('-date_ordered')
@@ -434,11 +431,11 @@ def profile_orders(request,lang):
         "paginator": paginator,'config': config
 
     }
-    return render(request, 'arabic/pages/profile_orders.html'if lang=="ar" or lang=="" else 'pages/profile_orders.html', context)
+    return render(request, 'arabic/pages/profile_orders.html', context)
 
 @login_required(login_url='login')
 
-def myorders(request, pk,lang):
+def myorders(request, pk):
     user = request.user
     order = Order.objects.filter(transaction_id=pk).first()
     headers = {"X-API-ID": config.ID_API_YALIDIN,
@@ -472,13 +469,13 @@ def myorders(request, pk,lang):
         "category": Category.objects.all(),'config': config
 
     }
-    return render(request, 'arabic/pages/profile_myorder.html'if lang=="ar" or lang=="" else'pages/profile_myorder.html', context)
+    return render(request, 'arabic/pages/profile_myorder.html', context)
 
 
 # card product views
 # la page de gestionaire de panier d'un client
 
-def card(request,lang):
+def card(request):
     if request.user.is_authenticated:
         customer = request.user
         order_changed = request.session.get("order_changed_id", None)
@@ -509,13 +506,13 @@ def card(request,lang):
 
 
     }
-    return render(request, 'arabic/pages/card.html'if lang=="ar" or lang=="" else'pages/card.html', context)
+    return render(request, 'arabic/pages/card.html', context)
 # checkout order views
 
 # la page de Processus de vente
 
 
-def checkout(request,lang):
+def checkout(request):
     if request.user.is_authenticated:
         customer = request.user
         order_changed = request.session.get("order_changed_id", None)
@@ -544,7 +541,7 @@ def checkout(request,lang):
         "titel": "vérifier",
         'config': config,
     }
-    return render(request, 'arabic/pages/checkout.html'if lang=="ar" or lang=="" else'pages/checkout.html', context)
+    return render(request, 'arabic/pages/checkout.html', context)
 
 # endpoint to update cart_item number for user authenticated
 
@@ -657,7 +654,7 @@ def processOrder(request):
     else:
         redirect("login")
     return JsonResponse('Payment submitted..', safe=False)
-def success_order(request,lang):
+def success_order(request):
     shipping_id=request.session.get("shipping_address",None)
     if shipping_id is not None:
         try:
@@ -668,11 +665,11 @@ def success_order(request,lang):
         return redirect('products')
 
     context={"config":config,"titel":"success","shipping_address":shipping_address}
-    return render(request,"arabic/pages/success_order.html"if lang=="ar" or lang=="" else"pages/success_order.html",context)
+    return render(request,"arabic/pages/success_order.html",context)
 
 
-def about(request,lang):
+def about(request):
     context={
         "config":config
     }
-    return render(request,'arabic/pages/about.html'if lang=="ar" or lang=="" else'pages/about.html',context)
+    return render(request,'arabic/pages/about.html',context)

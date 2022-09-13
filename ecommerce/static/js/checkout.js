@@ -140,7 +140,7 @@ $(document).ready(function(){
     fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "applicaiton/json",
+        "Content-Type": "application/json",
         "X-CSRFToken": csrftoken,
       },
       body: JSON.stringify({ form: userFormData , shipping: shippingInfo,stop_disk:true  }),

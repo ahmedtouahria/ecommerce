@@ -201,7 +201,7 @@ class ProductsSerializer(serializers.ModelSerializer):
         fields = ['id', 'name','description','slug','image']
 class ProductList(generics.ListCreateAPIView):
     serializer_class =ProductsSerializer
-    search_fields = ['name','description']
+    search_fields = ['name','name_ar','description']
     filter_backends = (filters.SearchFilter,)
     queryset = Product.objects.all()
 

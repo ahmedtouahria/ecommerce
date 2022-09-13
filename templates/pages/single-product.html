@@ -95,7 +95,7 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
                         <a id="add_to_cart" style="
                         font-size: 14px;
                         padding: 0 10px;
-                        text-transform: capitalize;" class="primary-btn add_to_cart" data-action="add" data-product="{{product.id}}" href="{% url 'card' %}">Acheter maintenant</a>
+                        text-transform: capitalize;" class="primary-btn add_to_cart" data-action="add" data-product="{{product.id}}" href="{% url 'card'  %}">Acheter maintenant</a>
                       <a  class="primary-btn add_to_cart" data-action="add" data-product="{{product.id}}"  href="#"><i class="fa fa-cart-plus " aria-hidden="true"></i>
                         </a>
                     </div>
@@ -275,7 +275,7 @@ href="{% static 'css/ion.rangeSlider.skinFlat.min.css'%}"
   
           <a href="#" class="showcase-category">{{product.category}}</a>
   
-          <a href="{% url 'single-product' product.id %}">
+          <a href="{% url 'single-product'  pk=product.slug %}">
             <h3 class="showcase-title">{{product.name}}</h3>
           </a>
   

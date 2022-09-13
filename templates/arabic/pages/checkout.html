@@ -61,14 +61,6 @@
                 <select class="custom-select w-75" name="commun" id="commun">
                 </select>
               </div>
-              <div class="col-md-12 form-group">
-                {% if not user.is_authenticated %}
-                <div class="creat_account">
-                  <input type="checkbox" id="f-option2" name="selector" />
-                  <label for="f-option2">Créer un compte?</label>
-                </div>
-                {% endif %}
-              </div>
 
               <div 
               class="col-md-12"
@@ -121,11 +113,11 @@
       </div>
     </div>
 
-    <div data-content id="home">
+    <div data-content id="home" >
       <div class="billing_details pt-5">
         <div class="row">
-          <div class="col-lg-7">
-            <h3>Détails de livration</h3>
+          <div class="col-lg-7 text-right">
+            <h3>تفاصيل الشحن</h3>
             <form id="form2" class="row contact_form" method="post">
               {% csrf_token %}
               <div class="col-md-6 form-group p_star">
@@ -134,7 +126,7 @@
                   type="text"
                   class="form-control"
                   id="first"
-                  placeholder="Prénom"
+                  placeholder="الإسم الكامل"
                   name="name"
                 />
               </div> 
@@ -142,7 +134,7 @@
                 <div class="col-md-6 form-group p_star">
                 <input
                   class="form-control"
-                  placeholder="Numéro de téléphone"
+                  placeholder="رقم الهاتف"
                   type="tel"
                   id="phone"
                   name="phone"
@@ -165,7 +157,7 @@
                   type="text"
                   class="form-control"
                   id="city"
-                  placeholder="ville"
+                  placeholder="المدينة"
                   name="city"
                   required
                 />
@@ -177,7 +169,7 @@
                   class="form-control"
                   id="zip"
                   name="zipcode"
-                  placeholder="Code Postal"
+                  placeholder="الرمز البريدي"
                 />
               </div>
               <div class="col-md-12 form-group p_star">
@@ -186,23 +178,9 @@
                   type="text"
                   class="form-control"
                   id="address"
-                  placeholder="Adresse"
+                  placeholder="عنوان المنزل"
                   name="address"
                 />
-              </div>
-              <div class="col-md-12 form-group">
-                {% if not user.is_authenticated %}
-                <div class="creat_account">
-                  <input type="checkbox" id="f-option2" name="selector" />
-                  <label for="f-option2">Créer un compte?</label>
-                </div>
-                {% endif %}
-              </div>
-             
-              <div  class="col-md-12" class="creat_account">
-                <input type="checkbox" id="f-option4" name="selector" />
-                <label for="f-option4">J'ai lu et accepté le </label>
-                <a href="#">termes et conditions*</a>
               </div>
               <div 
               class="col-md-12"
@@ -212,36 +190,43 @@
               class="banner-btn   my-4"
               type="submit"
             >
-              commande 
+              إرسال الطلب
             </button>
               </div>
             </form>
             
           </div>
+    
           <div class="col-lg-5">
             <div class="order_box">
-              <h2>Votre commande</h2>
+              <h2 style="text-align:initial" >طلبيتك</h2>
               <ul class="list">
                 <li>
-                  <a href="#">Produit <span>Totale</span></a>
+                  <a href="#">المجموع <span>المنتج</span></a>
                 </li>
                 {% for item in items %}
                 <li>
-                  <a href="{% url 'single-product' item.product.id  %}"
-                    >{{item.product.name | slice:':25'}} <strong class="mx-2 text-info">(x{{item.quantity}})</strong> 
-                    <span class="last">{{item.get_total}}DA</span></a>
+                  
+                    <div style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                ">  <a style="text-align:initial" href="{% url 'single-product' item.product.id  %}"><strong class="mx-2 text-info">(x{{item.quantity}})</strong> {{item.product.name_ar | slice:':25'}} 
+                  </a>
+                  <span class="last">{{item.get_total}} دج</span>
+                </div>
                 </li>
                 {% endfor %}
               </ul>
               <ul class="list list_2">
-                <li>
-                  <a href="#">Total <span>{{order.get_cart_total}}DA</span></a>
+                <li class="d-flex align-items-center justify-content-between">
+                  <a href="#">المجموع </a><span>{{order.get_cart_total}} دج</span>
                 </li>
-                <li>
-                  <a href="#" >expédition <span id='shipping_home'></span></a>
+                <li class="d-flex align-items-center justify-content-between">
+                  <a href="#" >الشحن </a><span id='shipping_home'>0 دج</span>
                 </li>
-                <li>
-                  <a href="#">Total avec expédition<span id="total_2">{{order.get_cart_total}}DA</span></a>
+                <li class="d-flex align-items-center justify-content-between">
+                  <a href="#">المجموع الكلي</a><span id="total_2">{{order.get_cart_total}} دج</span>
                 </li>
               </ul>
             </div>

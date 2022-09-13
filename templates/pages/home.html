@@ -53,7 +53,7 @@
               Commence à partir de  <b>{{img.price}}</b> DA
             </p>
 
-            <a href="{% url 'products' %}" class="banner-btn">Shop now</a>
+            <a href="{% url 'products'  %}" class="banner-btn">Shop now</a>
 
           </div>
 
@@ -92,7 +92,7 @@
               <p class="category-item-amount">(53)</p>
             </div>
 
-            <a href="{% url 'category' cat.name %}" class="category-btn">Show all</a>
+            <a href="{% url 'category' cat=cat.name  %}" class="category-btn">Show all</a>
 
           </div>
 
@@ -124,7 +124,7 @@
       <div class="showcase-container">
     {% for product in new_arrival %}
         <div class="showcase">
-          <a href="{% url 'single-product' product.slug %}" class="showcase-img-box">
+          <a href="{% url 'single-product' pk=product.slug  %}" class="showcase-img-box">
             {% if product.image %}
             <img src="{{product.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
             {% endif %}
@@ -159,7 +159,7 @@
       
         {% for product in new_arrival %}
         <div class="showcase">
-          <a href="{% url 'single-product' product.slug %}" class="showcase-img-box">
+          <a href="{% url 'single-product'  pk=product.slug %}" class="showcase-img-box">
                {% if product.image %}
             <img src="{{product.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
             {% endif %}
@@ -204,7 +204,7 @@
   
         {% for trend in trending %}
         <div class="showcase">
-          <a href="{% url 'single-product' trend.slug %}" class="showcase-img-box">
+          <a href="{% url 'single-product'  pk=trend.slug %}" class="showcase-img-box">
                {% if trend.image %}
             <img src="{{trend.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
             {% endif %}
@@ -282,7 +282,7 @@
   
         {% for product in top_rated %}
         <div class="showcase">
-          <a href="{% url 'single-product' product.slug %}" class="showcase-img-box">
+          <a href="{% url 'single-product'  pk=product.slug %}" class="showcase-img-box">
                {% if product.image %}
             <img src="{{product.image.url}}" alt="relaxed short full sleeve t-shirt" width="70" class="showcase-img">
             {% endif %}
@@ -393,7 +393,7 @@
             {% endif %}
           </div>
 
-          <a href="{% url 'single-product' affaire.product.slug  %}" class="add-cart-btn w-50 justify-content-center">Acheter maintenant</a>
+          <a href="{% url 'single-product' pk=affaire.product.slug   %}" class="add-cart-btn w-50 justify-content-center">Acheter maintenant</a>
 
 
           <div class="countdown-box">
@@ -509,7 +509,7 @@
           
                   <a href="#" class="showcase-category">{{product.category}}</a>
           
-                  <a href="{% url 'single-product' product.id %}">
+                  <a href="{% url 'single-product' pk=product.slug  %}">
                     <h3 class="showcase-title">{{product.name}}</h3>
                   </a>
           
@@ -645,7 +645,7 @@
           
                   <a href="#" class="showcase-category">{{product.category}}</a>
           
-                  <a href="{% url 'single-product' product.id %}">
+                  <a href="{% url 'single-product'  pk=product.slug %}">
                     <h3 class="showcase-title">{{product.name}}</h3>
                   </a>
           
