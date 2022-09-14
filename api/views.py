@@ -149,7 +149,7 @@ def send_order(request):
                     ("firstname", shipping_obj.name),
                     ("familyname", shipping_obj.name),
                     ("contact_phone",  shipping_obj.phone),
-                    ("address", shipping_obj.address),
+                    ("address", shipping_obj.address if shipping_obj.address is not None else shipping_obj.city + shipping_obj.state),
                     ("to_commune_name", shipping_obj.city),
                     ("to_wilaya_name", shipping_obj.state),
                     ("product_list", str(product_list)),
@@ -160,6 +160,7 @@ def send_order(request):
             if not order_obj.edited:
                 response = requests.post(url=url, headers=headers, data=json.dumps((data)))
                 my_response=response.json()
+                print(my_response)
                 transition_yal=my_response[str(order_id)]["tracking"]
                 transaction_id=Order.objects.filter(id=order_id).update(transaction_id=transition_yal,confirmed=True)
                 print(transaction_id)
@@ -170,7 +171,7 @@ def send_order(request):
                     ("firstname", shipping_obj.name),
                     ("familyname", shipping_obj.name),
                     ("contact_phone",  shipping_obj.phone),
-                    ("address", shipping_obj.address),
+                    ("address", shipping_obj.address if shipping_obj.address is not None else shipping_obj.city + shipping_obj.state),
                     ("to_commune_name", shipping_obj.city),
                     ("to_wilaya_name", shipping_obj.state),
                     ("product_list", str(product_list)),

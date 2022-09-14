@@ -1,12 +1,11 @@
 {% extends "arabic/base.html" %}
-{% block content %}
 {% block SEO %}
 <meta name="description" content="{{config.SEO_DESCRIPTION}}" />
 <link rel="canonical" href="{{config.SITE_URL}}" />
 <link rel="next" href="{{config.SITE_URL}}" />
 <meta property="og:locale" content="ar_AR" />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="{{config.SITE_NAME}} " />
+<meta property="og:title" content="{{config.SITE_NAME}} منتجات  " />
 <meta property="og:description" content="{{config.SEO_DESCRIPTION}}" />
 <meta property="og:url" content="{{config.SITE_URL}}" />
 <meta property="og:site_name" content="{{config.SITE_NAME}}" />
@@ -15,6 +14,7 @@
 <meta property="og:image:height" content="360" />
 <meta property="og:image:type" content="image/png" />
 {% endblock SEO %}
+{% block content %}
 {% load static %}
 
 <div class="container my-4">

@@ -12,12 +12,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #SECRET_KEY = 'django-insecure-!y(2&*e_z+i+2h7_a)9)frlb^*^bun5$adalf0pp938+zd8wv1'
 SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 if DEBUG:
     ALLOWED_HOSTS = ["*"]
 else:
-    ALLOWED_HOSTS = [".ayacollection.store","51.178.86.91"]
+    ALLOWED_HOSTS = ["ayacollection.store",".ayacollection.store","51.178.86.91"]
 
 # Application definition
 
@@ -53,8 +53,6 @@ CONSTANCE_CONFIG = {
     'SITE_URL': ("http://localhost:8000", 'le lien de site Web'),
     'SITE_MAIL': ("ahmed@gmail.com", 'mail de site Web'),
     'address': ("alger 16000 albiar", 'address'),
-
-    'PRIMARY_COLOR': ("orange", 'le colour primaire de site Web'),
     'PROMO_LIVRASTION': (False, 'le description de livration gratuit '),
     'LOGO': ("/media/favicon.ico", 'Logo du site Web',"image_field"),
     'ID_API_YALIDIN': ("", 'id de votre compte yalidin'), 
@@ -69,9 +67,19 @@ CONSTANCE_CONFIG = {
     'WHATSAPP_NUMBER':('',' votre Numéro whatsapp'),
     'CONTACT_NUMBER':('',' votre Numéro contact'),
     'CONTACT_NUMBER2':('',' votre Numéro contact'),
+    'SEO_DESCRIPTION':('',' seo description'),
+}
+CONSTANCE_CONFIG_FIELDSETS = {
+    'General Options': ('SITE_NAME', 'SITE_URL','LOGO','PROMO_LIVRASTION','SITE_MAIL'),
+    'Tokens': ('BASE_URL_YALIDIN','ID_API_YALIDIN','TOKEN_API_YALIDIN','Google_analytics_id','Google_analytics_tag','Google_analytics_credentials'),
+    'réseau sociale': ('FACEBOOK_URL', 'INSTAGRAM_URL','WHATSAPP_NUMBER'),
+    'contact & about': ('ABOUT', 'CONTACT_NUMBER','CONTACT_NUMBER2','address'),
+    'SEO': ('SEO_DESCRIPTION',),
+
+
+
 
 }
-
 # Admin Ui configs
 
 SIMPLEUI_CONFIG = {
@@ -166,15 +174,13 @@ SIMPLEUI_CONFIG = {
 }
 
 SIMPLEUI_HOME_INFO = False
-SIMPLEUI_HOME_QUICK = False
 SIMPLEUI_HOME_ACTION = False
 SIMPLEUI_HOME_QUICK = False
 SIMPLEUI_ANALYSIS = True
 SIMPLEUI_HOME_TITLE = 'Aya Collection'
 # SIMPLEUI_LOGO = '/media/img/logo.png'
 SIMPLEUI_DEFAULT_ICON = True
-SIMPLEUI_DEFAULT_ICON = True
-SIMPLEUI_DEFAULT_THEME = "orange.css"
+SIMPLEUI_DEFAULT_THEME = "blue.css"
 
 SESSION_COOKIE_AGE=60*60*24
 MIDDLEWARE = [
