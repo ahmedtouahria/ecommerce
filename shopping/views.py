@@ -591,7 +591,10 @@ def updateItem(request):
 
 
 def processOrder(request):
-    data = json.loads(request.body)
+    try:
+        data = json.loads(request.body)
+    except:
+        data={'form': {'name': '', 'phone': '', 'total': 0}, 'shipping': {'address': '', 'city': '', 'state': '', 'zipcode': ''}, 'stop_disk': True}
     print(data)
     stop_disk = data['stop_disk']
     # get order if user is authenticated
@@ -652,8 +655,10 @@ def processOrder(request):
                 #for success order page 
                 request.session["shipping_address"]=shipping_address.id
     else:
-        redirect("login")
+        pass
     return JsonResponse('Payment submitted..', safe=False)
+
+
 def success_order(request):
     shipping_id=request.session.get("shipping_address",None)
     if shipping_id is not None:

@@ -1,5 +1,4 @@
 $(document).ready(function(){
-    "use strict"
     let arrData = [];
     let wilaya_arr = [];
     let wilaya_select=document.getElementsByClassName("wilaya");
@@ -177,6 +176,13 @@ $(document).ready(function(){
         "X-CSRFToken": csrftoken,
       },
       body: JSON.stringify({ form: userFormData2, shipping: shippingInfo2,stop_disk:false }),
+    }).then(async response => {
+      if(!response.ok){
+        // فحص ومعالجة الخطأ
+        console.error(await response.text());
+        // ..
+      }
+      return response;
     })
       .then((response) => response.json())
       .then((data) => {
