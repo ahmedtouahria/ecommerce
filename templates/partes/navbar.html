@@ -34,7 +34,7 @@
 </div>
 {% else %}
 {% endif %}
-     
+
 
       <div class="header-top-actions">
         <select name="language">
@@ -48,14 +48,14 @@
   <div class="header-main">
     <div class="container">
       <div class="row">
-        <div class="col-2"> <a href="{% url 'index' lang="fr" %}" class=" header-logo " style="color: #000;font-weight: bold;font-family: cursive;">
+        <div class="col-2"> <a href="/" class=" header-logo " style="color: #000;font-weight: bold;font-family: cursive;">
           <img
             src="/media/{{config.LOGO}}"
             alt="Anon's logo"
             width="35"
             height="35"
           /></a></div>
-       
+
   <div class="col-10">
     <div class="header-search-container w-100">
           <input
@@ -70,13 +70,13 @@
             </ul>
           </div>
         </div></div>
-        
+
       </div>
-  
+
 
       <div class="header-user-actions">
         {% comment %} {% endcomment %} {% if user.is_authenticated %}
-        <a href="{% url  'profile' lang="fr" %}"
+        <a href="{% url  'profile' %}"
           ><img
             src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"
             class="rounded-circle"
@@ -85,7 +85,7 @@
             loading="lazy"
         /></a>
         {% else %}
-        <a href="{% url  'login' lang="fr" %}" class="action-btn">
+        <a href="{% url  'login'  %}" class="action-btn">
           <i class="fa fa-user" aria-hidden="true"></i>
         </a>
         {% endif %} {% comment %}
@@ -110,7 +110,7 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
               <li>
-                <a class="dropdown-item" href="{% url lang="fr" 'profile' %}"
+                <a class="dropdown-item" href="{% url  'profile' %}"
                   >My profile</a
                 >
               </li>
@@ -118,7 +118,7 @@
                 <a class="dropdown-item" href="#">Settings</a>
               </li>
               <li>
-                <a class="dropdown-item" href="{% url lang="fr" 'logout_request' %}"
+                <a class="dropdown-item" href="{% url  'logout_request' %}"
                   >Logout</a
                 >
               </li>
@@ -131,7 +131,7 @@
           <span class="count">0</span>
         </button>
 
-        <a class="action-btn" href="{% url  'card' lang="fr" %}">
+        <a class="action-btn" href="{% url  'card'  %}">
           <i class="fa fa-shopping-bag text-info" aria-hidden="true"></i>
 
           <span class="count cartItem">{{cartItem }}</span>
@@ -148,7 +148,7 @@
         </li>
 
         <li class="menu-category">
-          <a href="{% url  'products' lang="fr" %}" class="menu-title">Catégories</a>
+          <a href="{% url  'products'  %}" class="menu-title">Catégories</a>
           <div class="dropdown-panel" id="dropdown_panel">
          {% for cat in category %}
             <ul class="dropdown-panel-list">
@@ -157,7 +157,7 @@
               </li>
               {% for item in cat.category_sub.all %}
               <li class="panel-list-item">
-                <a href="{% url  'category' item.name lang="fr" %}">{{item.name}}</a>
+                <a href="{% url  'category' item.name  %}">{{item.name}}</a>
               </li>
               {% endfor %}
               <li class="panel-list-item">
@@ -171,7 +171,7 @@
                 </a>
               </li>
             </ul>
-            {% endfor %} 
+            {% endfor %}
           </div>
         </li>
 
@@ -179,7 +179,7 @@
           <a href="#" class="menu-title">affiliate</a>
         </li>
         <li class="menu-category">
-          <a href="{% url  'about' lang="fr" %}" class="menu-title">about</a>
+          <a href="{% url  'about'  %}" class="menu-title">about</a>
         </li>
       </ul>
     </div>
@@ -190,12 +190,12 @@
       <i class="fa fa-bars" aria-hidden="true"></i>
     </button>
 
-    <a href="{% url  'card' lang="fr" %}" class="action-btn ">
+    <a href="{% url  'card'  %}" class="action-btn ">
       <i class="fa fa-shopping-bag" aria-hidden="true"></i>
       <span class="count cartItem">{{cartItem}}</span>
     </a>
 
-    <a href="{% url  'index' lang="fr" %}" class="action-btn ">
+    <a href="{% url  'index'  %}" class="action-btn ">
       <i class="fa fa-home" aria-hidden="true"></i>
     </a>
 
@@ -221,7 +221,7 @@
     </div>
 
     <ul class="mobile-menu-category-list">
-   
+
       {% if user.is_authenticated %}
       <li class="menu-category">
         <button class="accordion-menu" data-accordion-btn>
@@ -238,7 +238,7 @@
         <ul class="submenu-category-list" data-accordion>
           <li class="submenu-category">
             <div class="row">
-              <div class="col-2"> <a href="{% url  'profile' lang="fr" %}"
+              <div class="col-2"> <a href="{% url  'profile'  %}"
             ><img
               src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"
               class="rounded-circle"
@@ -246,12 +246,12 @@
               alt="Avatar"
               loading="lazy"
           /></a></div>
-              <div class="col-3"> <a href="{% url  'profile' lang="fr" %}" class="submenu-title">Profile</a></div>
+              <div class="col-3"> <a href="{% url  'profile'  %}" class="submenu-title">Profile</a></div>
             </div>
-           
+
           </li>
           <li class="submenu-category">
-            <a href="{% url  'profile_orders' lang="fr" %}" class="submenu-title my-3"><i class="fa fa-shopping-bag mx-2 mr-3 text-warning" style="font-size: large;" aria-hidden="true"></i>mes commandes</a>
+            <a href="{% url  'profile_orders'  %}" class="submenu-title my-3"><i class="fa fa-shopping-bag mx-2 mr-3 text-warning" style="font-size: large;" aria-hidden="true"></i>mes commandes</a>
           </li>
           <li class="submenu-category">
             <a href="#" class="submenu-title my-3"><i class="fa fa-external-link mx-2 mr-3 text-info" style="font-size: large;" aria-hidden="true"></i>recommendations</a>
@@ -263,7 +263,7 @@
       </li>
       {% else %}
       <li class="menu-category">
-        <a href="{% url  'login' lang="fr" %}" class="menu-title font-weight-bold"><i class="fa fa-sign-in mx-2 font-size-5 text-warning" aria-hidden="true"></i>Connection</a>
+        <a href="{% url  'login'  %}" class="menu-title font-weight-bold"><i class="fa fa-sign-in mx-2 font-size-5 text-warning" aria-hidden="true"></i>Connection</a>
       </li>
       {% endif %}
 
@@ -291,16 +291,16 @@
             <div>
               <i class="fa fa-plus add-icon text-secondary" aria-hidden="true"></i>
               <i class="fa fa-times remove-icon text-secondary" aria-hidden="true"></i>
-  
+
             </div>
           </button>
 
           <ul class="submenu-category-list" data-accordion>
             <li class="submenu-category">
-              <a href="{% url 'index' lang="fr" %}" class="submenu-title">Français</a>
+              <a href="{% url 'index'  %}" class="submenu-title">Français</a>
             </li>
             <li class="submenu-category">
-              <a href="{% url 'index' lang="fr" %}" class="submenu-title">العربية</a>
+              <a href="{% url 'index'  %}" class="submenu-title">العربية</a>
             </li>
           </ul>
         </li>
@@ -328,7 +328,7 @@
       </ul>
       <hr>
       <div>
-        Welcome to <span class="font-weight-bold" style="color: {{config.PRIMARY_COLOR}};">{{config.SITE_NAME}}</span> 
+        Welcome to <span class="font-weight-bold" style="color: {{config.PRIMARY_COLOR}};">{{config.SITE_NAME}}</span>
       </div>
     </div>
   </nav>
@@ -387,7 +387,7 @@
       <div class="showcase-container">
         {% for product in trending %}
         <div class="showcase">
-          <a href="{% url "single-product" product.slug lang="fr" %} " class="showcase-img-box">
+          <a href="{% url "single-product" product.slug  %} " class="showcase-img-box">
             {% if product.image %}
             <img
               src="{{product.image.url}}"
@@ -458,4 +458,3 @@
     </div>
   </div>
 </div>
-

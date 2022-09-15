@@ -144,7 +144,7 @@ def index(request):
         "cartItem": cartItem,
         "titel": "Accueil",'config': config
     }
-    return render(request, 'arabic/pages/home.html', context)
+    return render(request, 'pages/home.html', context)
 # products views
 
 # la page des produits
@@ -189,9 +189,9 @@ def products(request):
         "page_number": int(page_number),
         "titel": "produits",'config': config
     }
-    return render(request, 'arabic/pages/products.html', context)
+    return render(request, 'pages/products.html', context)
 
-# category page 
+# category page
 def categorys(request,cat):
     category=CategorySub.objects.filter(name=cat).first()
     products=Product.objects.filter(category=category)
@@ -201,7 +201,7 @@ def categorys(request,cat):
         "category": Category.objects.all(),'config': config,
         "other_products":other_products
     }
-    return render(request,"arabic/pages/category.html",context)
+    return render(request,"pages/category.html",context)
 
 def product(request, pk):
     # print("customer_ref",request.session['ref_customer'])
@@ -243,7 +243,7 @@ def product(request, pk):
         "titel": str(product_id.name).replace(" ", "-").lower(),'config': config
 
     }
-    return render(request, 'arabic/pages/single-product.html', context)
+    return render(request, 'pages/single-product.html', context)
 # register Customer views
 
 
@@ -289,7 +289,7 @@ def productWithCode(request, pk, *args, **kwargs):
         "product_imgs": ProductImage.objects.filter(product=product_id),
         "titel": str(product_id.name).replace(" ", "-").lower(),'config': config
     }
-    return render(request, 'arabic/pages/single-product.html', context)
+    return render(request, 'pages/single-product.html', context)
 
 
 ''' AUTHENTICATION LOGIC
@@ -407,7 +407,7 @@ def profile(request):
         "cartItem": cartItem,'config': config
 
     }
-    return render(request, "arabic/pages/myprofile.html", context)
+    return render(request, "pages/myprofile.html", context)
 
 
 @login_required(login_url='login')
@@ -431,7 +431,7 @@ def profile_orders(request):
         "paginator": paginator,'config': config
 
     }
-    return render(request, 'arabic/pages/profile_orders.html', context)
+    return render(request, 'pages/profile_orders.html', context)
 
 @login_required(login_url='login')
 
@@ -469,7 +469,7 @@ def myorders(request, pk):
         "category": Category.objects.all(),'config': config
 
     }
-    return render(request, 'arabic/pages/profile_myorder.html', context)
+    return render(request, 'pages/profile_myorder.html', context)
 
 
 # card product views
@@ -506,7 +506,7 @@ def card(request):
 
 
     }
-    return render(request, 'arabic/pages/card.html', context)
+    return render(request, 'pages/card.html', context)
 # checkout order views
 
 # la page de Processus de vente
@@ -541,7 +541,7 @@ def checkout(request):
         "titel": "vérifier",
         'config': config,
     }
-    return render(request, 'arabic/pages/checkout.html', context)
+    return render(request, 'pages/checkout.html', context)
 
 # endpoint to update cart_item number for user authenticated
 
@@ -648,8 +648,8 @@ def processOrder(request):
                 state=data['shipping']['state'],
                 zipcode=None if stop_disk else data['shipping']['zipcode'],
                 is_stopdesk=stop_disk
-            )   
-                #for success order page 
+            )
+                #for success order page
                 request.session["shipping_address"]=shipping_address.id
     else:
         redirect("login")
@@ -665,11 +665,11 @@ def success_order(request):
         return redirect('products')
 
     context={"config":config,"titel":"success","shipping_address":shipping_address}
-    return render(request,"arabic/pages/success_order.html",context)
+    return render(request,"pages/success_order.html",context)
 
 
 def about(request):
     context={
         "config":config
     }
-    return render(request,'arabic/pages/about.html',context)
+    return render(request,'pages/about.html',context)
