@@ -4,14 +4,8 @@
 
 <div class="card">
 
-    <h4 class="p-2 text-info mx-auto">commande N- {{order.transaction_id}}</h4>
-    {% if messages %}
-{% for msg in messages %}
-<div class="alert alert-primary mx-2" role="alert">
-  <strong>{{msg}}</strong> <a href="#" class="alert-link">Cliquez ici <i class="fa fa-external-link mx-2" aria-hidden="true"></i></a>
-</div>
-{% endfor %}
-{% endif %}
+    <h4 class="p-2 text-info mx-auto">الطلب رقم- {{order.transaction_id}}</h4>
+
 
     <section class="cart_area py-1 text-right">
         <div class="container">
@@ -38,7 +32,7 @@
                       </div>
                     </td>
                     <td>
-                      <h5>${{item.product.price}}</h5>
+                      <h5> {{item.product.price}} دج</h5>
                     </td>
                     <td>
                       <div class="product_count ">
@@ -55,7 +49,7 @@
                       </div>
                     </td>
                     <td>
-                      <h5>${{item.get_total}}</h5>
+                      <h5>{{item.get_total}} دج </h5>
                     </td>
                   </tr>
                   {% endfor %}
@@ -67,7 +61,7 @@
                       <h5>المجموع الكلي</h5>
                     </td>
                     <td>
-                      <h5>${{order.get_cart_total}}</h5>
+                      <h5> {{order.get_cart_total}} دج </h5>
                     </td>
                   </tr>
                 </tbody>
@@ -153,15 +147,15 @@
       <div class="row justify-content-between">
         <div class="order-tracking ">
           <span class="is-complete"></span>
-          <p>En préparation<br><span></span></p>
-        </div>
-        <div class="order-tracking ">
-          <span class="is-complete "></span>
-          <p>Expédié<br><span></span></p>
+          <p>تم الإستلام<br></p><span></span>
         </div>
         <div class="order-tracking ">
           <span class="is-complete"></span>
-          <p>Livré<br></p><span></span>
+          <p>قيد الشحن <br><span></span></p>
+        </div>
+        <div class="order-tracking">
+          <span class="is-complete"></span>
+          <p>تم التوصيل<br><span></span></p>
         </div>
       </div>
     </div>
@@ -243,7 +237,7 @@
 <script>
   edit_order = document.getElementById("edit_order");
   edit_order.addEventListener("click", function(){
-    $.ajax({
+    دج .ajax({
       type: "POST",
       beforeSend: function (request) {
         request.setRequestHeader("Content-Type", "application/json");

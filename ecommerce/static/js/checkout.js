@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    "use strict"
     let arrData = [];
     let wilaya_arr = [];
     let wilaya_select=document.getElementsByClassName("wilaya");
@@ -135,7 +136,7 @@ $(document).ready(function(){
     console.log("Shipping Info:", shippingInfo);
     console.log("User Info:", userFormData);
 
-    let url = "/process_order/";
+/*    let url = "/process_order/";
     fetch(url, {
       method: "POST",
       headers: {
@@ -153,6 +154,22 @@ $(document).ready(function(){
       })
       .catch((error) => {
         console.error("Error:", error);
+      }); */
+      $.ajax({
+        type: "POST",
+        beforeSend: function (request) {
+          request.setRequestHeader("Content-Type", "application/json");
+          request.setRequestHeader("X-CSRFToken", csrftoken);
+        },
+        url: "/process_order/",
+        data: JSON.stringify({ form: userFormData , shipping: shippingInfo,stop_disk:true  }),
+        processData: true,
+        success: function (msg) {
+          console.log("success ajax" + msg);
+          cart = {};
+          document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
+          window.location.href = "/checkout/success/";
+        },
       });
   }
   function submitFormData2() {
@@ -168,7 +185,7 @@ $(document).ready(function(){
       state: form2.wilaya.value,
       zipcode: form2.zipcode.value,
     };
-    let url = "/process_order/";
+/*     let url = "/process_order/";
     fetch(url, {
       method: "POST",
       headers: {
@@ -176,13 +193,6 @@ $(document).ready(function(){
         "X-CSRFToken": csrftoken,
       },
       body: JSON.stringify({ form: userFormData2, shipping: shippingInfo2,stop_disk:false }),
-    }).then(async response => {
-      if(!response.ok){
-        // فحص ومعالجة الخطأ
-        console.error(await response.text());
-        // ..
-      }
-      return response;
     })
       .then((response) => response.json())
       .then((data) => {
@@ -193,6 +203,22 @@ $(document).ready(function(){
       })
       .catch((error) => {
         console.error("Error:", error);
+      }); */
+      $.ajax({
+        type: "POST",
+        beforeSend: function (request) {
+          request.setRequestHeader("Content-Type", "application/json");
+          request.setRequestHeader("X-CSRFToken", csrftoken);
+        },
+        url: "/process_order/",
+        data: JSON.stringify({ form: userFormData2, shipping: shippingInfo2,stop_disk:false }),
+        processData: true,
+        success: function (msg) {
+          console.log("success ajax" + msg);
+          cart = {};
+          document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
+          window.location.href = "/checkout/success/";
+        },
       });
   }
   const tabs = document.querySelectorAll("[data-target]"),

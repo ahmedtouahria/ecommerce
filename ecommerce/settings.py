@@ -18,7 +18,7 @@ if DEBUG:
     ALLOWED_HOSTS = ["*"]
 else:
     ALLOWED_HOSTS = ["ayacollection.store",".ayacollection.store","51.178.86.91"]
-    SECURE_BROWSER_XSS_FILTER = True
+""" SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = 'DENY'
     SECURE_SSL_REDIRECT = True
     SECURE_HSTS_SECONDS = 3600
@@ -27,9 +27,8 @@ else:
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') """
 # Application definition
-
 INSTALLED_APPS = [
     #'django.contrib.admin',
     'admin_ui.apps.SimpleApp',
