@@ -6,14 +6,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from shopping.models import Customer, Order, Product, Rating
-from shopping.views import cookieCart
+from shopping.utils import recommendation
+from shopping.views import cookieCart, guestOrder
 from .serializers import *
 from constance import config
-from django.contrib import messages
-from io import BytesIO
 from django.http import HttpResponse
-from django.template.loader import get_template
-from django.views import View
 from xhtml2pdf import pisa
 
 
@@ -102,8 +99,11 @@ def add_product(request):
         sizes = request.data.get('sizes', None)
         colors = request.data.get('colors', None)
         if product_ref is not None:
-            product = Product.objects.get(id=product_ref)
-            if sizes is not None:
+            try:
+                product = Product.objects.get(id=product_ref)
+            except:
+                product=None
+            if product is not None and sizes is not None:
                 for size in sizes:
                     #s = Variation(product=product, category="size", item=size)
                     #s.save()
@@ -113,10 +113,12 @@ def add_product(request):
                     #s.save()
                         color,create=Color.objects.get_or_create(color=color)
                         Variant.objects.create(product=product,size=size,color=color)
-
+            else:
+                return Response({"product or sizes is none !"})
+            request.session["product_ref"]=None
             return redirect("index")
         else:
-            print("product_ref is NONE")
+            return Response({"product_ref is none !"})
     return Response({"success": "true"})
 
 # send order to yalidin express 
@@ -124,12 +126,16 @@ def add_product(request):
 def send_order(request):
     if request.method == 'POST':
         order_id = request.data.get("order_id", None)
-        freeshipping = request.data.get("freeshipping", None)
-        has_exchange = request.data.get("has_exchange", None)
-        print(request.data)
-        if order_id is not None:
-            product_list = []
+        freeshipping = request.data.get("freeshipping", False)
+        has_exchange = request.data.get("has_exchange", False)
+        try:
             order_obj = Order.objects.get(id=order_id)
+        except:
+            order_obj = None
+        print(request.data)
+        if order_obj is not None and Order.objects.filter(id=order_id).exists() and OrderItem.objects.filter(order=order_obj).exists():
+            product_list = []
+            
             shipping_obj = ShippingAddress.objects.filter(order=order_obj).first()
             orders_items = OrderItem.objects.filter(order=order_id)
             for i in orders_items:
@@ -141,7 +147,7 @@ def send_order(request):
                 product.save()
                 #-----PRODUCT LIST IN PARCEL--------#
                 product_list.append({"produit": i.product.name, "quantité": i.quantity})
-                
+            print("product list ",len(product_list))
             data = OrderedDict(
                 [(0,
                   OrderedDict(
@@ -154,17 +160,23 @@ def send_order(request):
                     ("to_wilaya_name", shipping_obj.state),
                     ("product_list", str(product_list)),
                     ("price", int(order_obj.get_cart_total)),
-                    ("freeshipping", freeshipping), ("is_stopdesk", shipping_obj.is_stopdesk), ("has_exchange", has_exchange), ("product_to_collect", str(product_list))])),])
+                    ("freeshipping", freeshipping), ("is_stopdesk", shipping_obj.is_stopdesk), ("has_exchange", has_exchange), ("product_to_collect", str(product_list) if len(str(product_list))>5 else "product_to_collect does not exist" )])),])
             url = config.BASE_URL_YALIDIN+"parcels/"
             headers = {"X-API-ID": config.ID_API_YALIDIN,"X-API-TOKEN": config.TOKEN_API_YALIDIN, "Content-Type": "application/json"}
             if not order_obj.edited:
                 response = requests.post(url=url, headers=headers, data=json.dumps((data)))
                 my_response=response.json()
                 print(my_response)
-                transition_yal=my_response[str(order_id)]["tracking"]
-                transaction_id=Order.objects.filter(id=order_id).update(transaction_id=transition_yal,confirmed=True)
-                print(transaction_id)
-                print("yalidin",my_response)
+                try:
+                    transition_yal=my_response[str(order_id)]["tracking"]
+                except:
+                    return Response({"transition_yal": "Does Not Exist"})
+                try:
+                    transaction_id=Order.objects.filter(id=order_id).update(transaction_id=transition_yal,confirmed=True)
+                    print(transaction_id)
+                    print("yalidin",my_response)
+                except:
+                    return Response({"transaction_id": "Does Not update"})
             else:
                 data=OrderedDict(
                     [("order_id", str(order_obj.id)), 
@@ -177,15 +189,14 @@ def send_order(request):
                     ("product_list", str(product_list)),
                     ("price", int(order_obj.get_cart_total)),
                     ("freeshipping", freeshipping), ("is_stopdesk", shipping_obj.is_stopdesk), ("has_exchange", has_exchange), ("product_to_collect", str(product_list))])
+
                 response = requests.patch(url=url+order_obj.transaction_id, headers=headers, data=json.dumps((data)))
                 my_response=response.json()
                 print("yalidin",my_response)
                 order_obj.confirmed=True
                 order_obj.save()
-                
-
         else:
-            messages.error(request,"le commande n'éxite pas")
+            return Response({"order is None or does not match"})
     return Response({"success": "true"})
 
 @api_view(['POST'])
@@ -222,3 +233,70 @@ def generate_pdf(request):
     html = render_to_string(template_path, {'orders_arr': orders_arr})
     pisaStatus = pisa.CreatePDF(html, dest=response)
     return response 
+
+@api_view(['POST'])
+def processOrder(request):
+    if request.method == "POST":
+        data = request.data
+        print(data)
+        stop_disk = data['stop_disk']
+        # get order if user is authenticated
+        if request.user.is_authenticated:
+            customer = request.user
+            order_changed = request.session.get("order_changed_id", None)
+            if order_changed is not None:
+                order = Order.objects.get(customer=customer,transaction_id=order_changed)
+                order.confirmed=False
+                order.save()
+            else:
+                order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        # get order if user is not authenticated
+        else:
+            customer, order = guestOrder(request, data)
+        '''recommendation function'''
+        recommendation(request,Customer,order)
+        if customer is not None:
+            total = float(data['form']['total'])
+            if total > 0:
+                order.complete = True
+                order.save()
+                shipping=ShippingAddress.objects.filter(order=order)
+                '''============ if edited parcel ================ '''
+                if ShippingAddress.objects.filter(order=order).count() > 0:
+                    '''===== make order -> edited for "patch" request not "post" to "YALIDIN" ========'''
+                    order.edited=True
+                    order.save()
+                    '''=====we need update shipping address========'''
+                    shipping_address=shipping.update(
+                    customer=customer,
+                    order=order,
+                    name=data['form']['name'],
+                    phone=data['form']['phone'],
+                    address=None if stop_disk else data['shipping']['address'],
+                    city=data['shipping']['city'],
+                    state=data['shipping']['state'],
+                    is_stopdesk=stop_disk
+                )
+                    request.session["shipping_address"]=shipping_address
+                    ''' ======== change session value to parcel =========='''
+                    request.session["order_changed_id"]=None
+                #========= if create new parcel ================
+                else:
+                    shipping_address=ShippingAddress.objects.create(
+                    customer=customer,
+                    order=order,
+                    name=data['form']['name'],
+                    phone=data['form']['phone'],
+                    address=None if stop_disk else data['shipping']['address'],
+                    city=data['shipping']['city'],
+                    state=data['shipping']['state'],
+                    is_stopdesk=stop_disk
+                )   
+                    #for success order page 
+                    request.session["shipping_address"]=shipping_address.id
+        else:
+            return Response({'Customer is None'})
+    else:
+       return Response({'Methode not allowed'}) 
+    return Response({'order submitted..'})
+

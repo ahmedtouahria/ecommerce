@@ -46,7 +46,7 @@ class CustomUserManager(BaseUserManager):
 
 
 class Customer(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(max_length=254, unique=True)
+    email = models.EmailField(max_length=254, unique=True,null=True)
     phone_regex = RegexValidator(
         regex=r'^\+?1?\d{9,14}$', message="Phone number must be entered in the format: '+999999999'. Up to 14 digits allowed.")
     phone = models.CharField(validators=[phone_regex], max_length=14,null=True,blank=True,)
@@ -278,7 +278,7 @@ class Order(models.Model):
         "shopping.Customer", on_delete=models.SET_NULL, null=True, blank=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False)
-    transaction_id = models.CharField(max_length=8)
+    transaction_id = models.CharField(max_length=20)
     recommended_by = models.ForeignKey(
         Customer, on_delete=models.SET_NULL, null=True, related_name="recommended_by")
     status = models.CharField(
@@ -368,7 +368,6 @@ class ShippingAddress(models.Model):
     address = models.CharField(max_length=200, null=True)
     city = models.CharField(max_length=200, null=True)
     state = models.CharField(max_length=200, null=True)
-    zipcode = models.CharField(max_length=200, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
     is_stopdesk = models.BooleanField(default=True, null=True)
     def __str__(self):

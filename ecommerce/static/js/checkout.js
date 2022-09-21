@@ -124,6 +124,7 @@ $(document).ready(function(){
     let userFormData = {
       name: form.name.value,
       phone: form.phone.value,
+      email: form.email.value,
       total: total,
     };
     let shippingInfo = {
@@ -161,7 +162,7 @@ $(document).ready(function(){
           request.setRequestHeader("Content-Type", "application/json");
           request.setRequestHeader("X-CSRFToken", csrftoken);
         },
-        url: "/process_order/",
+        url: "/api/process_order/",
         data: JSON.stringify({ form: userFormData , shipping: shippingInfo,stop_disk:true  }),
         processData: true,
         success: function (msg) {
@@ -177,6 +178,7 @@ $(document).ready(function(){
     let userFormData2 = {
       name: form2.name.value,
       phone: form2.phone.value,
+      email: form2.email.value,
       total: total,
     };
     let shippingInfo2 = {
@@ -210,7 +212,7 @@ $(document).ready(function(){
           request.setRequestHeader("Content-Type", "application/json");
           request.setRequestHeader("X-CSRFToken", csrftoken);
         },
-        url: "/process_order/",
+        url: "/api/process_order/",
         data: JSON.stringify({ form: userFormData2, shipping: shippingInfo2,stop_disk:false }),
         processData: true,
         success: function (msg) {

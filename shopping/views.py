@@ -48,14 +48,14 @@ def cookieCart(request):
             try:
                 item = {
                     'id': product.id,
-                    'product': {'id': product.id, 'name': product.name, 'price': product.price,
+                    'product': {'id': product.id, 'name': product.name,'name_ar': product.name_ar, 'price': product.price,
                                 'image': product.image}, 'quantity': cart[i]['quantity'], 'color': cart[i]["color"], 'size': cart[i]["size"],
                     'get_total': total,
                 }
             except:
                 item = {
                     'id': product.id,
-                    'product': {'id': product.id, 'name': product.name, 'price': product.price,
+                    'product': {'id': product.id, 'name': product.name,'name_ar': product.name_ar, 'price': product.price,
                                 'image': product.image}, 'quantity': cart[i]['quantity'],
                     'get_total': total,
                 }
@@ -67,16 +67,18 @@ def cookieCart(request):
 
 
 def guestOrder(request, data):
-    name = data['form']['name']
-    phone = data['form']['phone']
+    name = str(data['form']['name'])
+    phone = str(data['form']['phone'])
+    email = str(data['form']['email'])
     cookieData = cookieCart(request)
     items = cookieData['items']
-    try:
-        customer, created = Customer.objects.get_or_create(phone=phone )
-    except:
-        customer=Customer.objects.filter(phone=phone)[0]
-    customer.name = name
-    customer.save()
+    if Customer.objects.filter(phone=phone).exists() or Customer.objects.filter(email=email).exists():
+        customer=Customer.objects.filter(phone=phone).first()
+        customer.name = name
+        customer.save()
+    else:
+        customer=Customer(name=name,phone=phone,email=email)
+        customer.save()
     order = Order.objects.create(
         customer=customer,
         complete=False,
@@ -589,77 +591,6 @@ def updateItem(request):
             orderItem.delete()
     return JsonResponse('Item was added', safe=False)
 
-
-def processOrder(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-        except:
-            data={'form': {'name': '', 'phone': '', 'total': 0}, 'shipping': {'address': '', 'city': '', 'state': '', 'zipcode': ''}, 'stop_disk': True}
-        print(data)
-        stop_disk = data['stop_disk']
-        # get order if user is authenticated
-        if request.user.is_authenticated:
-            customer = request.user
-            order_changed = request.session.get("order_changed_id", None)
-            if order_changed is not None:
-                order = Order.objects.get(customer=customer,transaction_id=order_changed)
-                order.confirmed=False
-                order.save()
-            else:
-                order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        # get order if user is not authenticated
-        else:
-            customer, order = guestOrder(request, data)
-        # get ref_customer (user shared product)
-        '''recommendation function'''
-        recommendation(request,Customer,order)
-        if customer is not None:
-            total = float(data['form']['total'])
-            if total > 0:
-                order.complete = True
-                order.save()
-                shipping=ShippingAddress.objects.filter(order=order)
-                '''============ if edited parcel ================ '''
-                if ShippingAddress.objects.filter(order=order).count() > 0:
-                    '''===== make order -> edited for "patch" request not "post" to "YALIDIN" ========'''
-                    order.edited=True
-                    order.save()
-                    '''=====we need update shipping address========'''
-                    shipping_address=shipping.update(
-                    customer=customer,
-                    order=order,
-                    name=data['form']['name'],
-                    phone=data['form']['phone'],
-                    address=None if stop_disk else data['shipping']['address'],
-                    city=data['shipping']['city'],
-                    state=data['shipping']['state'],
-                    zipcode=None if stop_disk else data['shipping']['zipcode'],
-                    is_stopdesk=stop_disk
-                )
-                    request.session["shipping_address"]=shipping_address
-                    ''' ======== change session value to parcel =========='''
-                    request.session["order_changed_id"]=None
-                #========= if create new parcel ================
-                else:
-                    shipping_address=ShippingAddress.objects.create(
-                    customer=customer,
-                    order=order,
-                    name=data['form']['name'],
-                    phone=data['form']['phone'],
-                    address=None if stop_disk else data['shipping']['address'],
-                    city=data['shipping']['city'],
-                    state=data['shipping']['state'],
-                    zipcode=None if stop_disk else data['shipping']['zipcode'],
-                    is_stopdesk=stop_disk
-                )   
-                    #for success order page 
-                    request.session["shipping_address"]=shipping_address.id
-        else:
-            return JsonResponse('Customer is None', safe=False)
-    else:
-       return JsonResponse('Methode not allowed', safe=False) 
-    return JsonResponse('Payment submitted..', safe=False)
 
 
 def success_order(request):

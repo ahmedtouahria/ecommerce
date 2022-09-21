@@ -139,9 +139,25 @@ const freeshipping = document.getElementById("freeshipping");
 const has_exchange = document.getElementById("has_exchange");
 let order_id = {{order_id.id}};
 
-confirm.addEventListener("click",function(){
-  data={"order_id":order_id,"freeshipping":freeshipping.checked,"has_exchange":has_exchange.checked};
-  fetch("/api/send_order/", {
+confirm.addEventListener("click",async function(){
+ let data = {"order_id":order_id,"freeshipping":freeshipping.checked,"has_exchange":has_exchange.checked};
+ try {
+  const res = await fetch("/api/send_order/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrftoken,
+    },
+    body: JSON.stringify(data),
+  }),
+  json = await res.json();
+  location.reload();
+  console.log(json);
+} catch (err) {
+  console.error("error:", err);
+}
+ console.log(data);
+/*   fetch("/api/send_order/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -152,8 +168,8 @@ confirm.addEventListener("click",function(){
     console.log("Request complete! response:", res);
   })
   .then((data) => {
-    location.reload()
-});
+   // location.reload()
+}); */
 
 })
 

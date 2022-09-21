@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 from decouple import  config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__ + "/../")))
+print(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -12,22 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #SECRET_KEY = 'django-insecure-!y(2&*e_z+i+2h7_a)9)frlb^*^bun5$adalf0pp938+zd8wv1'
 SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-if DEBUG:
-    ALLOWED_HOSTS = ["*"]
-else:
-    ALLOWED_HOSTS = ["ayacollection.store",".ayacollection.store","51.178.86.91"]
-""" SECURE_BROWSER_XSS_FILTER = True
-    X_FRAME_OPTIONS = 'DENY'
-    SECURE_SSL_REDIRECT = True
-    SECURE_HSTS_SECONDS = 3600
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') """
+ALLOWED_HOSTS = ["*"]
 # Application definition
 INSTALLED_APPS = [
     #'django.contrib.admin',
@@ -59,6 +46,7 @@ CONSTANCE_ADDITIONAL_FIELDS = {
 CONSTANCE_CONFIG = {
     'SITE_NAME': ("Aya Collection", 'le nom de site Web'),
     'SITE_URL': ("http://localhost:8000", 'le lien de site Web'),
+    'SITE_URL_FR': ("http://localhost:8000", 'le lien de site Web'),
     'SITE_MAIL': ("ahmed@gmail.com", 'mail de site Web'),
     'address': ("alger 16000 albiar", 'address'),
     'PROMO_LIVRASTION': (False, 'le description de livration gratuit '),
@@ -76,13 +64,14 @@ CONSTANCE_CONFIG = {
     'CONTACT_NUMBER':('',' votre Numéro contact'),
     'CONTACT_NUMBER2':('',' votre Numéro contact'),
     'SEO_DESCRIPTION':('',' seo description'),
+    'SEO_DESCRIPTION_FR':('',' seo fr description'),
 }
 CONSTANCE_CONFIG_FIELDSETS = {
-    'General Options': ('SITE_NAME', 'SITE_URL','LOGO','PROMO_LIVRASTION','SITE_MAIL'),
+    'General Options': ('SITE_NAME', 'SITE_URL','LOGO','PROMO_LIVRASTION','SITE_MAIL','SITE_URL_FR'),
     'Tokens': ('BASE_URL_YALIDIN','ID_API_YALIDIN','TOKEN_API_YALIDIN','Google_analytics_id','Google_analytics_tag','Google_analytics_credentials'),
     'réseau sociale': ('FACEBOOK_URL', 'INSTAGRAM_URL','WHATSAPP_NUMBER'),
     'contact & about': ('ABOUT', 'CONTACT_NUMBER','CONTACT_NUMBER2','address'),
-    'SEO': ('SEO_DESCRIPTION',),
+    'SEO': ('SEO_DESCRIPTION','SEO_DESCRIPTION_FR'),
 
 }
 # Admin Ui configs
@@ -144,6 +133,11 @@ SIMPLEUI_CONFIG = {
             'name': 'Commandes',
             'icon': 'fa fa-shopping-cart',
             'url': 'shopping/shippingaddress'
+        },
+            {
+            'name': 'order',
+            'icon': 'fa fa-shopping-cart',
+            'url': 'shopping/order'
         },
             {
             'name': 'Affaire',
@@ -233,21 +227,12 @@ AUTH_USER_MODEL='shopping.Customer'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-from dj_database_url import parse as dburl
 
-default_dburl = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
-DATABASES =  {
-    
-        'default': config('DATABASE_URL', default=default_dburl, cast=dburl),
-            } if DEBUG else {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config("DB_NAME"),
-        'USER': config("DB_USER"),
-        'PASSWORD': config("DB_PASSWORD"),
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+DATABASES = {
+ 'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR +'/db.sqlite3',
+    } 
 }
 
 # Password validation
