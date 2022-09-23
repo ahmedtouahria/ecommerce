@@ -393,7 +393,7 @@ class Conversion(models.Model):
 class Section(models.Model):
     category=models.ForeignKey("shopping.CategorySub",on_delete=models.CASCADE)
     def products(self):
-        return Product.objects.filter(category=self).order_by('-date_add')[:12]
+        return Product.objects.filter(category=self.category).order_by('-date_add')[:12]
     def __str__(self):
         return self.category.name
     
