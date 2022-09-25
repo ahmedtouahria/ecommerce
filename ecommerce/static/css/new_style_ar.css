@@ -1585,6 +1585,7 @@
 
   .product-grid .showcase-banner {
     position: relative;
+    height: 55%;
   }
 
   .product-grid .product-img {
