@@ -226,13 +226,16 @@ def generate_pdf(request):
     for order in orders_id:
         get_order = Order.objects.filter(id=order).first()
         orders_arr.append(get_order)
-    template_path = 'pages/pdf_template.html'
-    response = HttpResponse(content_type='application/pdf')
-    filename=f'{datetime.date.today()}commande.pdf'
-    response['Content-Disposition'] = f'attachment; filename={filename}'
-    html = render_to_string(template_path, {'orders_arr': orders_arr})
-    pisaStatus = pisa.CreatePDF(html, dest=response)
-    return response 
+    if len(orders_arr)>0:
+        template_path = 'arabic/pages/pdf_template.html'
+        response = HttpResponse(content_type='application/pdf')
+        filename=f'{datetime.date.today()}commande.pdf'
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+        html = render_to_string(template_path, {'orders_arr': orders_arr})
+        pisaStatus = pisa.CreatePDF(html, dest=response)
+        return response 
+    else:
+        return Response({"Orders does not found"})
 
 @api_view(['POST'])
 def processOrder(request):
