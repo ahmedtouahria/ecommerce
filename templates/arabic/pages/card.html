@@ -142,6 +142,7 @@
 
         }
       }
+      return quantity;
     }
     // update order whene user is not authenticated
     function addCookieItem(productId, action,color,size,id_parent) {
@@ -149,7 +150,7 @@
       let price = parseInt(document.getElementById("price-"+id_parent.toString()).innerHTML);
       let result_items = document.getElementById("result_items-"+id_parent.toString());
       let quantity = parseInt(document.getElementById("sst-"+id_parent.toString()).value);
-      prepareCart(productId, action,color,size,id_parent,quantity);
+      quantity = prepareCart(productId, action,color,size,id_parent,quantity);
       // render get_total with help function
       result_items.innerHTML=renderTotalPrice(quantity,price);
       /************* this logic to render async items to current cart  **************/
