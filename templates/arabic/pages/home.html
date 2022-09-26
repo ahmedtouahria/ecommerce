@@ -376,7 +376,7 @@
   </div>
   <div class="showcase-wrapper has-scrollbar">
 {% for affaire in affaires %}
-{% if affaire.get_time.days >= 0 and affaire.get_time.hours >= 0 and affaire.get_time.minuts >= 0 %}
+{% if affaire.get_time > 0 %}
     <div class="showcase-container">
 
       <div class="showcase">
@@ -426,24 +426,24 @@
 
               <div class="countdown-content">
 
-                <p class="display-number">{{affaire.get_time.days}}</p>
+                <p class="display-number" id="display_days-{{affaire.id}}">{{affaire.get_time.days}}</p>
 
                 <p class="display-text">يوم</p>
 
               </div>
 
               <div class="countdown-content">
-                <p class="display-number">{{affaire.get_time.hours}}</p>
+                <p class="display-number" id='display_hours-{{affaire.id}}'>{{affaire.get_time.hours}}</p>
                 <p class="display-text">ساعة</p>
               </div>
 
               <div class="countdown-content">
-                <p class="display-number">{{affaire.get_time.minuts}}</p>
+                <p class="display-number" id="display_minuts-{{affaire.id}}">{{affaire.get_time.minuts}}</p>
                 <p class="display-text">دقيقة</p>
               </div>
 
               <div class="countdown-content">
-                <p class="display-number">{{affaire.get_time.seconds}}</p>
+                <p class="display-number" id="display_seconds-{{affaire.id}}">{{affaire.get_time.seconds}}</p>
                 <p class="display-text">ثانية</p>
               </div>
 
@@ -457,6 +457,25 @@
 
     </div>
     {% endif %}
+    <script>
+  let countDownDate = "{{affaire.get_time}}";//in seconds
+  var x = setInterval(function() {
+  let now = new Date().getTime()/1000;
+  let distance = (countDownDate - now);
+  let days = Math.floor(distance / (3600*24));
+  let hours = Math.floor((distance % (60 * 60 * 24)) / (60 * 60));
+  let minutes = Math.floor((distance % (60 * 60)) / 60);
+  let seconds = Math.floor(distance % 60 );
+  let display_days = document.getElementById("display_days-{{affaire.id}}") ;
+  let display_hours = document.getElementById("display_hours-{{affaire.id}}") ;
+  let display_minuts = document.getElementById("display_minuts-{{affaire.id}}") ;
+  let display_seconds = document.getElementById("display_seconds-{{affaire.id}}") ;
+  display_days.innerHTML=`${days}`;
+  display_hours.innerHTML=hours;
+  display_minuts.innerHTML=minutes;
+  display_seconds.innerHTML=`${seconds}`;
+      }, 1000);
+      </script>
 {% endfor %}
   </div>
 

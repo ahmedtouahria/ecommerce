@@ -239,18 +239,9 @@ class Affaire(models.Model):
     date_end = models.DateTimeField(("la date TERMINE "), auto_now=False)
 
     def get_time(self):
-        time_remaining = {"days": 0, "hours": 0, "minuts": 0, "seconds": 0}
-        time_taking = self.date_end-timezone.now()
-        time_in_seconds = time_taking.total_seconds()
-        get_days = time_taking.days
-        time_remaining["days"] = get_days
-        time_remaining["hours"] = int(
-            (int(time_in_seconds)-int(get_days)*86400)/3600)
-        time_remaining["minuts"] = int(
-            (int(time_in_seconds)-int(get_days)*86400 - time_remaining["hours"]*3600)/60)
-        time_remaining["seconds"] = int((int(time_in_seconds)-int(
-            get_days)*86400 - time_remaining["hours"]*3600 - time_remaining["minuts"]*60))
-        return time_remaining
+        time_taking = self.date_end
+        time_in_seconds = time_taking.timestamp()
+        return time_in_seconds
 
     def __str__(self):
         return self.product.name
