@@ -65,6 +65,14 @@ CONSTANCE_CONFIG = {
     'CONTACT_NUMBER2':('',' votre Numéro contact'),
     'SEO_DESCRIPTION':('',' seo description'),
     'SEO_DESCRIPTION_FR':('',' seo fr description'),
+    'PRIMARY_COLOR':('#ff6c00','your primary color '),
+    'CATEGORY_ITEM_COLOR':('#ff6c00','category item color '),
+    'MINIMAL_PORODUCT_COLOR':('#ff6c00','your minimal product color '),
+    'SECONDARY_COLOR':('grey','your secondary product color '),
+
+    
+
+
 }
 CONSTANCE_CONFIG_FIELDSETS = {
     'General Options': ('SITE_NAME', 'SITE_URL','LOGO','PROMO_LIVRASTION','SITE_MAIL','SITE_URL_FR'),
@@ -72,6 +80,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
     'réseau sociale': ('FACEBOOK_URL', 'INSTAGRAM_URL','WHATSAPP_NUMBER'),
     'contact & about': ('ABOUT', 'CONTACT_NUMBER','CONTACT_NUMBER2','address'),
     'SEO': ('SEO_DESCRIPTION','SEO_DESCRIPTION_FR'),
+    'COLORS': ('PRIMARY_COLOR','MINIMAL_PORODUCT_COLOR','CATEGORY_ITEM_COLOR',"SECONDARY_COLOR"),
+
 
 }
 # Admin Ui configs

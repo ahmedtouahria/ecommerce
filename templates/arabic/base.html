@@ -51,6 +51,15 @@
       href="{% static 'css/new_style_ar.min.css'%}"
     />
     {% block css %} {% endblock css %}
+    <style>
+:root {
+
+    --primary-color:{{config.PRIMARY_COLOR}} ;
+    --minimal-product-color:{{config.MINIMAL_PORODUCT_COLOR}};
+    --category-item-color:{{config.CATEGORY_ITEM_COLOR}};
+    --secondary-color:{{config.SECONDARY_COLOR}};
+}
+    </style>
   </head>
   <body style="font-family:Tajawal !important;">
  {% include 'arabic/partes/sketelon.html' %}
@@ -127,6 +136,7 @@
         return null;
       }
       function getCartItem() {
+        
         $.ajax({
           url: "/api/cartitemApi/",
           type: "GET",

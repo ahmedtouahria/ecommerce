@@ -14,7 +14,7 @@ from datetime import date, timedelta
 from django.utils import timezone
 from constance import config
 from django.utils.translation import gettext_lazy as _
-from shopping.utils import recommendation, visited
+from shopping.utils import recommendation, visited,get_cart_total
 
 
 # Create your views here.
@@ -559,6 +559,7 @@ def updateItem(request):
             customer=customer, complete=False)
     # load json request from user
     data = json.loads(request.body)
+
     if "productColor" in data or "productSize" in data:
         productColor = data.get("productColor", None)
         productSize = data.get("productSize", None)
@@ -574,7 +575,9 @@ def updateItem(request):
         orderItem.save()
 
         if orderItem.quantity <= 0:
-            orderItem.delete()
+            orderItem=orderItem.delete()
+            return JsonResponse({"message":'remove',"total":0,"global_total":get_cart_total(order)}, safe=False)
+
     else:
         # get required data from json  "productId" & "action user (add,remove)"
         productId = data['productId']
@@ -588,8 +591,10 @@ def updateItem(request):
             orderItem.quantity = (orderItem.quantity - 1)
         orderItem.save()
         if orderItem.quantity <= 0:
-            orderItem.delete()
-    return JsonResponse('Item was added', safe=False)
+            orderItem=orderItem.delete()
+            return JsonResponse({"message":'remove',"total":0,"global_total":get_cart_total(order)}, safe=False)
+
+    return JsonResponse({"message":'Item was added',"total":orderItem.product.price * orderItem.quantity,"id":orderItem.id,"global_total":get_cart_total(order)}, safe=False)
 
 
 

@@ -18,7 +18,7 @@
           </thead>
           <tbody>
             {% for item in items %}
-            <tr>
+            <tr id="row-{{item.id}}">
               <td style="text-align:initial;">
                 <div class="media">
                   <div class="media-body">
@@ -29,7 +29,7 @@
                 </div>
               </td>
               <td style="text-align:initial;">
-                <h5>{{item.product.price}} دج</h5>
+                <h5> {{item.product.price}} دج</h5>
               </td>
               <td style="text-align:initial;">
                 <div class="product_count" dir="ltr">
@@ -44,7 +44,7 @@
                     class="input-text qty"
                   />
                   <button
-                    onclick=" if (user!='AnonymousUser'){updateUserOrder({{item.product.id}}, 'add','{{item.color}}','{{item.size}}')}else {addCookieItem({{item.product.id}}, 'add','{{item.color}}','{{item.size}}')};var result = document.getElementById('sst-{{item.id}}'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                    onclick=" if (user!='AnonymousUser'){updateUserOrder({{item.product.id}}, 'add','{{item.color}}','{{item.size}}','{{item.id}}')}else {addCookieItem({{item.product.id}}, 'add','{{item.color}}','{{item.size}}')};var result = document.getElementById('sst-{{item.id}}'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
                     class="increase items-count"
                     type="button"
                   >
@@ -53,7 +53,7 @@
 
                   </button>
                   <button
-                  onclick=" if (user!='AnonymousUser'){updateUserOrder({{item.product.id}}, 'remove','{{item.color}}','{{item.size}}')}else {addCookieItem({{item.product.id}}, 'remove','{{item.color}}','{{item.size}}')};var result = document.getElementById('sst-{{item.id}}'); var sst = result.value; if( !isNaN( sst )) result.value--;return false;"
+                  onclick=" if (user!='AnonymousUser'){updateUserOrder({{item.product.id}}, 'remove','{{item.color}}','{{item.size}}','{{item.id}}')}else {addCookieItem({{item.product.id}}, 'remove','{{item.color}}','{{item.size}}',)};var result = document.getElementById('sst-{{item.id}}'); var sst = result.value; if( !isNaN( sst )) result.value--;return false;"
 
                     class="reduced items-count"
                     type="button"
@@ -65,11 +65,11 @@
                 </div>
               </td>
               <td style="text-align:initial;">
-                <strong class="text-info">{{item.get_total}} دج</strong>
+                <strong class="text-info" id="total-item-{{item.id}}">{{item.get_total}} دج</strong>
               </td>
             </tr>
             {% endfor %}
-            <tr>
+            <tr > 
               <td style="text-align:initial;">
 
                 <h5>المجموع الكلي</h5>
@@ -79,7 +79,7 @@
               <td>
               </td>
               <td style="text-align:initial;">
-                <strong class="text-info">{{order.get_cart_total}} دج</strong>
+                <strong class="text-info" > <span id="global_result">{{order.get_cart_total}}</span> دج</strong>
               </td>
             </tr>
             {% if items %}
@@ -143,7 +143,7 @@
       getCartItem();
     }
 
-    function updateUserOrder(productId, action,color,size) {
+    function updateUserOrder(productId, action,color,size,id_parent) {
       let data_send = {};
       if(color == "None"  && size == "None" ){
         data_send= { productId: productId, action: action }
@@ -170,7 +170,15 @@
             data: JSON.stringify(data_send),
             processData: true,
             success: function (msg) {
-              console.log("success" + msg);
+              if(msg["total"] >0){
+              let result_id = document.getElementById("total-item-"+msg["id"].toString());
+                result_id.innerHTML=`${msg["total"]} دج`
+              }
+              else{
+              document.getElementById(`row-${id_parent}`).remove();
+              }
+              let global_result = document.getElementById('global_result');
+              global_result.innerHTML=`${msg["global_total"]}`
             },
           });
           // for display async in cart items without reload page

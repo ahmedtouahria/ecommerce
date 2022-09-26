@@ -58,3 +58,7 @@ def superuser_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, l
     if function:
         return actual_decorator(function)
     return function
+def get_cart_total(order):
+    orderitems = order.orderitem_set.all()
+    total = sum([item.get_total for item in orderitems])
+    return total
