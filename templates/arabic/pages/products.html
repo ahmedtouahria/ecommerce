@@ -302,7 +302,7 @@
   content: '';
   height: 100%;
   width: 100%;
-  background: #ffb000;
+  background: {{config.PRIMARY_COLOR}};
   border: 3px solid #fff;
   z-index: -1;
   left: 50%;
@@ -322,7 +322,7 @@
 .field .value{
   position: absolute;
   font-size: 18px;
-  color: #ffb000;
+  color: {{config.PRIMARY_COLOR}};
   font-weight: 600;
 }
 .field .value.left{
@@ -347,8 +347,8 @@
   height: 20px;
   background: red;
   border-radius: 50%;
-  background: #ffb000;
-  border: 1px solid #ffb000;
+  background: {{config.PRIMARY_COLOR}};
+  border: 1px solid {{config.PRIMARY_COLOR}};
   cursor: pointer;
 }
 .range input::-moz-range-thumb{
@@ -357,12 +357,12 @@
   height: 20px;
   background: red;
   border-radius: 50%;
-  background: #ffb000;
-  border: 1px solid #ffb000;
+  background: {{config.PRIMARY_COLOR}};
+  border: 1px solid {{config.PRIMARY_COLOR}};
   cursor: pointer;
 }
 .range input::-moz-range-progress{
-  background: #ffb000; /*this progress background is only shown on Firefox*/
+  background: {{config.PRIMARY_COLOR}}; /*this progress background is only shown on Firefox*/
 }
 </style>
 <script>

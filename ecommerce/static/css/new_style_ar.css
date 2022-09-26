@@ -6657,7 +6657,7 @@ label {
   margin-top: 50px; }
   .sidebar-filter .top-filter-head {
     line-height: 60px;
-    background: #ebebeb;
+    background: var(--secondary-color);
     padding: 0 30px;
     font-size: 16px;
     font-weight: 400;
