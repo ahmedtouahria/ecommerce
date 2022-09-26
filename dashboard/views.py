@@ -170,11 +170,13 @@ def add_product(request):
             if "name" in request.POST:
                 print(request.POST)
                 name = request.POST.get('name', None)
+                name_ar = request.POST.get('name_ar', None)
                 price1 = float(request.POST.get('price1', None))
                 price2 = float(request.POST.get('price2', None))
                 category = request.POST.get('category', None)
                 quantity = int(request.POST.get('quantity', None))
                 description = request.POST.get('description', None)
+                description_ar = request.POST.get('description_ar', None)
                 etagere = request.POST.get('etagere', None)
                 reference = request.POST.get('reference', None)
                 images = request.FILES.getlist("images")
@@ -193,11 +195,13 @@ def add_product(request):
                         category_id = None
                     try:
                         product = Product(name=name,
+                                        name_ar=name_ar,
                                         category=category_id,
                                         price_achat=price1,
                                         price=price2,
                                         quantity=quantity,
                                         description=description,
+                                        description_ar=description_ar,
                                         image=image,
                                         etage=etagere,
                                         reference=reference,
