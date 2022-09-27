@@ -172,8 +172,8 @@ def products(request):
     order_items = Product.objects.all().order_by("-count_sould")[:7]
     if request.method == "GET":
         category_data = request.GET.get('category','')
-        price_data = request.GET.get('price',0)
-        products = Product.objects.filter(Q(quantity__gt=0) & Q(price__lt=price_data) & Q(category__name__icontains=category_data))
+        price_data = request.GET.get('price',1000000)
+        products = Product.objects.filter(Q(quantity__gt=0) & Q(price__lt=price_data)& Q(price__gt=0) & Q(category__name__icontains=category_data))
     else:
         products = Product.objects.filter(quantity__gt=0)
     paginator = Paginator(products,40)

@@ -172,22 +172,13 @@
     }
 /**************** for authenticated user *****************/
     function updateUserOrder(productId, action,color,size,id_parent) {
+      /* ************** data for Product or product variante logic *********** */
       let data_send = {};
-      if(color == "None"  && size == "None" ){
-        data_send= { productId: productId, action: action }
-      }
-      else if(color != "None"  && size == "None" ){
-        data_send= { productId: productId, action: action,productColor:color }
-      
-      }
-      else if(color == "None"  && size != "None" ){
-        data_send= { productId: productId, action: action,productSize:size }
-      
-      }
-      else{
-        data_send= { productId: productId, action: action,productSize:size,productColor:color }
-      
-      }
+      if(color == "None"  && size == "None" )      data_send= { productId: productId, action: action }
+      else if(color != "None"  && size == "None" ) data_send= { productId: productId, action: action,productColor:color }
+      else if(color == "None"  && size != "None" ) data_send= { productId: productId, action: action,productSize:size }
+      else  data_send= { productId: productId, action: action,productSize:size,productColor:color }
+      /***** send request to update items if user is authenticated *********/
           $.ajax({
             type: "POST",
             beforeSend: function (request) {
