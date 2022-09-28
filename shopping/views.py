@@ -132,15 +132,15 @@ def index(request):
     sections = Section.objects.all()
     context = {
         "sections":sections,
-        "new_arrival": Product.objects.all().reverse()[:5],
-        "trending": order_items[:5],
+        "new_arrival": Product.objects.all().reverse()[:5],#last products
+        "trending": order_items[:5],# best selling
         "top_rated": top_rated[:5],
         "toast": toast,
         "affaires": affaires,
         "category_sub": CategorySub.objects.all(),
         "category": Category.objects.all(),
         "imgs_banner": ImageBanner.objects.all()[:3],
-        "products": Product.objects.all()[:12],
+        "products": Product.objects.all().order_by('?')[:12],
         "items": items,
         "order": order,
         "cartItem": cartItem,

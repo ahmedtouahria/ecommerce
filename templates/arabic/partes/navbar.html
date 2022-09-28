@@ -128,8 +128,7 @@
         </ul>
         {% endcomment %}
         <button class="action-btn">
-          <i class="fa fa-heart text-danger" aria-hidden="true"></i>
-          <span class="count">0</span>
+          <i class="fa fa-sign-out" aria-hidden="true"></i>
         </button>
 
         <a class="action-btn" href="{% url 'card' %}">
@@ -388,7 +387,7 @@
       <div class="showcase-container">
         {% for product in trending %}
         <div class="showcase">
-          <a href="#" class="showcase-img-box">
+          <a href="{% url 'single-product' product.slug %}" class="showcase-img-box">
             {% if product.image %}
             <img
               src="{{product.image.url}}"
@@ -401,7 +400,7 @@
           </a>
 
           <div class="showcase-content">
-            <a href="#">
+            <a href="{% url 'single-product' product.slug %}">
               <h4 class="showcase-title">{{product.name_ar}}</h4>
             </a>
 
@@ -449,7 +448,6 @@
             </div>
 
             <div class="price-box">
-              <del>دج {{product.price}}</del>
               <p class="price">دج {{product.price}}</p>
             </div>
           </div>

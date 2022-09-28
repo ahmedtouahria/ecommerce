@@ -24,7 +24,7 @@
       <!-- Start Best Seller -->
       <section class="lattest-product-area category-list ">
         <div class="row">
-          <div class="col-md-3 my-3">
+          <div class="col-md-4 my-3">
           <div class="sidebar-category">
             <div class="sidebar-top">
               <button class="sidebar-close-btn" data-mobile-menu-close-btn>
@@ -66,10 +66,11 @@
             </button>
           </form>
           </div></div>
-          <div class="col-md-9">
+          <div class="col-md-8">
             
             <div class="product-main container pt-5">
           <h2 class="title" style="text-align:initial">المنتجات الجديدة</h2>
+          {% if products %}
           <div class="product-grid" id="list_product">
         {% for product in products  %}
             <div class="showcase ">
@@ -146,8 +147,11 @@
         
             </div>
             {% endfor %}
+      
           </div>
-        
+          {% else %}
+          {% include "notfound.html" %}
+        {% endif %}
         </div></div>
 
         </div>

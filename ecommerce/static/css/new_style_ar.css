@@ -6451,7 +6451,7 @@ label {
 
 .filter-bar {
   padding: 0px 20px 10px 20px;
-  background: #ebebeb; }
+  background: var(--secondary-color); }
   .filter-bar a, .filter-bar i {
     color: #000; }
 
@@ -6486,7 +6486,6 @@ label {
 
 .pagination {
   margin-top: 10px;
-  border-left: 1px solid #eee;
   border-radius: 0px; }
   .pagination a {
     width: 40px;
@@ -9135,7 +9134,7 @@ label {
         display: grid;
       }
       [data-target].is-active {
-        background-color: #ff6c00;
+        background-color: var(--primary-color);
         color: #fff;
       }
       .skeleton {
