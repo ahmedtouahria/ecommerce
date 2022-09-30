@@ -242,7 +242,10 @@ class Affaire(models.Model):
         time_taking = self.date_end
         time_in_seconds = time_taking.timestamp()
         return time_in_seconds
-
+    def test_affaire_existed(self):
+        time_taking = self.date_end-timezone.now()
+        time_in_seconds = time_taking.total_seconds()
+        return True if time_in_seconds > 0 else False
     def __str__(self):
         return self.product.name
 

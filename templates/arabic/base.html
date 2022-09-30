@@ -2,6 +2,25 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
   <head>
+    <script src="{% static 'js/vendor/jquery-2.2.4.min.js' %}"></script>
+    <script>
+      // optimzation css loading
+      $(document).ready(function(){
+      const loading = $("#loading");
+      const body = $("#body_container");
+      loading.addClass("d-none");
+     body.removeClass("d-none");
+        $("select").niceSelect();
+        $(".s_Product_carousel").owlCarousel({
+          items: 1,
+          autoplay: true,
+          autoplayTimeout: 5000,
+          loop: true,
+          nav: false,
+          dots: true,
+        });
+      })
+    </script>
     <!-- Mobile Specific Meta -->
     <meta
       name="viewport"
@@ -62,31 +81,14 @@
     </style>
   </head>
   <body style="font-family:Tajawal !important;">
- {% include 'arabic/partes/sketelon.html' %}
-    <div id="body" class="d-none">
-      {% include 'arabic/partes/navbar.html' %} {% block content %} {% endblock %} 
+    {% block sketelon %}
+    {% endblock sketelon %}
+    <div id="body_container" class="d-none">
+      {% include 'arabic/partes/navbar.html' %}
+       {% block content %} {% endblock %} 
     {% include 'arabic/partes/footer.html' %}
     </div>
-    <script src="{% static 'js/vendor/jquery-2.2.4.min.js' %}"></script>
-    
-    <script>
-      // optimzation css loading
-      $(document).ready(function(){
-      const loading = $("#loading");
-      const body = $("#body");
-        loading.addClass("d-none");
-        body.removeClass("d-none");
-        $("select").niceSelect();
-        $(".s_Product_carousel").owlCarousel({
-          items: 1,
-          autoplay: true,
-          autoplayTimeout: 5000,
-          loop: true,
-          nav: false,
-          dots: true,
-        });
-      })
-    </script>
+  
     <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/nouislider.min.js'%}"></script>
     <script src="{% static 'js/jquery.nice-select.min.js' %}"></script>

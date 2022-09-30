@@ -15,6 +15,74 @@
 <meta property="og:image:height" content="360" />
 <meta property="og:image:type" content="image/png" />
 {% endblock SEO %}
+{% block sketelon %}
+<div id="loading" class="container">
+  <a class="card" style="border:none !important" id="card-link" target="_blank">
+    <div class="card__header">
+      <div>
+        <img
+          class="card__header header__img skeleton"
+          id="logo-img"
+          alt=""
+        />
+      </div>
+      <h3 class="card__header header__title" id="card-title">
+        <div class="skeleton skeleton-text1"></div>
+      </h3>
+    </div>
+
+    <div class="card__body">
+      <div class="card__body body__text" id="card-details">
+        <div class="row">
+          <div class="col-12 col-md-3">
+            <div class="skeleton w-100 skeleton-text skeleton-text__body"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card__body body__img">
+        <img class="skeleton" alt="" id="cover-img" />
+      </div>
+    </div>
+
+    <div class="card__footer" id="card-footer">
+      <div class="skeleton skeleton-text skeleton-footer"></div>
+    </div>
+  </a>
+  <br>
+  <br>
+
+  <div class="card__footer" id="card-footer">
+    <div class="skeleton skeleton-text skeleton-footer"></div>
+  </div>
+  <a class="card" style="border:none !important" id="card-link" target="_blank">
+    <div class="card__body">
+      <div class="card__body body__text" id="card-details">
+        <div class="row">
+          <div class="col-12 col-md-3 ">
+            <div class="skeleton w-100 skeleton-text skeleton-text__body"></div>
+          </div>
+          <div class="col-12 col-md-3">
+            <div class="skeleton w-100 skeleton-text skeleton-text__body"></div>
+          </div>        <div class="col-12 col-md-3">
+            <div class="skeleton w-100 skeleton-text skeleton-text__body"></div>
+          </div>        <div class="col-12 col-md-3">
+            <div class="skeleton w-100 skeleton-text skeleton-text__body"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card__body body__img">
+        <img class="skeleton" alt="" id="cover-img" />
+      </div>
+    </div>
+
+    <div class="card__footer" id="card-footer">
+      <div class="skeleton skeleton-text skeleton-footer"></div>
+    </div>
+  </a>
+</div>
+{% endblock sketelon %}
 {% block content %}
 {% if toast %}
 <div class="notification-toast" data-toast>
@@ -369,14 +437,14 @@
 </div>
 
 </div>
+{% if affaires %}
 <div class="product-featured">
-
   <div class="d-flex">
     <h2 class="title">عروض اليوم </h2>
   </div>
   <div class="showcase-wrapper has-scrollbar">
 {% for affaire in affaires %}
-{% if affaire.get_time > 0 %}
+{% if affaire.test_affaire_existed%}
     <div class="showcase-container">
 
       <div class="showcase">
@@ -456,9 +524,11 @@
       </div>
 
     </div>
+
     {% endif %}
     <script>
   let countDownDate = "{{affaire.get_time}}";//in seconds
+  console.log(countDownDate)
   var x = setInterval(function() {
   let now = new Date().getTime()/1000;
   let distance = (countDownDate - now);
@@ -480,7 +550,7 @@
   </div>
 
 </div>
-
+{% endif %}
 </div>
 <!-- Start category Area -->
 
