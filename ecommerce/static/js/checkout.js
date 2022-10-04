@@ -130,9 +130,7 @@ $(document).ready(function(){
     let shippingInfo = {
       address: "",
       city: form.commun.value,
-      state: form.wilaya.value,
-      zipcode: "",
-      
+      state: form.wilaya.value,      
     };
     console.log("Shipping Info:", shippingInfo);
     console.log("User Info:", userFormData);
@@ -185,7 +183,6 @@ $(document).ready(function(){
       address: form2.address.value,
       city: form2.commun.value,
       state: form2.wilaya.value,
-      zipcode: form2.zipcode.value,
     };
 /*     let url = "/process_order/";
     fetch(url, {
