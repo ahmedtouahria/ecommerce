@@ -70,11 +70,17 @@ def guestOrder(request, data):
     name = str(data['form']['name'])
     phone = str(data['form']['phone'])
     email = str(data['form']['email'])
+    print("ddddddddddddddddddddddd",name,phone,email)
     cookieData = cookieCart(request)
     items = cookieData['items']
     if Customer.objects.filter(phone=phone).exists() or Customer.objects.filter(email=email).exists():
-        customer=Customer.objects.filter(phone=phone).first()
-        customer.name = name
+        try:
+            customer=Customer.objects.filter(phone=phone).first()
+            customer.name = name
+
+        except:
+            customer=Customer.objects.filter(email=email).first()
+            customer.name = name
         customer.save()
     else:
         customer=Customer(name=name,phone=phone,email=email)
@@ -126,7 +132,6 @@ def index(request):
     d = date.today()-timedelta(days=7)
     order_items = Product.objects.all().order_by("-count_sould")[:7]
     top_rated = Product.objects.annotate(rating_count=Sum("rating__stars")).order_by("-rating_count")
-    print(top_rated)
     toast = ToastMessage.objects.all().last()
     affaires = Affaire.objects.all()
     sections = Section.objects.all()
